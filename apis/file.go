@@ -147,8 +147,11 @@ func (api *fileApi) download(e *core.RequestEvent) error {
 
 	// check for valid thumb size param
 	thumbSize := e.Request.URL.Query().Get("thumb")
-	if thumbSize != "" && (list.ExistInSlice(thumbSize, defaultThumbSizes) || list.ExistInSlice(thumbSize, fileField.Thumbs)) {
-		// extract the original file meta attributes and check it existence
+
+	fmt.Println("thumbSize", thumbSize, fileField.Thumbs)
+
+	if thumbSize != "" {
+			// extract the original file meta attributes and check it existence
 		oAttrs, oAttrsErr := fsys.Attributes(originalPath)
 		if oAttrsErr != nil {
 			return e.NotFoundError("", err)
