@@ -42,6 +42,19 @@ Once downloaded, extract the archive and run `./pocketbase serve` in the extract
 
 The prebuilt executables are based on the [`examples/base/main.go` file](https://github.com/pocketbase/pocketbase/blob/master/examples/base/main.go) and comes with the JS VM plugin enabled by default which allows to extend PocketBase with JavaScript (_for more details please refer to [Extend with JavaScript](https://pocketbase.io/docs/js-overview/)_).
 
+#### Expand all relations (optional)
+
+You can opt-in to automatically expand all relation fields (recursively) in API responses by passing the `--expand-all` flag to `serve`:
+
+```sh
+./pocketbase serve --expand-all
+```
+
+Notes:
+- This expands declared direct relation fields iteratively without a fixed depth limit; cycles are guarded.
+- Access rules and field visibility still apply; unauthorized relations won’t be expanded.
+- Use with caution on large graphs, as responses can become heavy.
+
 ### Use as a Go framework/toolkit
 
 PocketBase is distributed as a regular Go library package which allows you to build
