@@ -78,7 +78,7 @@ func NewServeCommand(app core.App, showStartBanner bool) *cobra.Command {
 	command.PersistentFlags().BoolVar(
 		&expandAll,
 		"expand-all",
-		false,
+		true,
 		"Automatically expand all relation fields recursively in API responses (use with caution)",
 	)
 
