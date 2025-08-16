@@ -89,7 +89,7 @@
 }
 
 .schema-field-options {
-    background: #fff;
+    background: var(--baseColor);
     padding: var(--xsSpacing);
     border-bottom-left-radius: var(--baseRadius);
     border-bottom-right-radius: var(--baseRadius);

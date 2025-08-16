@@ -72,6 +72,37 @@
     accent-color: var(--primaryColor);
 }
 
+/* Dark theme overrides applied when a .dark class is present on the documentElement */
+:root.dark,
+body.dark {
+    --txtPrimaryColor:  #e6eef6;
+    --txtHintColor:     #9fb0c6;
+    --txtDisabledColor: #6e7c89;
+
+    --primaryColor: #5cc0ff;
+
+    --bodyColor: #0b0f15;
+
+    --baseColor:     #0f1216;
+    --baseAlt1Color: #15181c;
+    --baseAlt2Color: #1c2126;
+    --baseAlt3Color: #23282d;
+    --baseAlt4Color: #30363d;
+
+    --infoColor:       #7fb8ff;
+    --infoAltColor:    rgba(127,184,255,0.07);
+    --successColor:    #39d9a6;
+    --successAltColor: rgba(57,217,166,0.06);
+    --dangerColor:     #ff6b7a;
+    --dangerAltColor:  rgba(255,107,122,0.06);
+    --warningColor:    #ffb46b;
+    --warningAltColor: rgba(255,180,107,0.06);
+
+    --overlayColor:   rgba(3,6,10,0.6);
+    --tooltipColor:   rgba(255, 255, 255, 0.9);
+    --shadowColor:    rgba(0, 0, 0, 0.5);
+}
+
 
 // Maps
 // ----
