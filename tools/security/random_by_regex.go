@@ -117,6 +117,11 @@ func repeatRandomStringByRegex(r *syntax.Regexp, sb *strings.Builder, min int, m
 		n += randRange
 	}
 
+	// avoid generating empty strings for repeat constructs when possible
+	if n == 0 {
+		n = 1
+	}
+
 	var err error
 	for i := 0; i < n; i++ {
 		err = writeRandomStringByRegex(r, sb)
