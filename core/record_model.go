@@ -870,6 +870,17 @@ func (m *Record) SetIfFieldExists(key string, value any) Field {
 		if ok {
 			setter := ff.FindSetter(key)
 			if setter != nil {
+				// If this is a file field and the provided value is a string path,
+				// try to create a filesystem.File from the local path for convenience
+				// (enables record.set("Media", "/path/to/file") behavior).
+				if field.Type() == FieldTypeFile {
+					if s, ok := value.(string); ok && s != "" {
+						if f, err := filesystem.NewFileFromPath(s); err == nil {
+							value = f
+						}
+					}
+				}
+
 				setter(m, value)
 				return field
 			}
@@ -942,6 +953,18 @@ func (m *Record) Load(data map[string]any) {
 	for k, v := range data {
 		m.Set(k, v)
 	}
+}
+
+// UploadFile creates a new filesystem.File from a local path and sets it on the record
+// field with the provided name. Returns an error if the file cannot be created.
+func (m *Record) UploadFile(fieldName string, localPath string) error {
+	f, err := filesystem.NewFileFromPath(localPath)
+	if err != nil {
+		return err
+	}
+
+	m.Set(fieldName, f)
+	return nil
 }
 
 // GetBool returns the data value for "key" as a bool.
