@@ -223,20 +223,38 @@ func (app *BaseApp) expandRecords(records []*Record, expandPath string, fetchFun
 
 	// fetch rels per group (handles both single and polymorphic cases)
 	rels := []*Record{}
-	for cId, ids := range grouped {
-		if len(ids) == 0 {
-			continue
+	if len(grouped) == 0 {
+		// No concrete ids collected. For non-polymorphic or explicitly scoped
+		// relations invoke the fetchFunc with an empty id slice to preserve
+		// the historical behavior and allow error propagation (used in tests).
+		var c *Collection
+		if relCollection != nil {
+			c = relCollection
+		} else if relField.CollectionId != "" {
+			var err error
+			c, err = app.FindCachedCollectionByNameOrId(relField.CollectionId)
+			if err != nil {
+				return err
+			}
 		}
-		// find collection by id
-		c, err := app.FindCachedCollectionByNameOrId(cId)
-		if err != nil {
-			return err
+		if c != nil {
+			if _, err := fetchFunc(c, []string{}); err != nil {
+				return err
+			}
 		}
-		items, err := fetchFunc(c, list.ToUniqueStringSlice(ids))
-		if err != nil {
-			return err
+	} else {
+		for cId, ids := range grouped {
+			// find collection by id
+			c, err := app.FindCachedCollectionByNameOrId(cId)
+			if err != nil {
+				return err
+			}
+			items, err := fetchFunc(c, list.ToUniqueStringSlice(ids))
+			if err != nil {
+				return err
+			}
+			rels = append(rels, items...)
 		}
-		rels = append(rels, items...)
 	}
 
 	// expand nested fields
