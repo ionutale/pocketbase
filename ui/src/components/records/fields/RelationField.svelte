@@ -23,6 +23,7 @@
     let invalidIds = [];
 
     $: isMultiple = field.maxSelect > 1;
+    $: isPolymorphic = Array.isArray(field.collectionIds) && field.collectionIds.length > 0;
 
     $: if (typeof value != "undefined") {
         fieldRef?.changed();
@@ -57,38 +58,59 @@
         list = [];
         invalidIds = [];
 
-        if (!field?.collectionId || !ids.length) {
+        if ((!field?.collectionId && !isPolymorphic) || !ids.length) {
             isLoading = false;
             return;
         }
 
         isLoading = true;
 
-        let expands = [];
-        const presentableRelFields = $collections
-            .find((c) => c.id == field.collectionId)
-            ?.fields?.filter((f) => !f.hidden && f.presentable && f.type == "relation");
-        for (const field of presentableRelFields) {
-            expands = expands.concat(CommonHelper.getExpandPresentableRelFields(field, $collections, 2));
+        function getExpandsForCollection(collectionId) {
+            let expands = [];
+            const presentableRelFields = $collections
+                .find((c) => c.id == collectionId)
+                ?.fields?.filter((f) => !f.hidden && f.presentable && f.type == "relation");
+            for (const f of presentableRelFields || []) {
+                expands = expands.concat(CommonHelper.getExpandPresentableRelFields(f, $collections, 2));
+            }
+            return expands.join(",");
         }
 
-        // batch load all selected records to avoid parser stack overflow errors
-        const filterIds = ids.slice();
-        const loadPromises = [];
-        while (filterIds.length > 0) {
-            const filters = [];
-            for (const id of filterIds.splice(0, batchSize)) {
-                filters.push(`id="${id}"`);
+        // group ids by collection
+        const byCol = {};
+        const plainIds = [];
+        for (const v of ids) {
+            const idx = ("" + v).indexOf(":");
+            if (idx > 0 && idx < ("" + v).length - 1) {
+                const cId = ("" + v).slice(0, idx);
+                const rId = ("" + v).slice(idx + 1);
+                byCol[cId] = byCol[cId] || [];
+                byCol[cId].push(rId);
+            } else {
+                plainIds.push(v);
             }
+        }
+        if (plainIds.length && field.collectionId) {
+            byCol[field.collectionId] = (byCol[field.collectionId] || []).concat(plainIds);
+        }
 
-            loadPromises.push(
-                ApiClient.collection(field.collectionId).getFullList(batchSize, {
-                    filter: filters.join("||"),
-                    fields: "*:excerpt(200)",
-                    expand: expands.join(","),
-                    requestKey: null,
-                }),
-            );
+        const loadPromises = [];
+        for (const cId in byCol) {
+            const filterIds = byCol[cId].slice();
+            while (filterIds.length > 0) {
+                const filters = [];
+                for (const id of filterIds.splice(0, batchSize)) {
+                    filters.push(`id="${id}"`);
+                }
+                loadPromises.push(
+                    ApiClient.collection(cId).getFullList(batchSize, {
+                        filter: filters.join("||"),
+                        fields: "*:excerpt(200)",
+                        expand: getExpandsForCollection(cId),
+                        requestKey: null,
+                    }),
+                );
+            }
         }
 
         try {
@@ -98,12 +120,14 @@
             });
 
             // preserve selected order
-            for (const id of ids) {
+            for (const raw of ids) {
+                const idx = ("" + raw).indexOf(":");
+                const id = idx > 0 ? ("" + raw).slice(idx + 1) : ("" + raw);
                 const rel = CommonHelper.findByKey(loadedItems, "id", id);
                 if (rel) {
                     list.push(rel);
                 } else {
-                    invalidIds.push(id);
+                    invalidIds.push(raw);
                 }
             }
 
@@ -128,9 +152,10 @@
 
     function listToValue() {
         if (isMultiple) {
-            value = list.map((r) => r.id);
+            value = list.map((r) => (isPolymorphic ? `${r.collectionId}:${r.id}` : r.id));
         } else {
-            value = list[0]?.id || "";
+            const r = list[0];
+            value = r ? (isPolymorphic ? `${r.collectionId}:${r.id}` : r.id) : "";
         }
     }
 

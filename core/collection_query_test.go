@@ -260,6 +260,55 @@ func TestFindCollectionReferences(t *testing.T) {
 	}
 }
 
+func TestFindCollectionReferences_Polymorphic(t *testing.T) {
+	t.Parallel()
+
+	app, _ := tests.NewTestApp()
+	defer app.Cleanup()
+
+	// Use existing demo collections and mutate one field of demo4 to reference demo3 also
+	demo3, err := app.FindCollectionByNameOrId("demo3")
+	if err != nil {
+		t.Fatal(err)
+	}
+	demo4, err := app.FindCollectionByNameOrId("demo4")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// clone and modify in memory only (tests reference functions read from app.CollectionQuery())
+	// find a relation field targeting demo3 and make it polymorphic to include demo3 explicitly
+	var changed bool
+	for i, rf := range demo4.Fields {
+		rel, ok := rf.(*core.RelationField)
+		if !ok {
+			continue
+		}
+		if rel.CollectionId == demo3.Id {
+			rel.CollectionIds = []string{demo3.Id}
+			demo4.Fields[i] = rel
+			changed = true
+			break
+		}
+	}
+	if !changed {
+		t.Skip("no suitable relation field found for polymorphic test; skipping")
+	}
+
+	// Save the modified collection so that queries reflect it
+	if err := app.Save(demo4); err != nil {
+		t.Fatal(err)
+	}
+
+	result, err := app.FindCollectionReferences(demo3)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result) == 0 {
+		t.Fatalf("Expected at least 1 collection reference to demo3, got %d", len(result))
+	}
+}
+
 func TestFindCachedCollectionReferences(t *testing.T) {
 	t.Parallel()
 
@@ -339,6 +388,167 @@ func TestFindCachedCollectionReferences(t *testing.T) {
 	run(true)
 
 	run(false)
+}
+
+func TestFindCachedCollectionReferences_Polymorphic(t *testing.T) {
+	t.Parallel()
+
+	app, _ := tests.NewTestApp()
+	defer app.Cleanup()
+
+	demo3, err := app.FindCollectionByNameOrId("demo3")
+	if err != nil {
+		t.Fatal(err)
+	}
+	demo4, err := app.FindCollectionByNameOrId("demo4")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// mutate one relation field to be polymorphic (allow demo3)
+	var changed bool
+	for i, rf := range demo4.Fields {
+		rel, ok := rf.(*core.RelationField)
+		if !ok {
+			continue
+		}
+		if rel.CollectionId == demo3.Id {
+			rel.CollectionIds = []string{demo3.Id}
+			demo4.Fields[i] = rel
+			changed = true
+			break
+		}
+	}
+	if !changed {
+		t.Skip("no suitable relation field found for polymorphic test; skipping")
+	}
+
+	// persist and warm the cache
+	if err := app.Save(demo4); err != nil {
+		t.Fatal(err)
+	}
+	if err := app.ReloadCachedCollections(); err != nil {
+		t.Fatal(err)
+	}
+
+	result, err := app.FindCachedCollectionReferences(demo3)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(result) == 0 {
+		t.Fatalf("Expected at least 1 collection reference to demo3, got %d", len(result))
+	}
+}
+
+func TestRelationField_ValidateValue_Polymorphic(t *testing.T) {
+	t.Parallel()
+
+	app, _ := tests.NewTestApp()
+	defer app.Cleanup()
+
+	demo3, _ := app.FindCollectionByNameOrId("demo3")
+	demo4, _ := app.FindCollectionByNameOrId("demo4")
+
+	// build a polymorphic relation field allowing demo3 and demo4
+	rf := &core.RelationField{
+		Name:          "poly",
+		CollectionIds: []string{demo3.Id, demo4.Id},
+		MaxSelect:     2,
+	}
+
+	// create a temp record using demo4 collection to host the field
+	host := core.NewRecord(demo4)
+
+	// load one real record id from each collection
+	var demo3Recs []*core.Record
+	if err := app.RecordQuery(demo3).Limit(1).All(&demo3Recs); err != nil || len(demo3Recs) == 0 {
+		t.Fatalf("failed to load demo3 record: %v", err)
+	}
+	var demo4Recs []*core.Record
+	if err := app.RecordQuery(demo4).Limit(1).All(&demo4Recs); err != nil || len(demo4Recs) == 0 {
+		t.Fatalf("failed to load demo4 record: %v", err)
+	}
+
+	// happy: composite values for 2 existing records
+	host.Set("poly", []string{demo3.Id + ":" + demo3Recs[0].Id, demo4.Id + ":" + demo4Recs[0].Id})
+	if err := rf.ValidateValue(context.Background(), app, host); err != nil {
+		t.Fatalf("expected ok, got %v", err)
+	}
+
+	// error: plain id not allowed when multiple collections configured
+	host.Set("poly", []string{"3q2fy7n4cx6h1zb"})
+	if err := rf.ValidateValue(context.Background(), app, host); err == nil {
+		t.Fatalf("expected error for plain id in polymorphic relation")
+	}
+
+	// error: invalid collection id in composite
+	host.Set("poly", []string{"badcol:whatever"})
+	if err := rf.ValidateValue(context.Background(), app, host); err == nil {
+		t.Fatalf("expected error for invalid collection in composite value")
+	}
+}
+
+func TestExpandRecords_Polymorphic_DefaultAndScoped(t *testing.T) {
+	t.Parallel()
+
+	app, _ := tests.NewTestApp()
+	defer app.Cleanup()
+
+	// Prepare: create a temp collection with a polymorphic relation (demo4 -> demo3|demo4)
+	demo3, _ := app.FindCollectionByNameOrId("demo3")
+	demo4, _ := app.FindCollectionByNameOrId("demo4")
+
+	// Clone demo4 to avoid breaking existing fixtures; reuse demo4 for simplicity but add a new field
+	// Add a new relation field poly that allows demo3 and demo4
+	poly := &core.RelationField{
+		Name:          "poly",
+		CollectionIds: []string{demo3.Id, demo4.Id},
+		MaxSelect:     2,
+	}
+	demo4.Fields = append(demo4.Fields, poly)
+	if err := app.Save(demo4); err != nil {
+		t.Fatal(err)
+	}
+
+	// Create a record in demo4 that references one item from each collection
+	var d3 []*core.Record
+	if err := app.RecordQuery(demo3).Limit(1).All(&d3); err != nil || len(d3) == 0 {
+		t.Fatalf("failed to load demo3 record: %v", err)
+	}
+	var d4 []*core.Record
+	if err := app.RecordQuery(demo4).Limit(1).All(&d4); err != nil || len(d4) == 0 {
+		t.Fatalf("failed to load demo4 record: %v", err)
+	}
+
+	host := core.NewRecord(demo4)
+	host.Set("poly", []string{demo3.Id + ":" + d3[0].Id, demo4.Id + ":" + d4[0].Id})
+
+	// Default expand: should fetch both groups and place under expand["poly"]
+	failed := app.ExpandRecord(host, []string{"poly"}, nil)
+	if len(failed) > 0 {
+		t.Fatalf("unexpected expand errors: %v", failed)
+	}
+	exp := host.Expand()["poly"]
+	if exp == nil {
+		t.Fatalf("expected expanded poly")
+	}
+
+	// Scoped expand to demo3 only via selector
+	host2 := core.NewRecord(demo4)
+	host2.Set("poly", []string{demo3.Id + ":" + d3[0].Id, demo4.Id + ":" + d4[0].Id})
+	failed2 := app.ExpandRecord(host2, []string{"poly@" + demo3.Id}, nil)
+	if len(failed2) > 0 {
+		t.Fatalf("unexpected expand errors (scoped): %v", failed2)
+	}
+	// ensure the expand contains only demo3 record
+	switch v := host2.Expand()["poly"].(type) {
+	case []*core.Record:
+		if len(v) != 1 || v[0].Collection().Id != demo3.Id {
+			t.Fatalf("expected only demo3 expanded; got: %v", v)
+		}
+	default:
+		t.Fatalf("unexpected expand type: %T", v)
+	}
 }
 
 func TestIsCollectionNameUnique(t *testing.T) {

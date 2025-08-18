@@ -32,8 +32,13 @@
     $: maxSelect = field?.maxSelect || null;
 
     $: collectionId = field?.collectionId;
+    $: isPolymorphic = Array.isArray(field?.collectionIds) && field.collectionIds.length > 0;
+    $: allowedCollections = isPolymorphic
+        ? $collections.filter((c) => field.collectionIds.includes(c.id))
+        : $collections.filter((c) => c.id == collectionId);
+    $: activeCollectionId = isPolymorphic ? (activeCollectionId || allowedCollections?.[0]?.id) : collectionId;
 
-    $: collection = $collections.find((c) => c.id == collectionId) || null;
+    $: collection = $collections.find((c) => c.id == activeCollectionId) || null;
 
     $: if (typeof filter !== "undefined" && pickerPanel?.isActive()) {
         loadList(true); // reset list on filter change
@@ -159,7 +164,7 @@
                 sort = "-@rowid"; // all collections with exception to the view has this field
             }
 
-            const result = await ApiClient.collection(collectionId).getList(page, batchSize, {
+            const result = await ApiClient.collection(activeCollectionId).getList(page, batchSize, {
                 filter: CommonHelper.normalizeSearchFilter(filter, fallbackSearchFields),
                 sort: sort,
                 fields: "*:excerpt(200)",
@@ -189,7 +194,7 @@
         isReloadingRecord[record.id] = true;
 
         try {
-            const reloaded = await ApiClient.collection(collectionId).getOne(record.id, {
+            const reloaded = await ApiClient.collection(activeCollectionId).getOne(record.id, {
                 fields: "*:excerpt(200)",
                 expand: getExpand(),
                 requestKey: uniqueId + "reload" + record.id,
@@ -237,9 +242,10 @@
 
     function save() {
         if (maxSelect != 1) {
-            value = selected.map((r) => r.id);
+            value = selected.map((r) => (isPolymorphic ? `${r.collectionId}:${r.id}` : r.id));
         } else {
-            value = selected?.[0]?.id || "";
+            const r = selected?.[0];
+            value = r ? (isPolymorphic ? `${r.collectionId}:${r.id}` : r.id) : "";
         }
 
         dispatch("save", selected);
@@ -255,6 +261,25 @@
     </svelte:fragment>
 
     <div class="flex m-b-base flex-gap-10">
+        {#if isPolymorphic}
+            <div class="form-field">
+                <label for={uniqueId + "_collection"}>Collection</label>
+                <select
+                    id={uniqueId + "_collection"}
+                    class="input"
+                    bind:value={activeCollectionId}
+                    on:change={() => {
+                        list = [];
+                        currentPage = 1;
+                        loadList(true);
+                    }}
+                >
+                    {#each allowedCollections as c}
+                        <option value={c.id}>{c.name}</option>
+                    {/each}
+                </select>
+            </div>
+        {/if}
         <Searchbar
             value={filter}
             autocompleteCollection={collection}
