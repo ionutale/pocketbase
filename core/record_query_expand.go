@@ -70,6 +70,7 @@ func (app *BaseApp) expandRecords(records []*Record, expandPath string, fetchFun
 
 	var relField *RelationField
 	var relCollection *Collection
+	var explicitTarget bool
 
 	parts := strings.SplitN(expandPath, ".", 2)
 	var matches []string
@@ -180,6 +181,7 @@ func (app *BaseApp) expandRecords(records []*Record, expandPath string, fetchFun
 				return fmt.Errorf("invalid expand target %q for relation %q", targetCollection.Name, relField.Name)
 			}
 			relCollection = targetCollection
+			explicitTarget = true
 		} else {
 			// default single collection (non-polymorphic fallback)
 			relCollection, _ = getCollectionByModelOrIdentifier(app, relField.CollectionId)
@@ -200,8 +202,8 @@ func (app *BaseApp) expandRecords(records []*Record, expandPath string, fetchFun
 			if idx := strings.IndexByte(v, ':'); idx > 0 && idx < len(v)-1 {
 				cId := v[:idx]
 				rId := v[idx+1:]
-				// if relCollection is set (explicit target), keep only that group
-				if relCollection != nil && cId != relCollection.Id {
+				// if an explicit target was set, keep only that group
+				if explicitTarget && relCollection != nil && cId != relCollection.Id {
 					continue
 				}
 				grouped[cId] = append(grouped[cId], rId)
@@ -287,12 +289,15 @@ func (app *BaseApp) expandRecords(records []*Record, expandPath string, fetchFun
 		validRels := make([]*Record, 0, len(relIds))
 		for _, raw := range relIds {
 			v := "" + raw
+			// 1) try exact match (works for plain ids and composite keys when present)
 			if rel, ok := indexedRels[v]; ok {
 				validRels = append(validRels, rel)
 				continue
 			}
+			// 2) if composite, fallback to matching by plain id part
 			if idx := strings.IndexByte(v, ':'); idx > 0 && idx < len(v)-1 {
-				if rel, ok := indexedRels[v]; ok {
+				idOnly := v[idx+1:]
+				if rel, ok := indexedRels[idOnly]; ok {
 					validRels = append(validRels, rel)
 				}
 			}

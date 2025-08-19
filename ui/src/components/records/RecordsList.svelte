@@ -155,9 +155,13 @@
 
         let expandFields = [];
         for (const field of relFields) {
-            expandFields = expandFields.concat(
-                CommonHelper.getExpandPresentableRelFields(field, $collections, 2),
-            );
+            const subs = CommonHelper.getExpandPresentableRelFields(field, $collections, 2);
+            if (subs?.length) {
+                expandFields = expandFields.concat(subs);
+            }
+            // Always include the base relation field to get expanded items,
+            // including polymorphic relations (no collectionId).
+            CommonHelper.pushUnique(expandFields, field.name);
         }
 
         return ApiClient.collection(collection.id)
@@ -412,7 +416,13 @@
 
                     {#each visibleFields as field (field.id)}
                         <td class="col-type-{field.type} col-field-{field.name}">
-                            <RecordFieldValue short {record} {field} />
+                            {#if field.type === "relation"}
+                                <div class="relation-cell">
+                                    <RecordFieldValue {record} {field} />
+                                </div>
+                            {:else}
+                                <RecordFieldValue short {record} {field} />
+                            {/if}
                         </td>
                     {/each}
 
@@ -498,3 +508,12 @@
         </button>
     </div>
 {/if}
+
+<style>
+    .relation-cell {
+        display: flex;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+</style>

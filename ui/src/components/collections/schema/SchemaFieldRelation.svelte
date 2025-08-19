@@ -48,7 +48,7 @@
     function loadDefaults() {
         field.maxSelect = 1;
         field.collectionId = null;
-    field.collectionIds = [];
+        field.collectionIds = [];
         field.cascadeDelete = false;
         isSingle = true;
         oldIsSingle = isSingle;
@@ -58,7 +58,8 @@
 <SchemaField bind:field {key} on:rename on:remove on:duplicate {...$$restProps}>
     <svelte:fragment let:interactive>
         <div class="separator" />
-
+    {#if isSingle}
+        
         <Field
             class="form-field required {!interactive ? 'readonly' : ''}"
             inlineError
@@ -90,7 +91,7 @@
         </Field>
 
         <div class="separator" />
-
+        {:else}
         <!-- Polymorphic collections selector -->
         <Field class="form-field" name="fields.{key}.collectionIds" let:uniqueId>
             <label for={uniqueId}>
@@ -117,7 +118,7 @@
             />
         </Field>
         <div class="separator" />
-
+        {/if}
         <Field
             class="form-field form-field-single-multiple-select {!interactive ? 'readonly' : ''}"
             inlineError

@@ -532,6 +532,18 @@ func TestExpandRecords_Polymorphic_DefaultAndScoped(t *testing.T) {
 	if exp == nil {
 		t.Fatalf("expected expanded poly")
 	}
+	switch v := exp.(type) {
+	case []*core.Record:
+		if len(v) != 2 {
+			t.Fatalf("expected 2 expanded records, got %d", len(v))
+		}
+		gotCols := map[string]bool{v[0].Collection().Id: true, v[1].Collection().Id: true}
+		if !gotCols[demo3.Id] || !gotCols[demo4.Id] {
+			t.Fatalf("expected expanded records from both collections, got: %v|%v", v[0].Collection().Id, v[1].Collection().Id)
+		}
+	default:
+		t.Fatalf("unexpected expand type: %T", v)
+	}
 
 	// Scoped expand to demo3 only via selector
 	host2 := core.NewRecord(demo4)

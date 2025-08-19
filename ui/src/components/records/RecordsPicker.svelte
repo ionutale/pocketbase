@@ -80,9 +80,9 @@
     }
 
     async function loadSelected() {
-        const selectedIds = CommonHelper.toArray(value);
+        const selectedRaw = CommonHelper.toArray(value);
 
-        if (!collectionId || !selectedIds.length) {
+        if (!selectedRaw.length) {
             return;
         }
 
@@ -90,50 +90,123 @@
 
         let loadedItems = [];
 
-        // batch load all selected records to avoid parser stack overflow errors
-        const filterIds = selectedIds.slice();
-        const loadPromises = [];
-        while (filterIds.length > 0) {
-            const filters = [];
-            for (const id of filterIds.splice(0, batchSize)) {
-                filters.push(`id="${id}"`);
-            }
-
-            loadPromises.push(
-                ApiClient.collection(collectionId).getFullList({
-                    batch: batchSize,
-                    filter: filters.join("||"),
-                    fields: "*:excerpt(200)",
-                    expand: getExpand(),
-                    requestKey: null,
-                }),
-            );
-        }
-
-        try {
-            await Promise.all(loadPromises).then((values) => {
-                loadedItems = loadedItems.concat(...values);
-            });
-
-            // preserve selected order
-            selected = [];
-            for (const id of selectedIds) {
-                const item = CommonHelper.findByKey(loadedItems, "id", id);
-                if (item) {
-                    selected.push(item);
+        if (isPolymorphic) {
+            // group by collection from composite values <collectionId>:<id>
+            const byCol = {};
+            for (const v of selectedRaw) {
+                const str = "" + v;
+                const idx = str.indexOf(":");
+                if (idx > 0 && idx < str.length - 1) {
+                    const cId = str.slice(0, idx);
+                    const rId = str.slice(idx + 1);
+                    byCol[cId] = byCol[cId] || [];
+                    byCol[cId].push(rId);
                 }
             }
 
-            if (!filter.trim()) {
-                // add the selected models to the list (if not already)
-                list = CommonHelper.filterDuplicatesByKey(selected.concat(list));
+            const loadPromises = [];
+            for (const cId in byCol) {
+                const filterIds = byCol[cId].slice();
+                while (filterIds.length > 0) {
+                    const filters = [];
+                    for (const id of filterIds.splice(0, batchSize)) {
+                        filters.push(`id="${id}"`);
+                    }
+                    loadPromises.push(
+                        ApiClient.collection(cId).getFullList({
+                            batch: batchSize,
+                            filter: filters.join("||"),
+                            fields: "*:excerpt(200)",
+                            expand: getExpand(),
+                            requestKey: null,
+                        }),
+                    );
+                }
             }
 
-            isLoadingSelected = false;
-        } catch (err) {
-            if (!err.isAbort) {
-                ApiClient.error(err);
+            try {
+                await Promise.all(loadPromises).then((values) => {
+                    loadedItems = loadedItems.concat(...values);
+                });
+
+                // annotate items with collectionId for encoding
+                for (const item of loadedItems) {
+                    if (!item.collectionId) item.collectionId = collection?.id || activeCollectionId;
+                }
+
+                // preserve order according to composite input
+                selected = [];
+                for (const raw of selectedRaw) {
+                    const idx = ("" + raw).indexOf(":");
+                    const id = idx > 0 ? ("" + raw).slice(idx + 1) : ("" + raw);
+                    const item = CommonHelper.findByKey(loadedItems, "id", id);
+                    if (item) {
+                        selected.push(item);
+                    }
+                }
+
+                if (!filter.trim()) {
+                    list = CommonHelper.filterDuplicatesByKey(selected.concat(list));
+                }
+
                 isLoadingSelected = false;
+            } catch (err) {
+                if (!err.isAbort) {
+                    ApiClient.error(err);
+                    isLoadingSelected = false;
+                }
+            }
+        } else {
+            if (!collectionId) {
+                isLoadingSelected = false;
+                return;
+            }
+
+            // batch load all selected records to avoid parser stack overflow errors
+            const filterIds = selectedRaw.slice();
+            const loadPromises = [];
+            while (filterIds.length > 0) {
+                const filters = [];
+                for (const id of filterIds.splice(0, batchSize)) {
+                    filters.push(`id="${id}"`);
+                }
+
+                loadPromises.push(
+                    ApiClient.collection(collectionId).getFullList({
+                        batch: batchSize,
+                        filter: filters.join("||"),
+                        fields: "*:excerpt(200)",
+                        expand: getExpand(),
+                        requestKey: null,
+                    }),
+                );
+            }
+
+            try {
+                await Promise.all(loadPromises).then((values) => {
+                    loadedItems = loadedItems.concat(...values);
+                });
+
+                // preserve selected order
+                selected = [];
+                for (const id of selectedRaw) {
+                    const item = CommonHelper.findByKey(loadedItems, "id", id);
+                    if (item) {
+                        selected.push(item);
+                    }
+                }
+
+                if (!filter.trim()) {
+                    // add the selected models to the list (if not already)
+                    list = CommonHelper.filterDuplicatesByKey(selected.concat(list));
+                }
+
+                isLoadingSelected = false;
+            } catch (err) {
+                if (!err.isAbort) {
+                    ApiClient.error(err);
+                    isLoadingSelected = false;
+                }
             }
         }
     }
@@ -241,13 +314,7 @@
     }
 
     function save() {
-        if (maxSelect != 1) {
-            value = selected.map((r) => (isPolymorphic ? `${r.collectionId}:${r.id}` : r.id));
-        } else {
-            const r = selected?.[0];
-            value = r ? (isPolymorphic ? `${r.collectionId}:${r.id}` : r.id) : "";
-        }
-
+    // Keep emitting full records in the event detail; parent computes value.
         dispatch("save", selected);
         hide();
     }

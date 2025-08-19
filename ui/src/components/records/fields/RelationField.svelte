@@ -46,7 +46,12 @@
 
         const ids = CommonHelper.toArray(value);
 
-        list = list.filter((item) => ids.includes(item.id));
+        // Keep items that match either plain id or composite '<collectionId>:<id>'
+        list = list.filter((item) => {
+            const plain = item.id;
+            const composite = item?.collectionId ? `${item.collectionId}:${item.id}` : null;
+            return ids.includes(plain) || (composite && ids.includes(composite));
+        });
 
         return ids.length != list.length;
     }
@@ -119,6 +124,8 @@
                 loadedItems = loadedItems.concat(...values);
             });
 
+            // loaded items from the API include collectionId; avoid overriding it
+
             // preserve selected order
             for (const raw of ids) {
                 const idx = ("" + raw).indexOf(":");
@@ -151,11 +158,17 @@
     }
 
     function listToValue() {
+        // determine at runtime whether we should encode as <collectionId>:<id>
+        // fallback to composite when:
+        //  - field is explicitly polymorphic, or
+        //  - selected records belong to varying collections or field.collectionId is missing
+        const shouldComposite = isPolymorphic || list.some((r) => !!r?.collectionId && (!field?.collectionId || r.collectionId !== field.collectionId));
+
         if (isMultiple) {
-            value = list.map((r) => (isPolymorphic ? `${r.collectionId}:${r.id}` : r.id));
+            value = list.map((r) => (shouldComposite ? `${r.collectionId}:${r.id}` : r.id));
         } else {
             const r = list[0];
-            value = r ? (isPolymorphic ? `${r.collectionId}:${r.id}` : r.id) : "";
+            value = r ? (shouldComposite ? `${r.collectionId}:${r.id}` : r.id) : "";
         }
     }
 
@@ -244,8 +257,10 @@
     {value}
     {field}
     on:save={(e) => {
-        list = e.detail || [];
-        value = isMultiple ? list.map((r) => r.id) : list[0]?.id || "";
+    list = e.detail || [];
+    // Recalculate the bound value using the correct encoding,
+    // including '<collectionId>:<id>' for polymorphic relations.
+    listToValue();
     }}
 />
 
