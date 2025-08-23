@@ -56,6 +56,10 @@
         filter = "";
         list = [];
         selected = [];
+        // ensure an active collection is set for polymorphic relations before loading
+        if (isPolymorphic && !activeCollectionId && allowedCollections?.length) {
+            activeCollectionId = allowedCollections[0].id;
+        }
         loadSelected();
         loadList(true);
 
@@ -212,8 +216,9 @@
     }
 
     async function loadList(reset = false) {
-        if (!collectionId) {
-            return;
+        // use activeCollectionId (polymorphic) or single collectionId fallback
+        if (!activeCollectionId && !collectionId) {
+            return; // nothing to load yet
         }
 
         isLoadingList = true;
@@ -237,7 +242,8 @@
                 sort = "-@rowid"; // all collections with exception to the view has this field
             }
 
-            const result = await ApiClient.collection(activeCollectionId).getList(page, batchSize, {
+            const colId = activeCollectionId || collectionId;
+            const result = await ApiClient.collection(colId).getList(page, batchSize, {
                 filter: CommonHelper.normalizeSearchFilter(filter, fallbackSearchFields),
                 sort: sort,
                 fields: "*:excerpt(200)",
@@ -267,7 +273,8 @@
         isReloadingRecord[record.id] = true;
 
         try {
-            const reloaded = await ApiClient.collection(activeCollectionId).getOne(record.id, {
+            const colId = activeCollectionId || collectionId;
+            const reloaded = await ApiClient.collection(colId).getOne(record.id, {
                 fields: "*:excerpt(200)",
                 expand: getExpand(),
                 requestKey: uniqueId + "reload" + record.id,
