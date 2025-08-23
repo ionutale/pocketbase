@@ -28,6 +28,8 @@
     let isLoadingList = false;
     let isLoadingSelected = false;
     let isReloadingRecord = {};
+    // active collection (single or polymorphic current selection)
+    let activeCollectionId;
 
     $: maxSelect = field?.maxSelect || null;
 
@@ -36,13 +38,27 @@
     $: allowedCollections = isPolymorphic
         ? $collections.filter((c) => field.collectionIds.includes(c.id))
         : $collections.filter((c) => c.id == collectionId);
-    $: activeCollectionId = isPolymorphic ? (activeCollectionId || allowedCollections?.[0]?.id) : collectionId;
+    // maintain activeCollectionId without self-referential reactive assignment pitfalls
+    $: {
+        if (isPolymorphic) {
+            if (!activeCollectionId && allowedCollections?.length) {
+                activeCollectionId = allowedCollections[0].id;
+            }
+        } else {
+            // single collection mode always follows field.collectionId
+            if (activeCollectionId !== collectionId) {
+                activeCollectionId = collectionId;
+            }
+        }
+    }
 
     $: collection = $collections.find((c) => c.id == activeCollectionId) || null;
 
     $: if (typeof filter !== "undefined" && pickerPanel?.isActive()) {
         loadList(true); // reset list on filter change
     }
+
+    // NOTE: Collection changes are handled explicitly in the select on:change handler to avoid reload loops.
 
     $: isView = collection?.type === "view";
 
@@ -219,6 +235,10 @@
         // use activeCollectionId (polymorphic) or single collectionId fallback
         if (!activeCollectionId && !collectionId) {
             return; // nothing to load yet
+        }
+
+        if (isLoadingList && !reset) {
+            return; // prevent stacking calls while a non-reset load is in progress
         }
 
         isLoadingList = true;
