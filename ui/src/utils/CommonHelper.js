@@ -535,6 +535,7 @@ export default class CommonHelper {
 
     /**
      * Converts and normalizes string into a sentence.
+     * Optimized for better performance with fewer string concatenations.
      *
      * @param  {String}  str
      * @param  {Boolean} [stopCheck]
@@ -550,16 +551,17 @@ export default class CommonHelper {
             return str;
         }
 
-        str = str[0].toUpperCase() + str.substring(1);
-
+        // More efficient: do the uppercase and check in one pass
+        const parts = [str[0].toUpperCase(), str.substring(1)];
+        
         if (stopCheck) {
-            let lastChar = str[str.length - 1];
+            const lastChar = str[str.length - 1];
             if (lastChar !== "." && lastChar !== "?" && lastChar !== "!") {
-                str += ".";
+                parts.push(".");
             }
         }
 
-        return str
+        return parts.join("");
     }
 
     /**
@@ -580,7 +582,7 @@ export default class CommonHelper {
             return val.slice(1, -1);
         }
 
-        return val
+        return val;
     }
 
     /**

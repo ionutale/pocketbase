@@ -8,6 +8,7 @@
 
 # tests coverage
 coverage.out
+*.coverprofile
 
 # plaintask todo files
 *.todo
@@ -21,3 +22,7 @@ LICENSE.html
 
 pb_data
 pb_migrations
+
+# UI dependencies and build artifacts
+/ui/node_modules
+/ui/dist
