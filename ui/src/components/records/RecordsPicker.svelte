@@ -436,6 +436,7 @@
                             type="button"
                             class="btn btn-sm btn-circle btn-transparent btn-hint m-l-auto"
                             use:tooltip={"Edit"}
+                            aria-label="Edit record"
                             on:keydown|stopPropagation
                             on:click|stopPropagation={() => upsertPanel?.show(record.id)}
                         >
@@ -486,6 +487,7 @@
                             type="button"
                             title="Remove"
                             class="btn btn-circle btn-transparent btn-hint btn-xs"
+                            aria-label="Remove record from selection"
                             on:click={() => deselect(record)}
                         >
                             <i class="ri-close-line"></i>
