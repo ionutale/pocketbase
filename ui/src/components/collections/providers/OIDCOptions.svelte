@@ -90,7 +90,7 @@
                             text: "URL to the public token verification keys.",
                             position: "top",
                         }}
-                    />
+                    ></i>
                 </label>
                 <input type="url" id={uniqueId} bind:value={config.extra.jwksURL} />
             </Field>
@@ -103,7 +103,7 @@
                             text: "Comma separated list of accepted values for the iss token claim validation.",
                             position: "top",
                         }}
-                    />
+                    ></i>
                 </label>
                 <MultipleValueInput id={uniqueId} bind:value={config.extra.issuers} />
             </Field>
@@ -121,6 +121,6 @@
                 text: "Usually it should be safe to be always enabled as most providers will just ignore the extra query parameters if they don't support PKCE.",
                 position: "right",
             }}
-        />
+        ></i>
     </label>
 </Field>

@@ -72,6 +72,7 @@
                                 type="button"
                                 class="btn btn-circle btn-transparent btn-hint btn-xs"
                                 title="Remove"
+                                aria-label="Remove option {item}"
                                 on:click|stopPropagation={() => remove(item)}
                             >
                                 <i class="ri-close-line" aria-hidden="true"></i>
@@ -103,6 +104,7 @@
                                     type="button"
                                     class="btn btn-transparent btn-xs btn-circle new-item-btn"
                                     title="Add new"
+                                    aria-label="Add new option"
                                     class:btn-disabled={!newInputVal.length}
                                     on:click={() => add(newInputVal)}
                                 >

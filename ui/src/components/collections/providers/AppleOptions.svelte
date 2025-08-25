@@ -10,9 +10,10 @@
 <button
     type="button"
     class="btn btn-sm btn-secondary btn-provider-{key}"
+    aria-label="Generate Apple secret"
     on:click={() => generatorPopup?.show({ clientId: config.clientId })}
 >
-    <i class="ri-key-line" />
+    <i class="ri-key-line"></i>
     <span class="txt">Generate secret</span>
 </button>
 

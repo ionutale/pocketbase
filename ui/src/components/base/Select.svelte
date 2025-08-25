@@ -276,6 +276,7 @@
                                 <button
                                     type="button"
                                     class="btn btn-sm btn-circle btn-transparent clear"
+                                    aria-label="Clear search"
                                     on:click|preventDefault|stopPropagation={resetSearch}
                                 >
                                     <i class="ri-close-line"></i>

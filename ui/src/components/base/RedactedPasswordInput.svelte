@@ -20,6 +20,7 @@
         <button
             type="button"
             class="btn btn-transparent btn-circle"
+            aria-label="Set new value"
             use:tooltip={{ position: "left", text: "Set new value" }}
             on:click|preventDefault={unlock}
         >

@@ -166,6 +166,7 @@
                     <button
                         type="button"
                         class="btn btn-circle btn-xs btn-transparent"
+                        aria-label="Clear search"
                         on:click={resetSearch}
                     >
                         <i class="ri-close-line"></i>

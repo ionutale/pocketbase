@@ -108,7 +108,7 @@
 
     <Field class="form-field required m-b-sm" name={`indexes.${key || ""}`} let:uniqueId>
         {#if isCodeEditorComponentLoading}
-            <textarea disabled rows="7" placeholder="Loading..." />
+            <textarea disabled rows="7" placeholder="Loading..."></textarea>
         {:else}
             <svelte:component
                 this={codeEditorComponent}
@@ -142,10 +142,11 @@
             <button
                 type="button"
                 class="btn btn-sm btn-circle btn-hint btn-transparent m-r-auto"
+                aria-label="Delete index"
                 use:tooltip={{ text: "Delete", position: "top" }}
                 on:click={() => remove()}
             >
-                <i class="ri-delete-bin-7-line" />
+                <i class="ri-delete-bin-7-line"></i>
             </button>
         {/if}
         <button type="button" class="btn btn-transparent" on:click={() => hide()}>

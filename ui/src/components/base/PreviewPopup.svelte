@@ -54,7 +54,7 @@
 
 <OverlayPanel bind:this={panel} class="preview preview-{type}" btnClose={false} popup on:show on:hide>
     <svelte:fragment slot="header">
-        <button type="button" class="overlay-close" on:click|preventDefault={hide}>
+    <button type="button" class="overlay-close" aria-label="Close preview" on:click|preventDefault={hide}>
             <i class="ri-close-line"></i>
         </button>
     </svelte:fragment>
@@ -71,6 +71,7 @@
         <button
             type="button"
             title={filename}
+            aria-label="Open {filename} in new tab"
             class="link-hint txt-ellipsis inline-flex"
             on:auxclick={openInNewTab}
             on:click={openInNewTab}
