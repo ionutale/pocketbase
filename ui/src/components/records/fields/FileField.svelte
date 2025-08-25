@@ -173,9 +173,10 @@
                                     type="button"
                                     class="btn btn-transparent btn-hint btn-sm btn-circle btn-remove"
                                     use:tooltip={"Remove file"}
+                                    aria-label="Remove file"
                                     on:click={() => removeExistingFile(filename)}
                                 >
-                                    <i class="ri-close-line" />
+                                    <i class="ri-close-line"></i>
                                 </button>
                             {/if}
                         </div>
@@ -204,9 +205,10 @@
                             type="button"
                             class="btn btn-transparent btn-hint btn-sm btn-circle btn-remove"
                             use:tooltip={"Remove file"}
+                            aria-label="Remove file"
                             on:click={() => removeNewFile(i)}
                         >
-                            <i class="ri-close-line" />
+                            <i class="ri-close-line"></i>
                         </button>
                     </div>
                 </Draggable>
@@ -233,7 +235,7 @@
                     disabled={maxReached}
                     on:click={() => fileInput?.click()}
                 >
-                    <i class="ri-upload-cloud-line" />
+                    <i class="ri-upload-cloud-line"></i>
                     <span class="txt">Upload new file</span>
                 </button>
             </div>

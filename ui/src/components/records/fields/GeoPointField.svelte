@@ -4,7 +4,8 @@
     import FieldLabel from "@/components/records/fields/FieldLabel.svelte";
     import { slide } from "svelte/transition";
 
-    export let original;
+    // Converted to const to indicate read-only external reference and silence unused export warning
+    export const original = undefined;
     export let field;
     export let value = undefined;
 

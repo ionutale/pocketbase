@@ -193,7 +193,7 @@
                         "The following relation ids were removed from the list because they are missing or invalid: " +
                         invalidIds.join(", "),
                 }}
-            />
+            ></i>
         {/if}
     </FieldLabel>
 
@@ -220,9 +220,10 @@
                                 type="button"
                                 class="btn btn-transparent btn-hint btn-sm btn-circle btn-remove"
                                 use:tooltip={"Remove"}
+                                aria-label="Remove related record"
                                 on:click={() => remove(record)}
                             >
-                                <i class="ri-close-line" />
+                                <i class="ri-close-line"></i>
                             </button>
                         </div>
                     </div>
@@ -231,7 +232,7 @@
                 {#if isLoading}
                     {#each CommonHelper.toArray(value).slice(0, 10) as _}
                         <div class="list-item">
-                            <div class="skeleton-loader" />
+                            <div class="skeleton-loader"></div>
                         </div>
                     {/each}
                 {/if}
@@ -242,9 +243,10 @@
             <button
                 type="button"
                 class="btn btn-transparent btn-sm btn-block"
+                aria-label="Open relation picker"
                 on:click={() => picker?.show()}
             >
-                <i class="ri-magic-line" />
+                <i class="ri-magic-line"></i>
                 <!-- <i class="ri-layout-line" /> -->
                 <span class="txt">Open picker</span>
             </button>
