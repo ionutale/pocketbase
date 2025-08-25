@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import tooltip from "@/actions/tooltip";
     import { collections } from "@/stores/collections";
@@ -7,11 +8,11 @@
 
     export let record;
 
-    let tooltipDates = [];
+    let tooltipDates = $state([]);
 
-    $: collection = record && $collections.find((c) => c.id == record.collectionId);
+    let collection = $derived(record && $collections.find((c) => c.id == record.collectionId));
 
-    $: if (record) {
+    $effect(() => { if (record) {
         refreshTooltipDates();
     }
 

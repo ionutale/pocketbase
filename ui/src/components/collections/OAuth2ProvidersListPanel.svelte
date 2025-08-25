@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { fly } from "svelte/transition";
 
@@ -10,11 +11,11 @@
 
     export let disabled = [];
 
-    let panel;
-    let searchTerm = "";
-    let filteredProviders = [];
+    let panel = $state(undefined);
+    let searchTerm = $state("");
+    let filteredProviders = $state([]);
 
-    $: if (searchTerm !== -1 || disabled !== -1) {
+    $effect(() => { if (searchTerm !== -1 || disabled !== -1) {
         filteredProviders = filterProviders();
     }
 

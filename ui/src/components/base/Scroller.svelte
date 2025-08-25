@@ -1,23 +1,24 @@
+<svelte:options runes />
 <script>
     import { onMount, createEventDispatcher } from "svelte";
 
     const dispatch = createEventDispatcher();
 
-    let classes = "";
+    let classes = $state("");
     export { classes as class }; // export reserved keyword
 
     export let vThreshold = 0;
     export let hThreshold = 0;
     export let dispatchOnNoScroll = true;
 
-    let wrapper = null;
-    let scrollClasses = "";
-    let throttleTimeoutId = null;
-    let hDiff;
-    let vDiff;
-    let wrapperWidth;
-    let wrapperHeight;
-    let observer;
+    let wrapper = $state(null);
+    let scrollClasses = $state("");
+    let throttleTimeoutId = $state(null);
+    let hDiff = $state(undefined);
+    let vDiff = $state(undefined);
+    let wrapperWidth = $state(undefined);
+    let wrapperHeight = $state(undefined);
+    let observer = $state(undefined);
 
     export function resetVerticalScroll() {
         if (!wrapper) {

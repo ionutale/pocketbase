@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { onMount } from "svelte";
     import tooltip from "@/actions/tooltip";
@@ -12,21 +13,21 @@
     export let height = 225;
     export let point = { lat: 0, lon: 0 };
 
-    let map;
-    let mapEl;
-    let marker;
-    let isSearching = false;
-    let searchTerm = "";
-    let searchResults = [];
-    let searchTimeoutId;
-    let searchAbortController;
-    let panTimeoutId;
+    let map = $state(undefined);
+    let mapEl = $state(undefined);
+    let marker = $state(undefined);
+    let isSearching = $state(false);
+    let searchTerm = $state("");
+    let searchResults = $state([]);
+    let searchTimeoutId = $state(undefined);
+    let searchAbortController = $state(undefined);
+    let panTimeoutId = $state(undefined);
 
     const defaultZoomLevel = 8;
 
     $: search(searchTerm);
 
-    $: if (point.lat && point.lon) {
+    $effect(() => { if (point.lat && point.lon) {
         panInside();
     }
 

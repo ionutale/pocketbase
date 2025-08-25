@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import scrollend from "@/actions/scrollend";
     import tooltip from "@/actions/tooltip";
@@ -18,28 +19,28 @@
     export let value;
     export let field;
 
-    let pickerPanel;
-    let upsertPanel;
-    let filter = "";
-    let list = [];
-    let selected = [];
-    let currentPage = 1;
-    let lastItemsCount = 0;
-    let isLoadingList = false;
-    let isLoadingSelected = false;
-    let isReloadingRecord = {};
+    let pickerPanel = $state(undefined);
+    let upsertPanel = $state(undefined);
+    let filter = $state("");
+    let list = $state([]);
+    let selected = $state([]);
+    let currentPage = $state(1);
+    let lastItemsCount = $state(0);
+    let isLoadingList = $state(false);
+    let isLoadingSelected = $state(false);
+    let isReloadingRecord = $state({});
     // active collection (single or polymorphic current selection)
-    let activeCollectionId;
+    let activeCollectionId = $state(undefined);
 
-    $: maxSelect = field?.maxSelect || null;
+    let maxSelect = $derived(field?.maxSelect || null);
 
-    $: collectionId = field?.collectionId;
-    $: isPolymorphic = Array.isArray(field?.collectionIds) && field.collectionIds.length > 0;
+    let collectionId = $derived(field?.collectionId);
+    let isPolymorphic = $derived(Array.isArray(field?.collectionIds) && field.collectionIds.length > 0);
     $: allowedCollections = isPolymorphic
         ? $collections.filter((c) => field.collectionIds.includes(c.id))
         : $collections.filter((c) => c.id == collectionId);
     // maintain activeCollectionId without self-referential reactive assignment pitfalls
-    $: {
+    $effect(() => {
         if (isPolymorphic) {
             if (!activeCollectionId && allowedCollections?.length) {
                 activeCollectionId = allowedCollections[0].id;
@@ -50,23 +51,23 @@
                 activeCollectionId = collectionId;
             }
         }
-    }
+    });
 
-    $: collection = $collections.find((c) => c.id == activeCollectionId) || null;
+    let collection = $derived($collections.find((c) => c.id == activeCollectionId) || null);
 
-    $: if (typeof filter !== "undefined" && pickerPanel?.isActive()) {
+    $effect(() => { if (typeof filter !== "undefined" && pickerPanel?.isActive()) {
         loadList(true); // reset list on filter change
     }
 
     // NOTE: Collection changes are handled explicitly in the select on:change handler to avoid reload loops.
 
-    $: isView = collection?.type === "view";
+    let isView = $derived(collection?.type === "view");
 
-    $: isLoading = isLoadingList || isLoadingSelected;
+    let isLoading = $derived(isLoadingList || isLoadingSelected);
 
-    $: canLoadMore = lastItemsCount == batchSize;
+    let canLoadMore = $derived(lastItemsCount == batchSize);
 
-    $: canSelectMore = maxSelect <= 0 || maxSelect > selected.length;
+    let canSelectMore = $derived(maxSelect <= 0 || maxSelect > selected.length);
 
     export function show() {
         filter = "";
@@ -87,7 +88,7 @@
     }
 
     function getExpand() {
-        let expands = [];
+        let expands = $state([]);
 
         const presentableRelFields = collection?.fields?.filter(
             (f) => !f.hidden && f.presentable && f.type == "relation",
@@ -108,7 +109,7 @@
 
         isLoadingSelected = true;
 
-        let loadedItems = [];
+        let loadedItems = $state([]);
 
         if (isPolymorphic) {
             // group by collection from composite values <collectionId>:<id>
@@ -257,7 +258,7 @@
 
             const fallbackSearchFields = CommonHelper.getAllCollectionIdentifiers(collection);
 
-            let sort = "";
+            let sort = $state("");
             if (!isView) {
                 sort = "-@rowid"; // all collections with exception to the view has this field
             }

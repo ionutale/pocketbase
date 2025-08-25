@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import tooltip from "@/actions/tooltip";
     import RuleField from "@/components/collections/RuleField.svelte";
@@ -6,13 +7,13 @@
 
     export let collection;
 
-    $: fieldNames = CommonHelper.getAllCollectionIdentifiers(collection);
+    let fieldNames = $derived(CommonHelper.getAllCollectionIdentifiers(collection));
 
-    $: hiddenFieldNames = collection.fields?.filter((f) => f.hidden).map((f) => f.name);
+    let hiddenFieldNames = $derived(collection.fields?.filter((f) => f.hidden).map((f) => f.name));
 
-    let showFiltersInfo = false;
+    let showFiltersInfo = $state(false);
 
-    let showExtraRules = collection.manageRule !== null || collection.authRule !== "";
+    let showExtraRules = $state(collection.manageRule !== null || collection.authRule !== "");
 </script>
 
 <div class="block m-b-sm handle">

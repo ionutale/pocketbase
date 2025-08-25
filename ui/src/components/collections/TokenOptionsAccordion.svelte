@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { scale } from "svelte/transition";
     import CommonHelper from "@/utils/CommonHelper";
@@ -8,9 +9,9 @@
 
     export let collection;
 
-    let tokensList = [];
+    let tokensList = $state([]);
 
-    $: isSuperusers = collection?.system && collection?.name === "_superusers";
+    let isSuperusers = $derived(collection?.system && collection?.name === "_superusers");
 
     $: tokensList = isSuperusers
         ? [
@@ -26,7 +27,7 @@
               { key: "fileToken", label: "Protected file access" },
           ];
 
-    $: hasErrors = hasTokenError($errors);
+    let hasErrors = $derived(hasTokenError($errors));
 
     function hasTokenError(errors) {
         if (CommonHelper.isEmpty(errors)) {

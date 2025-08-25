@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import providersList from "@/providers.js";
     import { confirm } from "@/stores/confirmation";
@@ -10,8 +11,8 @@
 
     export let record;
 
-    let externalAuths = [];
-    let isLoading = false;
+    let externalAuths = $state([]);
+    let isLoading = $state(false);
 
     function getProviderConfig(provider) {
         return providersList.find((p) => p.key == provider) || {};

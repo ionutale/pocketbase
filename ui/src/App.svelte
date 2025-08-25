@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import "./scss/main.scss";
 
@@ -17,13 +18,14 @@
     import routes from "./routes";
     import { onMount } from "svelte";
 
-    let oldLocation = undefined;
+    // state (not yet migrated to runes to keep backward compatibility)
+    let oldLocation = $state(undefined);
 
-    let showAppSidebar = false;
+    let showAppSidebar = $state(false);
 
     // theme
     const THEME_KEY = "pb_ui_theme";
-    let isDark = false;
+    let isDark = $state(false);
 
     function applyTheme(dark) {
         isDark = !!dark;
@@ -56,11 +58,13 @@
         window.localStorage?.setItem(THEME_KEY, isDark ? "dark" : "light");
     }
 
-    let isTinyMCEPreloaded = false;
+    let isTinyMCEPreloaded = $state(false);
 
-    $: if ($superuser?.id) {
-        loadSettings();
-    }
+    $effect(() => {
+        if ($superuser?.id) {
+            loadSettings();
+        }
+    });
 
     function handleRouteLoading(e) {
         if (e?.detail?.location === oldLocation) {

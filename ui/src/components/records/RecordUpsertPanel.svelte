@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher, tick } from "svelte";
     import { slide } from "svelte/transition";
@@ -36,47 +37,47 @@
 
     export let collection;
 
-    let recordPanel;
-    let impersonatePopup;
-    let original = {};
-    let record = {};
-    let initialDraft = null;
-    let isSaving = false;
+    let recordPanel = $state(undefined);
+    let impersonatePopup = $state(undefined);
+    let original = $state({});
+    let record = $state({});
+    let initialDraft = $state(null);
+    let isSaving = $state(false);
     let confirmHide = false; // prevent close recursion
     let uploadedFilesMap = {}; // eg.: {"field1":[File1, File2], ...}
     let deletedFileNamesMap = {}; // eg.: {"field1":[0, 1], ...}
-    let originalSerializedData = JSON.stringify(original);
-    let serializedData = originalSerializedData;
-    let activeTab = tabFormKey;
-    let isNew = true;
-    let isLoading = true;
-    let initialCollection = collection;
-    let regularFields = [];
+    let originalSerializedData = $state(JSON.stringify(original));
+    let serializedData = $state(originalSerializedData);
+    let activeTab = $state(tabFormKey);
+    let isNew = $state(true);
+    let isLoading = $state(true);
+    let initialCollection = $state(collection);
+    let regularFields = $state([]);
 
-    $: isAuthCollection = collection?.type === "auth";
+    let isAuthCollection = $derived(collection?.type === "auth");
 
-    $: isSuperusersCollection = collection?.name === "_superusers";
+    let isSuperusersCollection = $derived(collection?.name === "_superusers");
 
-    $: hasEditorField = !!collection?.fields?.find((f) => f.type === "editor");
+    let hasEditorField = $derived(!!collection?.fields?.find((f) => f.type === "editor"));
 
-    $: idField = collection?.fields?.find((f) => f.name === "id");
+    let idField = $derived(collection?.fields?.find((f) => f.name === "id"));
 
     $: hasFileChanges =
         CommonHelper.hasNonEmptyProps(uploadedFilesMap) || CommonHelper.hasNonEmptyProps(deletedFileNamesMap);
 
-    $: serializedData = JSON.stringify(record);
+    let serializedData = $derived(JSON.stringify(record));
 
-    $: hasChanges = hasFileChanges || originalSerializedData != serializedData;
+    let hasChanges = $derived(hasFileChanges || originalSerializedData != serializedData);
 
-    $: isNew = !original || !original.id;
+    let isNew = $derived(!original || !original.id);
 
-    $: canSave = !isLoading && (isNew || hasChanges);
+    let canSave = $derived(!isLoading && (isNew || hasChanges));
 
-    $: if (!isLoading) {
+    $effect(() => { if (!isLoading) {
         updateDraft(serializedData);
     }
 
-    $: if (collection && initialCollection?.id != collection?.id) {
+    $effect(() => { if (collection && initialCollection?.id != collection?.id) {
         onCollectionChange();
     }
 
@@ -90,7 +91,7 @@
         "password",
     );
 
-    $: skipFieldNames = isAuthCollection ? authSkipFieldNames : baseSkipFieldNames;
+    let skipFieldNames = $derived(isAuthCollection ? authSkipFieldNames : baseSkipFieldNames);
 
     $: regularFields =
         collection?.fields?.filter((f) => !skipFieldNames.includes(f.name) && f.type != "autodate") || [];
@@ -131,7 +132,7 @@
             return null;
         }
 
-        let id = typeof model == "string" ? model : model?.id;
+        let id = $state(typeof model == "string" ? model : model?.id);
         if (id) {
             // load the full record
             try {
@@ -274,7 +275,7 @@
         try {
             const data = exportFormData();
 
-            let result;
+            let result = $state(undefined);
             if (isNew) {
                 result = await ApiClient.collection(collection.id).create(data);
             } else {
@@ -455,7 +456,7 @@
     }
 
     async function duplicate() {
-        let clone = original ? structuredClone(original) : null;
+        let clone = $state(original ? structuredClone(original) : null);
 
         if (clone) {
             // reset file fields

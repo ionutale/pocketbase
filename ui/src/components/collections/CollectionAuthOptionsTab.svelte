@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import Field from "@/components/base/Field.svelte";
     import EmailTemplateAccordion from "@/components/collections/EmailTemplateAccordion.svelte";
@@ -10,17 +11,17 @@
 
     export let collection;
 
-    let emailTemplatesList = [];
-    let emailTestPopup;
+    let emailTemplatesList = $state([]);
+    let emailTestPopup = $state(undefined);
 
-    $: isSuperusers = collection.system && collection.name === "_superusers";
+    let isSuperusers = $derived(collection.system && collection.name === "_superusers");
 
     // nested email template normalizations
-    $: if (typeof collection.otp?.emailTemplate == "undefined") {
+    $effect(() => { if (typeof collection.otp?.emailTemplate == "undefined") {
         collection.otp = collection.otp || {};
         collection.otp.emailTemplate = {};
     }
-    $: if (typeof collection.authAlert?.emailTemplate == "undefined") {
+    $effect(() => { if (typeof collection.authAlert?.emailTemplate == "undefined") {
         collection.authAlert = collection.authAlert || {};
         collection.authAlert.emailTemplate = {};
     }

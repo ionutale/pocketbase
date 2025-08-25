@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import BaseSelectOption from "@/components/base/BaseSelectOption.svelte";
     import Select from "@/components/base/Select.svelte";
@@ -14,9 +15,9 @@
     export let selectionKey = "value";
     export let keyOfSelected = multiple ? [] : undefined;
 
-    let oldKeyOfSelectedHash = JSON.stringify(keyOfSelected);
+    let oldKeyOfSelectedHash = $state(JSON.stringify(keyOfSelected));
 
-    $: if (items) {
+    $effect(() => { if (items) {
         handleKeyOfSelectedChange(keyOfSelected);
     }
 
@@ -25,7 +26,7 @@
     function handleKeyOfSelectedChange(newKeyOfSelected) {
         newKeyOfSelected = CommonHelper.toArray(newKeyOfSelected, true);
 
-        let newSelected = [];
+        let newSelected = $state([]);
 
         for (let v of newKeyOfSelected) {
             const item = CommonHelper.findByKey(items, selectionKey, v);
@@ -47,7 +48,7 @@
         }
 
         let extractedKeys = CommonHelper.toArray(newSelected, true).map((item) => item[selectionKey]);
-        let newKeyOfSelected = multiple ? extractedKeys : extractedKeys[0];
+        let newKeyOfSelected = $state(multiple ? extractedKeys : extractedKeys[0]);
 
         if (JSON.stringify(newKeyOfSelected) != oldKeyOfSelectedHash) {
             keyOfSelected = newKeyOfSelected;

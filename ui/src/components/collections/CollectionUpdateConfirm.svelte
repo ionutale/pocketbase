@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher, tick } from "svelte";
     import ApiClient from "@/utils/ApiClient";
@@ -5,18 +6,18 @@
 
     const dispatch = createEventDispatcher();
 
-    let panel;
-    let oldCollection;
-    let newCollection;
-    let hideAfterSave;
-    let conflictingOIDCs = [];
-    let changedRules = [];
+    let panel = $state(undefined);
+    let oldCollection = $state(undefined);
+    let newCollection = $state(undefined);
+    let hideAfterSave = $state(undefined);
+    let conflictingOIDCs = $state([]);
+    let changedRules = $state([]);
 
-    $: isCollectionRenamed = oldCollection?.name != newCollection?.name;
+    let isCollectionRenamed = $derived(oldCollection?.name != newCollection?.name);
 
-    $: isNewCollectionView = newCollection?.type === "view";
+    let isNewCollectionView = $derived(newCollection?.type === "view");
 
-    $: isNewCollectionAuth = newCollection?.type === "auth";
+    let isNewCollectionAuth = $derived(newCollection?.type === "auth");
 
     $: renamedFields =
         (!isNewCollectionView &&
@@ -37,7 +38,7 @@
             return old.maxSelect != 1 && field.maxSelect == 1;
         }) || [];
 
-    $: showChanges = !isNewCollectionView || isCollectionRenamed || changedRules.length;
+    let showChanges = $derived(!isNewCollectionView || isCollectionRenamed || changedRules.length);
 
     export async function show(original, changed, hideAfterSaveArg = true) {
         oldCollection = original;
@@ -80,15 +81,15 @@
         conflictingOIDCs = [];
 
         for (let name of oidcProviders) {
-            let oldProvider = oldCollection?.oauth2?.providers?.find((p) => p.name == name);
-            let newProvider = newCollection?.oauth2?.providers?.find((p) => p.name == name);
+            let oldProvider = $state(oldCollection?.oauth2?.providers?.find((p) => p.name == name));
+            let newProvider = $state(newCollection?.oauth2?.providers?.find((p) => p.name == name));
 
             if (!oldProvider || !newProvider) {
                 continue;
             }
 
-            let oldHost = new URL(oldProvider.authURL).host;
-            let newHost = new URL(newProvider.authURL).host;
+            let oldHost = $state(new URL(oldProvider.authURL).host);
+            let newHost = $state(new URL(newProvider.authURL).host);
             if (oldHost == newHost) {
                 continue;
             }

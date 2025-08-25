@@ -6,7 +6,7 @@
     export let required = false;
     export let title = "Provider endpoints";
 
-    $: isRequired = required && config?.enabled;
+    let isRequired = $derived(required && config?.enabled);
 </script>
 
 <div class="section-title">{title}</div>

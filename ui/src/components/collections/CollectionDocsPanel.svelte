@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import tooltip from "@/actions/tooltip";
     import OverlayPanel from "@/components/base/OverlayPanel.svelte";
@@ -68,12 +69,12 @@
         },
     };
 
-    let docsPanel;
-    let collection = {};
-    let activeTab;
-    let tabs = [];
+    let docsPanel = $state(undefined);
+    let collection = $state({});
+    let activeTab = $state(undefined);
+    let tabs = $state([]);
 
-    $: if (collection.type === "auth") {
+    $effect(() => { if (collection.type === "auth") {
         tabs = Object.assign({}, baseTabs, authTabs);
         tabs["auth-with-password"].disabled = !collection.passwordAuth.enabled;
         tabs["auth-with-oauth2"].disabled = !collection.oauth2.enabled;

@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { onMount } from "svelte";
     import CommonHelper from "@/utils/CommonHelper";
@@ -9,7 +10,7 @@
     export let successClasses = "ri-check-line txt-sm txt-success";
     export let successDuration = 500; // ms
 
-    let copyTimeout;
+    let copyTimeout = $state(undefined);
 
     function copy() {
         if (CommonHelper.isEmpty(value)) {

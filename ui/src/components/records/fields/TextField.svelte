@@ -8,9 +8,9 @@
     export let field;
     export let value = undefined;
 
-    $: hasAutogenerate = !CommonHelper.isEmpty(field.autogeneratePattern) && !original?.id;
+    let hasAutogenerate = $derived(!CommonHelper.isEmpty(field.autogeneratePattern) && !original?.id);
 
-    $: isRequired = field.required && !hasAutogenerate;
+    let isRequired = $derived(field.required && !hasAutogenerate);
 </script>
 
 <Field class="form-field {isRequired ? 'required' : ''}" name={field.name} let:uniqueId>

@@ -1,5 +1,6 @@
+<svelte:options runes />
 <script context="module">
-    let cachedRuleComponent;
+    let cachedRuleComponent = $state(undefined);
 </script>
 
 <script>
@@ -17,14 +18,14 @@
     export let superuserToggle = true;
     export let placeholder = "Leave empty to grant everyone access...";
 
-    let editorRef = null;
-    let tempValue = null;
-    let ruleInputComponent = cachedRuleComponent;
-    let isRuleComponentLoading = false;
+    let editorRef = $state(null);
+    let tempValue = $state(null);
+    let ruleInputComponent = $state(cachedRuleComponent);
+    let isRuleComponentLoading = $state(false);
 
-    $: isSuperuserOnly = superuserToggle && rule === null;
+    let isSuperuserOnly = $derived(superuserToggle && rule === null);
 
-    $: isDisabled = disabled || collection.system;
+    let isDisabled = $derived(disabled || collection.system);
 
     loadEditorComponent();
 

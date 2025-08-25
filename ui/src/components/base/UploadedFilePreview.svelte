@@ -4,11 +4,11 @@
     export let file; // File() instance
     export let size = 50; // preview thumb size (if file is image)
 
-    $: if (typeof file !== "undefined") {
+    $effect(() => { if (typeof file !== "undefined") {
         loadPreviewUrl();
     }
 
-    $: previewUrl = "";
+    let previewUrl = $derived("");
 
     function loadPreviewUrl() {
         if (CommonHelper.hasImageExtension(file?.name)) {

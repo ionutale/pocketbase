@@ -1,22 +1,23 @@
+<svelte:options runes />
 <script>
     import CommonHelper from "@/utils/CommonHelper";
 
     export let collectionA = {};
     export let collectionB = {};
     export let deleteMissing = false;
-    let fieldsListA = [];
-    let fieldsListB = [];
-    let removedFields = [];
-    let sharedFields = [];
-    let addedFields = [];
+    let fieldsListA = $state([]);
+    let fieldsListB = $state([]);
+    let removedFields = $state([]);
+    let sharedFields = $state([]);
+    let addedFields = $state([]);
 
-    $: isDeleteDiff = !collectionB?.id && !collectionB?.name;
+    let isDeleteDiff = $derived(!collectionB?.id && !collectionB?.name);
 
-    $: isCreateDiff = !isDeleteDiff && !collectionA?.id;
+    let isCreateDiff = $derived(!isDeleteDiff && !collectionA?.id);
 
-    $: fieldsListA = Array.isArray(collectionA?.fields) ? collectionA?.fields.concat() : [];
+    let fieldsListA = $derived(Array.isArray(collectionA?.fields) ? collectionA?.fields.concat() : []);
 
-    $: if (
+    $effect(() => { if (
         typeof collectionA?.fields !== "undefined" ||
         typeof collectionB?.fields !== "undefined" ||
         typeof deleteMissing !== "undefined"
@@ -36,7 +37,7 @@
         return !fieldsListA.find((fieldA) => fieldA.id == fieldB.id);
     });
 
-    $: hasAnyChange = CommonHelper.hasCollectionChanges(collectionA, collectionB, deleteMissing);
+    let hasAnyChange = $derived(CommonHelper.hasCollectionChanges(collectionA, collectionB, deleteMissing));
 
     $: mainModelProps = CommonHelper.mergeUnique(
         Object.keys(collectionA || {}),

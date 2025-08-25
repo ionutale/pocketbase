@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { tick } from "svelte";
     import { querystring } from "svelte-spa-router";
@@ -24,24 +25,24 @@
 
     const initialQueryParams = new URLSearchParams($querystring);
 
-    let collectionUpsertPanel;
-    let collectionDocsPanel;
-    let recordUpsertPanel;
-    let recordPreviewPanel;
-    let recordsList;
-    let recordsCount;
-    let filter = initialQueryParams.get("filter") || "";
-    let sort = initialQueryParams.get("sort") || "-@rowid";
-    let selectedCollectionIdOrName = initialQueryParams.get("collection") || $activeCollection?.id;
+    let collectionUpsertPanel = $state(undefined);
+    let collectionDocsPanel = $state(undefined);
+    let recordUpsertPanel = $state(undefined);
+    let recordPreviewPanel = $state(undefined);
+    let recordsList = $state(undefined);
+    let recordsCount = $state(undefined);
+    let filter = $state(initialQueryParams.get("filter") || "");
+    let sort = $state(initialQueryParams.get("sort") || "-@rowid");
+    let selectedCollectionIdOrName = $state(initialQueryParams.get("collection") || $activeCollection?.id);
     let totalCount = 0; // used to manully change the count without the need of reloading the recordsCount component
 
     loadCollections(selectedCollectionIdOrName);
 
-    $: reactiveParams = new URLSearchParams($querystring);
+    let reactiveParams = $derived(new URLSearchParams($querystring));
 
-    $: collectionQueryParam = reactiveParams.get("collection");
+    let collectionQueryParam = $derived(reactiveParams.get("collection"));
 
-    $: if (
+    $effect(() => { if (
         !$isCollectionsLoading &&
         collectionQueryParam &&
         collectionQueryParam != selectedCollectionIdOrName &&
@@ -52,7 +53,7 @@
     }
 
     // reset filter and sort on collection change
-    $: if (
+    $effect(() => { if (
         $activeCollection?.id &&
         selectedCollectionIdOrName != $activeCollection.id &&
         selectedCollectionIdOrName != $activeCollection.name
@@ -60,20 +61,20 @@
         reset();
     }
 
-    $: if ($activeCollection?.id) {
+    $effect(() => { if ($activeCollection?.id) {
         normalizeSort();
     }
 
-    $: if (!$isCollectionsLoading && initialQueryParams.get("recordId")) {
+    $effect(() => { if (!$isCollectionsLoading && initialQueryParams.get("recordId")) {
         showRecordById(initialQueryParams.get("recordId"));
     }
 
     // keep the url params in sync
-    $: if (!$isCollectionsLoading && (sort || filter || $activeCollection?.id)) {
+    $effect(() => { if (!$isCollectionsLoading && (sort || filter || $activeCollection?.id)) {
         updateQueryParams();
     }
 
-    $: $pageTitle = $activeCollection?.name || "Collections";
+    let $pageTitle = $derived($activeCollection?.name || "Collections");
 
     async function showRecordById(recordId) {
         await tick(); // ensure that the reactive component params are resolved

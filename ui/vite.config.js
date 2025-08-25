@@ -15,6 +15,7 @@ export default defineConfig({
     plugins: [
         svelte({
             preprocess: [vitePreprocess()],
+            compilerOptions: { runes: 'opt-in', compatibility: { componentApi: 4 } },
             // If you rely on third-party components that still use `new Component(...)`
             // you can temporarily enable backwards compatibility by uncommenting:
             // compilerOptions: { compatibility: { componentApi: 4 } },

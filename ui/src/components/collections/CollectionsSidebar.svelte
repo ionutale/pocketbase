@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import PageSidebar from "@/components/base/PageSidebar.svelte";
     import CollectionSidebarItem from "@/components/collections/CollectionSidebarItem.svelte";
@@ -7,24 +8,24 @@
 
     const pinnedStorageKey = "@pinnedCollections";
 
-    let collectionPanel;
-    let searchTerm = "";
-    let pinnedIds = [];
-    let showSystemSection = false;
-    let oldCollectionId;
+    let collectionPanel = $state(undefined);
+    let searchTerm = $state("");
+    let pinnedIds = $state([]);
+    let showSystemSection = $state(false);
+    let oldCollectionId = $state(undefined);
 
     loadPinned();
 
-    $: if ($collections) {
+    $effect(() => { if ($collections) {
         syncPinned();
         scrollIntoView();
     }
 
-    $: normalizedSearch = searchTerm.replace(/\s+/g, "").toLowerCase();
+    let normalizedSearch = $derived(searchTerm.replace(/\s+/g, "").toLowerCase());
 
-    $: hasSearch = searchTerm !== "";
+    let hasSearch = $derived(searchTerm !== "");
 
-    $: if (pinnedIds) {
+    $effect(() => { if (pinnedIds) {
         localStorage.setItem(pinnedStorageKey, JSON.stringify(pinnedIds));
     }
 
@@ -32,13 +33,13 @@
         return c.id == searchTerm || c.name?.replace(/\s+/g, "")?.toLowerCase()?.includes(normalizedSearch);
     });
 
-    $: pinnedCollections = filtered.filter((c) => pinnedIds.includes(c.id));
+    let pinnedCollections = $derived(filtered.filter((c) => pinnedIds.includes(c.id)));
 
-    $: unpinnedRegularCollections = filtered.filter((c) => !c.system && !pinnedIds.includes(c.id));
+    let unpinnedRegularCollections = $derived(filtered.filter((c) => !c.system && !pinnedIds.includes(c.id)));
 
-    $: unpinnedSystemCollections = filtered.filter((c) => c.system && !pinnedIds.includes(c.id));
+    let unpinnedSystemCollections = $derived(filtered.filter((c) => c.system && !pinnedIds.includes(c.id)));
 
-    $: if ($activeCollection?.id && oldCollectionId != $activeCollection.id) {
+    $effect(() => { if ($activeCollection?.id && oldCollectionId != $activeCollection.id) {
         oldCollectionId = $activeCollection.id;
         if ($activeCollection.system && !pinnedCollections.find((c) => c.id == $activeCollection.id)) {
             showSystemSection = true;

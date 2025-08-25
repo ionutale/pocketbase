@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher, onDestroy } from "svelte";
     import ApiClient from "@/utils/ApiClient";
@@ -8,11 +9,11 @@
     const dispatch = createEventDispatcher();
     const backupRequestKey = "upload_backup";
 
-    let classes = "";
+    let classes = $state("");
     export { classes as class };
 
-    let fileInput;
-    let isUploading = false;
+    let fileInput = $state(undefined);
+    let isUploading = $state(false);
 
     function resetSelectedFile() {
         if (fileInput) {

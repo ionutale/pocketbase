@@ -1,5 +1,6 @@
+<svelte:options runes />
 <script context="module">
-    let siblings = [];
+    let siblings = $state([]);
 </script>
 
 <script>
@@ -31,35 +32,35 @@
     export let draggable = true;
     export let collection = {};
 
-    let nameInput;
-    let showOptions = false;
+    let nameInput = $state(undefined);
+    let showOptions = $state(false);
 
-    $: isAuthCollection = collection?.type == "auth";
+    let isAuthCollection = $derived(collection?.type == "auth");
 
-    $: if (field._toDelete) {
+    $effect(() => { if (field._toDelete) {
         // reset the name if it was previously deleted
         if (field._originalName && field.name !== field._originalName) {
             field.name = field._originalName;
         }
     }
 
-    $: if (!field._originalName && field.name) {
+    $effect(() => { if (!field._originalName && field.name) {
         field._originalName = field.name;
     }
 
-    $: if (typeof field._toDelete === "undefined") {
+    $effect(() => { if (typeof field._toDelete === "undefined") {
         field._toDelete = false; // normalize
     }
 
-    $: if (field.required) {
+    $effect(() => { if (field.required) {
         field.nullable = false;
     }
 
-    $: interactive = !field._toDelete;
+    let interactive = $derived(!field._toDelete);
 
-    $: hasErrors = !CommonHelper.isEmpty(CommonHelper.getNestedVal($errors, `fields.${key}`));
+    let hasErrors = $derived(!CommonHelper.isEmpty(CommonHelper.getNestedVal($errors, `fields.${key}`)));
 
-    $: requiredLabel = customRequiredLabels[field?.type] || "Nonempty";
+    let requiredLabel = $derived(customRequiredLabels[field?.type] || "Nonempty");
 
     function remove() {
         if (!field.id) {

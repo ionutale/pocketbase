@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import AuthWithOtpApiAuthDocs from "@/components/collections/docs/AuthWithOtpApiAuthDocs.svelte";
     import AuthWithOtpApiRequestDocs from "@/components/collections/docs/AuthWithOtpApiRequestDocs.svelte";
@@ -12,9 +13,9 @@
         { title: "OTP Auth", component: AuthWithOtpApiAuthDocs },
     ];
 
-    let activeApiTab = 0;
+    let activeApiTab = $state(0);
 
-    $: backendAbsUrl = CommonHelper.getApiExampleUrl(ApiClient.baseURL);
+    let backendAbsUrl = $derived(CommonHelper.getApiExampleUrl(ApiClient.baseURL));
 </script>
 
 <h3 class="m-b-sm">Auth with OTP ({collection.name})</h3>

@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { slide } from "svelte/transition";
     import tooltip from "@/actions/tooltip";
@@ -14,7 +15,7 @@
         { label: "ID Token", value: false },
     ];
 
-    let hasUserInfoURL = !!config.userInfoURL;
+    let hasUserInfoURL = $state(!!config.userInfoURL);
 
     if (CommonHelper.isEmpty(config.pkce)) {
         config.pkce = true;
@@ -29,7 +30,7 @@
         hasUserInfoURL = true;
     }
 
-    $: if (typeof hasUserInfoURL !== undefined) {
+    $effect(() => { if (typeof hasUserInfoURL !== undefined) {
         refreshUserInfoState();
     }
 

@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { addErrorToast } from "@/stores/toasts";
     import ApiClient from "@/utils/ApiClient";
@@ -8,11 +9,11 @@
 
     export let collection;
 
-    let recordPanel;
-    let record = {};
-    let isLoading = false;
+    let recordPanel = $state(undefined);
+    let record = $state({});
+    let isLoading = $state(false);
 
-    $: hasEditorField = !!collection?.fields?.find((f) => f.type === "editor");
+    let hasEditorField = $derived(!!collection?.fields?.find((f) => f.type === "editor"));
 
     export function show(model) {
         load(model);

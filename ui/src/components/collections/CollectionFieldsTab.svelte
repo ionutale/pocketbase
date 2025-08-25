@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import Draggable from "@/components/base/Draggable.svelte";
     import IndexesList from "@/components/collections/IndexesList.svelte";
@@ -22,7 +23,7 @@
 
     export let collection;
 
-    let oldCollectionType;
+    let oldCollectionType = $state(undefined);
 
     const fieldComponents = {
         text: SchemaFieldText,
@@ -41,16 +42,16 @@
         geoPoint: SchemaFieldGeoPoint,
     };
 
-    $: if (!collection.id && oldCollectionType != collection.type) {
+    $effect(() => { if (!collection.id && oldCollectionType != collection.type) {
         oldCollectionType = collection.type;
         onTypeCange();
     }
 
-    $: if (typeof collection.fields === "undefined") {
+    $effect(() => { if (typeof collection.fields === "undefined") {
         collection.fields = [];
     }
 
-    $: nonDeletedFields = collection.fields.filter((f) => !f._toDelete);
+    let nonDeletedFields = $derived(collection.fields.filter((f) => !f._toDelete));
 
     function removeField(fieldIndex) {
         if (collection.fields[fieldIndex]) {
@@ -98,8 +99,8 @@
     }
 
     function getUniqueFieldName(name = "field") {
-        let result = name;
-        let counter = 2;
+        let result = $state(name);
+        let counter = $state(2);
 
         let suffix = name.match(/\d+$/)?.[0] || ""; // extract numeric suffix
 
@@ -169,7 +170,7 @@
             return;
         }
 
-        let identityFields = collection.passwordAuth?.identityFields || [];
+        let identityFields = $state(collection.passwordAuth?.identityFields || []);
 
         for (let i = 0; i < identityFields.length; i++) {
             if (identityFields[i] == oldName) {

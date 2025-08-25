@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import Field from "@/components/base/Field.svelte";
     import PageWrapper from "@/components/base/PageWrapper.svelte";
@@ -12,19 +13,19 @@
 
     $pageTitle = "Import collections";
 
-    let fileInput;
-    let importPopup;
+    let fileInput = $state(undefined);
+    let importPopup = $state(undefined);
 
-    let schemas = "";
-    let isLoadingFile = false;
-    let newCollections = [];
-    let oldCollections = [];
-    let deleteMissing = true;
-    let collectionsToUpdate = [];
-    let isLoadingOldCollections = false;
+    let schemas = $state("");
+    let isLoadingFile = $state(false);
+    let newCollections = $state([]);
+    let oldCollections = $state([]);
+    let deleteMissing = $state(true);
+    let collectionsToUpdate = $state([]);
+    let isLoadingOldCollections = $state(false);
     let mergeWithOldCollections = false; // an alternative to the default deleteMissing option
 
-    $: if (typeof schemas !== "undefined" && mergeWithOldCollections !== null) {
+    $effect(() => { if (typeof schemas !== "undefined" && mergeWithOldCollections !== null) {
         loadNewCollections(schemas);
     }
 
@@ -46,14 +47,14 @@
         return isValid && !CommonHelper.findByKey(oldCollections, "id", collection.id);
     });
 
-    $: if (typeof newCollections !== "undefined" || typeof deleteMissing !== "undefined") {
+    $effect(() => { if (typeof newCollections !== "undefined" || typeof deleteMissing !== "undefined") {
         loadCollectionsToUpdate();
     }
 
     $: hasChanges =
         !!schemas && (collectionsToDelete.length || collectionsToAdd.length || collectionsToUpdate.length);
 
-    $: canImport = !isLoadingOldCollections && isValid && hasChanges;
+    let canImport = $derived(!isLoadingOldCollections && isValid && hasChanges);
 
     $: idReplacableCollections = newCollections.filter((collection) => {
         let old =

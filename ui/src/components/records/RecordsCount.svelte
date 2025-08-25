@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher } from "svelte";
     import ApiClient from "@/utils/ApiClient";
@@ -9,12 +10,12 @@
     export let filter = "";
     export let totalCount = 0;
 
-    let classes = undefined;
+    let classes = $state(undefined);
     export { classes as class }; // export reserved keyword
 
-    let isLoading = false;
+    let isLoading = $state(false);
 
-    $: if (collection?.id && filter !== -1) {
+    $effect(() => { if (collection?.id && filter !== -1) {
         reload();
     }
 

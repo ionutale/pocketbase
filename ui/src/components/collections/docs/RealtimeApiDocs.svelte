@@ -6,7 +6,7 @@
 
     export let collection;
 
-    $: backendAbsUrl = CommonHelper.getApiExampleUrl(ApiClient.baseURL);
+    let backendAbsUrl = $derived(CommonHelper.getApiExampleUrl(ApiClient.baseURL));
 </script>
 
 <h3 class="m-b-sm">Realtime ({collection.name})</h3>

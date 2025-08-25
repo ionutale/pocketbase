@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import EmailChangeApiConfirmDocs from "@/components/collections/docs/EmailChangeApiConfirmDocs.svelte";
     import EmailChangeApiRequestDocs from "@/components/collections/docs/EmailChangeApiRequestDocs.svelte";
@@ -12,9 +13,9 @@
         { title: "Confirm email change", component: EmailChangeApiConfirmDocs },
     ];
 
-    let activeApiTab = 0;
+    let activeApiTab = $state(0);
 
-    $: backendAbsUrl = CommonHelper.getApiExampleUrl(ApiClient.baseURL);
+    let backendAbsUrl = $derived(CommonHelper.getApiExampleUrl(ApiClient.baseURL));
 </script>
 
 <h3 class="m-b-sm">Email change ({collection.name})</h3>

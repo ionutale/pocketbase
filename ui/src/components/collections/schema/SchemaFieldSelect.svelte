@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import Field from "@/components/base/Field.svelte";
     import ObjectSelect from "@/components/base/ObjectSelect.svelte";
@@ -12,14 +13,14 @@
         { label: "Multiple", value: false },
     ];
 
-    let isSingle = field.maxSelect <= 1;
-    let oldIsSingle = isSingle;
+    let isSingle = $state(field.maxSelect <= 1);
+    let oldIsSingle = $state(isSingle);
 
-    $: if (typeof field.maxSelect == "undefined") {
+    $effect(() => { if (typeof field.maxSelect == "undefined") {
         loadDefaults();
     }
 
-    $: if (oldIsSingle != isSingle) {
+    $effect(() => { if (oldIsSingle != isSingle) {
         oldIsSingle = isSingle;
         if (isSingle) {
             field.maxSelect = 1;

@@ -1,7 +1,8 @@
+<svelte:options runes />
 <script>
     import { logLevels } from "@/utils/CommonHelper";
 
-    let classes = "";
+    let classes = $state("");
     export { classes as class }; // export reserved keyword
 </script>
 

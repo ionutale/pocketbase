@@ -1,9 +1,10 @@
+<svelte:options runes />
 <script>
     import CommonHelper from "@/utils/CommonHelper";
 
     export let value;
 
-    let classes = undefined;
+    let classes = $state(undefined);
     export { classes as class }; // export reserved keyword
 </script>
 

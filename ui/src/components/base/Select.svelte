@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { onMount, createEventDispatcher } from "svelte";
     import tooltip from "@/actions/tooltip";
@@ -26,20 +27,20 @@
 
     const dispatch = createEventDispatcher();
 
-    let classes = "";
+    let classes = $state("");
     export { classes as class }; // export reserved keyword
 
-    let toggler;
-    let searchTerm = "";
-    let container = undefined;
-    let labelDiv = undefined;
+    let toggler = $state(undefined);
+    let searchTerm = $state("");
+    let container = $state(undefined);
+    let labelDiv = $state(undefined);
 
-    $: if (items) {
+    $effect(() => { if (items) {
         ensureSelectedExist();
         resetSearch();
     }
 
-    $: filteredItems = filterItems(items, searchTerm);
+    let filteredItems = $derived(filterItems(items, searchTerm));
 
     $: isSelected = function (item) {
         const normalized = CommonHelper.toArray(selected);
@@ -54,7 +55,7 @@
             return; // nothing to deselect
         }
 
-        let normalized = CommonHelper.toArray(selected);
+        let normalized = $state(CommonHelper.toArray(selected));
         if (CommonHelper.inArray(normalized, item)) {
             CommonHelper.removeByValue(normalized, item);
             selected = multiple ? normalized : normalized?.[0] || zeroFunc();
@@ -68,7 +69,7 @@
 
     export function selectItem(item) {
         if (multiple) {
-            let normalized = CommonHelper.toArray(selected);
+            let normalized = $state(CommonHelper.toArray(selected));
             if (!CommonHelper.inArray(normalized, item)) {
                 selected = [...normalized, item];
             }
@@ -108,8 +109,8 @@
             return; // nothing to check
         }
 
-        let selectedArray = CommonHelper.toArray(selected);
-        let unselectedArray = [];
+        let selectedArray = $state(CommonHelper.toArray(selected));
+        let unselectedArray = $state([]);
 
         // find missing
         for (const selectedItem of selectedArray) {
@@ -132,7 +133,7 @@
     // ---------------------------------------------------------------
     function defaultSearchFunc(item, search) {
         let normalizedSearch = ("" + search).replace(/\s+/g, "").toLowerCase();
-        let normalizedItem = item;
+        let normalizedItem = $state(item);
 
         try {
             if (typeof item === "object" && item !== null) {

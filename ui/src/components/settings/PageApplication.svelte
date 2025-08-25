@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import ApiClient from "@/utils/ApiClient";
     import CommonHelper from "@/utils/CommonHelper";
@@ -14,16 +15,16 @@
 
     $pageTitle = "Application settings";
 
-    let originalFormSettings = {};
-    let formSettings = {};
-    let isLoading = false;
-    let isSaving = false;
-    let initialHash = "";
-    let healthData = {};
+    let originalFormSettings = $state({});
+    let formSettings = $state({});
+    let isLoading = $state(false);
+    let isSaving = $state(false);
+    let initialHash = $state("");
+    let healthData = $state({});
 
-    $: initialHash = JSON.stringify(originalFormSettings);
+    let initialHash = $derived(JSON.stringify(originalFormSettings));
 
-    $: hasChanges = initialHash != JSON.stringify(formSettings);
+    let hasChanges = $derived(initialHash != JSON.stringify(formSettings));
 
     loadSettings();
 

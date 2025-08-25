@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script context="module">
     /*
      * ---------------------------------------------------------------
@@ -47,7 +48,7 @@
         return { load };
     }
 
-    let scriptLoader = createScriptLoader();
+    let scriptLoader = $state(createScriptLoader());
 </script>
 
 <script>
@@ -145,16 +146,16 @@
     };
     // ---------------------------------------------------------------
 
-    let container;
-    let element;
-    let editorRef;
+    let container = $state(undefined);
+    let element = $state(undefined);
+    let editorRef = $state(undefined);
 
-    let lastVal = value;
-    let disablindCache = disabled;
+    let lastVal = $state(value);
+    let disablindCache = $state(disabled);
 
     const dispatch = createEventDispatcher();
 
-    $: {
+    $effect(() => {
         try {
             if (editorRef && lastVal !== value) {
                 editorRef.setContent(value);
@@ -171,7 +172,7 @@
         } catch (err) {
             console.warn("TinyMCE reactive error:", err);
         }
-    }
+    });
 
     function getTinymce() {
         return window && window.tinymce ? window.tinymce : null;

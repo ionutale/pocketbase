@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { link } from "svelte-spa-router";
     import ApiClient from "@/utils/ApiClient";
@@ -7,14 +8,14 @@
 
     export let collection;
 
-    let responseTab = 200;
-    let responses = [];
+    let responseTab = $state(200);
+    let responses = $state([]);
 
-    $: backendAbsUrl = CommonHelper.getApiExampleUrl(ApiClient.baseURL);
+    let backendAbsUrl = $derived(CommonHelper.getApiExampleUrl(ApiClient.baseURL));
 
-    $: dummyRecord = CommonHelper.dummyCollectionRecord(collection);
+    let dummyRecord = $derived(CommonHelper.dummyCollectionRecord(collection));
 
-    $: if (collection?.id) {
+    $effect(() => { if (collection?.id) {
         responses.push({
             code: 200,
             body: JSON.stringify(

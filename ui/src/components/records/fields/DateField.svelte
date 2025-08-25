@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import Flatpickr from "svelte-flatpickr";
     import tooltip from "@/actions/tooltip";
@@ -8,16 +9,16 @@
     export let field;
     export let value = undefined;
 
-    let pickerValue = value;
+    let pickerValue = $state(value);
 
     // strip ms and zone for backwards compatibility with the older format
     // and because flatpickr currently doesn't have integrated
     // zones support and requires manual parsing and formatting
-    $: if (value && value.length > 19) {
+    $effect(() => { if (value && value.length > 19) {
         value = value.substring(0, 19);
     }
 
-    $: if (pickerValue != value) {
+    $effect(() => { if (pickerValue != value) {
         pickerValue = value;
     }
 

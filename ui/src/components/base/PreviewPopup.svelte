@@ -1,19 +1,20 @@
+<svelte:options runes />
 <script>
     import CommonHelper from "@/utils/CommonHelper";
     import OverlayPanel from "@/components/base/OverlayPanel.svelte";
 
-    let panel;
-    let url = "";
-    let urlOrFactory;
+    let panel = $state(undefined);
+    let url = $state("");
+    let urlOrFactory = $state(undefined);
 
-    $: queryParamsIndex = url.indexOf("?");
+    let queryParamsIndex = $derived(url.indexOf("?"));
 
     $: filename = url.substring(
         url.lastIndexOf("/") + 1,
         queryParamsIndex > 0 ? queryParamsIndex : undefined,
     );
 
-    $: type = CommonHelper.getFileType(filename);
+    let type = $derived(CommonHelper.getFileType(filename));
 
     export async function show(urlOrFactoryArg) {
         urlOrFactory = urlOrFactoryArg;

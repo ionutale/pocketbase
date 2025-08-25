@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { scale } from "svelte/transition";
     import tooltip from "@/actions/tooltip";
@@ -9,21 +10,21 @@
 
     export let collection;
 
-    let identityFieldsOptions = [];
-    let oldIndexes = "";
+    let identityFieldsOptions = $state([]);
+    let oldIndexes = $state("");
 
-    $: isSuperusers = collection?.system && collection?.name === "_superusers";
+    let isSuperusers = $derived(collection?.system && collection?.name === "_superusers");
 
-    $: if (CommonHelper.isEmpty(collection?.passwordAuth)) {
+    $effect(() => { if (CommonHelper.isEmpty(collection?.passwordAuth)) {
         collection.passwordAuth = {
             enabled: true,
             identityFields: ["email"],
         };
     }
 
-    $: hasErrors = !CommonHelper.isEmpty($errors?.passwordAuth);
+    let hasErrors = $derived(!CommonHelper.isEmpty($errors?.passwordAuth));
 
-    $: if (collection && oldIndexes != collection.indexes.join("")) {
+    $effect(() => { if (collection && oldIndexes != collection.indexes.join("")) {
         refreshIdentityFieldsOptions();
     }
 

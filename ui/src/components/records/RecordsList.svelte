@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher } from "svelte";
     import { fly } from "svelte/transition";
@@ -20,53 +21,53 @@
     export let sort = "";
     export let filter = "";
 
-    let scrollWrapper;
-    let records = [];
-    let currentPage = 1;
-    let lastTotal = 0;
-    let bulkSelected = {};
-    let isLoading = true;
-    let isDeleting = false;
-    let yieldedRecordsId = 0;
-    let columnsTrigger;
-    let hiddenColumns = [];
-    let collumnsToHide = [];
-    let hiddenColumnsKey = "";
+    let scrollWrapper = $state(undefined);
+    let records = $state([]);
+    let currentPage = $state(1);
+    let lastTotal = $state(0);
+    let bulkSelected = $state({});
+    let isLoading = $state(true);
+    let isDeleting = $state(false);
+    let yieldedRecordsId = $state(0);
+    let columnsTrigger = $state(undefined);
+    let hiddenColumns = $state([]);
+    let collumnsToHide = $state([]);
+    let hiddenColumnsKey = $state("");
 
     const unusedSuperusersFields = ["verified", "emailVisibility"];
 
-    $: if (collection?.id) {
+    $effect(() => { if (collection?.id) {
         hiddenColumnsKey = collection.id + "@hiddenColumns";
         loadStoredHiddenColumns();
         clearList();
     }
 
-    $: isView = collection?.type === "view";
+    let isView = $derived(collection?.type === "view");
 
-    $: isSuperusers = collection?.type === "auth" && collection.name === "_superusers";
+    let isSuperusers = $derived(collection?.type === "auth" && collection.name === "_superusers");
 
     // skip unused superusers fields
     $: fields = (collection?.fields || []).filter(
         (f) => !f.hidden && (!isSuperusers || !unusedSuperusersFields.includes(f.name)),
     );
 
-    $: editorFields = fields.filter((f) => f.type === "editor");
+    let editorFields = $derived(fields.filter((f) => f.type === "editor"));
 
-    $: relFields = fields.filter((f) => f.type === "relation");
+    let relFields = $derived(fields.filter((f) => f.type === "relation"));
 
-    $: visibleFields = fields.filter((f) => !hiddenColumns.includes(f.id));
+    let visibleFields = $derived(fields.filter((f) => !hiddenColumns.includes(f.id)));
 
-    $: if (!$isCollectionsLoading && collection?.id && sort !== -1 && filter !== -1) {
+    $effect(() => { if (!$isCollectionsLoading && collection?.id && sort !== -1 && filter !== -1) {
         load(1);
     }
 
-    $: canLoadMore = lastTotal >= perPage;
+    let canLoadMore = $derived(lastTotal >= perPage);
 
-    $: totalBulkSelected = Object.keys(bulkSelected).length;
+    let totalBulkSelected = $derived(Object.keys(bulkSelected).length);
 
-    $: areAllRecordsSelected = records.length && totalBulkSelected === records.length;
+    let areAllRecordsSelected = $derived(records.length && totalBulkSelected === records.length);
 
-    $: if (hiddenColumns !== -1) {
+    $effect(() => { if (hiddenColumns !== -1) {
         updateStoredHiddenColumns();
     }
 
@@ -125,7 +126,7 @@
         isLoading = true;
 
         // allow sorting by the relation display fields
-        let listSort = sort;
+        let listSort = $state(sort);
         const sortMatch = listSort.match(sortRegex);
         const sortRelField = sortMatch ? relFields.find((f) => f.name === sortMatch[2]) : null;
         if (sortMatch && sortRelField) {
@@ -153,7 +154,7 @@
             listFields.unshift("*");
         }
 
-        let expandFields = [];
+        let expandFields = $state([]);
         for (const field of relFields) {
             const subs = CommonHelper.getExpandPresentableRelFields(field, $collections, 2);
             if (subs?.length) {
@@ -273,7 +274,7 @@
             return;
         }
 
-        let promises = [];
+        let promises = $state([]);
         for (const recordId of Object.keys(bulkSelected)) {
             promises.push(ApiClient.collection(collection.id).delete(recordId));
         }

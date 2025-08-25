@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import FullPage from "@/components/base/FullPage.svelte";
     import ApiClient from "@/utils/ApiClient";
@@ -5,11 +6,11 @@
 
     export let params;
 
-    let successConfirm = false;
-    let isConfirming = false;
+    let successConfirm = $state(false);
+    let isConfirming = $state(false);
 
-    let successResend = false;
-    let isResending = false;
+    let successResend = $state(false);
+    let isResending = $state(false);
 
     send();
 
@@ -34,7 +35,7 @@
         isConfirming = false;
     }
 
-    $: canResend = params?.token && isTokenExpired(params.token);
+    let canResend = $derived(params?.token && isTokenExpired(params.token));
 
     async function resend() {
         const payload = getTokenPayload(params?.token);

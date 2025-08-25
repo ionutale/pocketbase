@@ -1,5 +1,6 @@
+<svelte:options runes />
 <script>
-    let classes = "";
+    let classes = $state("");
     export { classes as class }; // export reserved keyword
 
     export let name;

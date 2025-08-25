@@ -1,17 +1,18 @@
+<svelte:options runes />
 <script>
     import CodeBlock from "@/components/base/CodeBlock.svelte";
 
     const SDK_PREFERENCE_KEY = "pb_sdk_preference";
 
-    let classes = "m-b-sm";
+    let classes = $state("m-b-sm");
     export { classes as class }; // export reserved keyword
 
     export let js = "";
     export let dart = "";
 
-    let activeTab = localStorage.getItem(SDK_PREFERENCE_KEY) || "javascript";
+    let activeTab = $state(localStorage.getItem(SDK_PREFERENCE_KEY) || "javascript");
 
-    $: if (activeTab) {
+    $effect(() => { if (activeTab) {
         // store user preference
         localStorage.setItem(SDK_PREFERENCE_KEY, activeTab);
     }

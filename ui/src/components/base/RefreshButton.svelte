@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher, onMount } from "svelte";
     import tooltip from "@/actions/tooltip";
@@ -7,10 +8,10 @@
     let tooltipData = { text: "Refresh", position: "right" };
     export { tooltipData as tooltip };
 
-    let classes = "";
+    let classes = $state("");
     export { classes as class };
 
-    let refreshTimeoutId = null;
+    let refreshTimeoutId = $state(null);
 
     function refresh() {
         dispatch("refresh");

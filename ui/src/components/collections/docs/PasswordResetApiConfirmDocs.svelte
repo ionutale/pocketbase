@@ -1,10 +1,11 @@
+<svelte:options runes />
 <script>
     import CodeBlock from "@/components/base/CodeBlock.svelte";
 
     export let collection;
 
-    let responseTab = 204;
-    let responses = [];
+    let responseTab = $state(204);
+    let responses = $state([]);
 
     $: responses = [
         {

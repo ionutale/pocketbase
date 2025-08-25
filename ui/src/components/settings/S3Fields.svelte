@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
@@ -17,17 +18,17 @@
     export let testError = null;
     export let isTesting = false;
 
-    let testTimeoutId = null;
-    let testDebounceId = null;
-    let maskSecret = false;
+    let testTimeoutId = $state(null);
+    let testDebounceId = $state(null);
+    let maskSecret = $state(false);
 
-    $: if (originalConfig?.enabled) {
+    $effect(() => { if (originalConfig?.enabled) {
         refreshMaskSecret();
         testConnectionWithDebounce(100);
     }
 
     // clear s3 errors on disable
-    $: if (!config.enabled) {
+    $effect(() => { if (!config.enabled) {
         removeError(configKey);
     }
 
@@ -62,7 +63,7 @@
 
         isTesting = true;
 
-        let err;
+        let err = $state(undefined);
 
         try {
             await ApiClient.settings.testS3(testFilesystem, {

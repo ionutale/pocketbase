@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { onMount } from "svelte";
     import { slide, scale } from "svelte/transition";
@@ -11,15 +12,15 @@
     export let name = "";
     export let inlineError = false;
 
-    let classes = undefined;
+    let classes = $state(undefined);
     export { classes as class }; // export reserved keyword
 
-    let container;
-    let fieldErrors = [];
+    let container = $state(undefined);
+    let fieldErrors = $state([]);
 
-    $: {
+    $effect(() => {
         fieldErrors = CommonHelper.toArray(CommonHelper.getNestedVal($errors, name));
-    }
+    });
 
     export function changed() {
         removeError(name);

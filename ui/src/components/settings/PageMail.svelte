@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import tooltip from "@/actions/tooltip";
     import Field from "@/components/base/Field.svelte";
@@ -25,17 +26,17 @@
 
     $pageTitle = "Mail settings";
 
-    let testPopup;
-    let originalFormSettings = {};
-    let formSettings = {};
-    let isLoading = false;
-    let isSaving = false;
-    let maskPassword = false;
-    let showMoreOptions = false;
+    let testPopup = $state(undefined);
+    let originalFormSettings = $state({});
+    let formSettings = $state({});
+    let isLoading = $state(false);
+    let isSaving = $state(false);
+    let maskPassword = $state(false);
+    let showMoreOptions = $state(false);
 
-    $: initialHash = JSON.stringify(originalFormSettings);
+    let initialHash = $derived(JSON.stringify(originalFormSettings));
 
-    $: hasChanges = initialHash != JSON.stringify(formSettings);
+    let hasChanges = $derived(initialHash != JSON.stringify(formSettings));
 
     loadSettings();
 

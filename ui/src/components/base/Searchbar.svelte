@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import CommonHelper from "@/utils/CommonHelper";
     import { createEventDispatcher, onMount } from "svelte";
@@ -13,13 +14,13 @@
     export let autocompleteCollection = null;
     export let extraAutocompleteKeys = [];
 
-    let filterComponent;
-    let isFilterComponentLoading = false;
+    let filterComponent = $state(undefined);
+    let isFilterComponentLoading = $state(false);
 
-    let searchInput;
-    let tempValue = "";
+    let searchInput = $state(undefined);
+    let tempValue = $state("");
 
-    $: if (typeof value === "string") {
+    $effect(() => { if (typeof value === "string") {
         tempValue = value;
     }
 

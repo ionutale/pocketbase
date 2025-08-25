@@ -1,13 +1,14 @@
+<svelte:options runes />
 <script>
     import { onMount } from "svelte";
 
     export let value = "";
     export let maxHeight = 200;
 
-    let inputElem;
-    let updateTimeoutId;
+    let inputElem = $state(undefined);
+    let updateTimeoutId = $state(undefined);
 
-    $: if (typeof value !== undefined) {
+    $effect(() => { if (typeof value !== undefined) {
         updateInputHeight();
     }
 

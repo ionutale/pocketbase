@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import CommonHelper from "@/utils/CommonHelper";
     import Toggler from "@/components/base/Toggler.svelte";
@@ -9,10 +10,10 @@
     export let emptyPlaceholder = "Add items";
     export let newPlaceholder = "e.g. optionA";
 
-    let newInput;
-    let newInputVal = "";
+    let newInput = $state(undefined);
+    let newInputVal = $state("");
 
-    $: formattedValue = items.join(" • ");
+    let formattedValue = $derived(items.join(" • "));
 
     function remove(item) {
         items = items || [];

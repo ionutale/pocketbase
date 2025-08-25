@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import CommonHelper from "@/utils/CommonHelper";
     import CodeBlock from "@/components/base/CodeBlock.svelte";
@@ -5,8 +6,8 @@
 
     export let collection;
 
-    let responseTab = 200;
-    let responses = [];
+    let responseTab = $state(200);
+    let responses = $state([]);
 
     $: responses = [
         {

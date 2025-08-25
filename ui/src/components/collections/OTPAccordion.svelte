@@ -8,9 +8,9 @@
 
     export let collection;
 
-    $: isSuperusers = collection?.system && collection?.name === "_superusers";
+    let isSuperusers = $derived(collection?.system && collection?.name === "_superusers");
 
-    $: if (CommonHelper.isEmpty(collection.otp)) {
+    $effect(() => { if (CommonHelper.isEmpty(collection.otp)) {
         collection.otp = {
             enabled: true,
             duration: 300,
@@ -18,7 +18,7 @@
         };
     }
 
-    $: hasErrors = !CommonHelper.isEmpty($errors?.otp);
+    let hasErrors = $derived(!CommonHelper.isEmpty($errors?.otp));
 </script>
 
 <Accordion single>

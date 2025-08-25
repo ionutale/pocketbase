@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher } from "svelte";
     import ApiClient from "@/utils/ApiClient";
@@ -13,11 +14,11 @@
 
     const dispatch = createEventDispatcher();
 
-    let logPanel;
-    let log = {};
-    let isLoading = false;
+    let logPanel = $state(undefined);
+    let log = $state({});
+    let isLoading = $state(false);
 
-    $: isRequest = log.data?.type == "request";
+    let isRequest = $derived(log.data?.type == "request");
 
     export function show(modelOrId) {
         resolveModel(modelOrId).then((model) => {
@@ -43,7 +44,7 @@
 
         isLoading = true;
 
-        let model = {};
+        let model = $state({});
 
         try {
             model = await ApiClient.logs.getOne(modelOrId, {
@@ -83,7 +84,7 @@
             return [];
         }
 
-        let keys = [];
+        let keys = $state([]);
 
         for (let key of priotizedKeys) {
             if (typeof data[key] !== "undefined") {

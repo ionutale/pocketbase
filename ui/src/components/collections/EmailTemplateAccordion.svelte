@@ -1,5 +1,6 @@
+<svelte:options runes />
 <script context="module">
-    let cachedEditorComponent;
+    let cachedEditorComponent = $state(undefined);
 </script>
 
 <script>
@@ -16,13 +17,13 @@
     export let config = {};
     export let placeholders = [];
 
-    let accordion;
-    let editorComponent = cachedEditorComponent;
-    let isEditorComponentLoading = false;
+    let accordion = $state(undefined);
+    let editorComponent = $state(cachedEditorComponent);
+    let isEditorComponentLoading = $state(false);
 
-    $: hasErrors = !CommonHelper.isEmpty(CommonHelper.getNestedVal($errors, key));
+    let hasErrors = $derived(!CommonHelper.isEmpty(CommonHelper.getNestedVal($errors, key)));
 
-    $: if (!config.enabled) {
+    $effect(() => { if (!config.enabled) {
         removeError(key);
     }
 

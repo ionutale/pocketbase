@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { tick } from "svelte";
     import { replace } from "svelte-spa-router";
@@ -10,16 +11,16 @@
 
     export let params;
 
-    let email = "";
-    let password = "";
-    let passwordConfirm = "";
-    let isLoading = false;
-    let isUploading = false;
+    let email = $state("");
+    let password = $state("");
+    let passwordConfirm = $state("");
+    let isLoading = $state(false);
+    let isUploading = $state(false);
 
-    let emailInput;
-    let backupFileInput;
+    let emailInput = $state(undefined);
+    let backupFileInput = $state(undefined);
 
-    $: isBusy = isLoading || isUploading;
+    let isBusy = $derived(isLoading || isUploading);
 
     checkToken();
 

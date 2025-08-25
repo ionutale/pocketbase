@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import tooltip from "@/actions/tooltip";
     import Field from "@/components/base/Field.svelte";
@@ -19,19 +20,19 @@
     export let submitText = "Insert";
     export let fileTypes = ["image", "document", "video", "audio", "file"];
 
-    let pickerPanel;
-    let upsertPanel;
-    let filter = "";
-    let list = [];
-    let currentPage = 1;
-    let lastItemsCount = 0;
-    let isLoading = false;
-    let fileCollections = [];
-    let fileFields = [];
-    let sizeOptions = [];
-    let selectedCollection = {};
-    let selectedFile = {};
-    let selectedSize = "";
+    let pickerPanel = $state(undefined);
+    let upsertPanel = $state(undefined);
+    let filter = $state("");
+    let list = $state([]);
+    let currentPage = $state(1);
+    let lastItemsCount = $state(0);
+    let isLoading = $state(false);
+    let fileCollections = $state([]);
+    let fileFields = $state([]);
+    let sizeOptions = $state([]);
+    let selectedCollection = $state({});
+    let selectedFile = $state({});
+    let selectedSize = $state("");
 
     // find all collections with at least one non-protected file field
     $: fileCollections = $collections.filter((c) => {
@@ -51,25 +52,25 @@
     });
 
     // auto select the first collection from the list
-    $: if (!selectedCollection?.id && fileCollections.length > 0) {
+    $effect(() => { if (!selectedCollection?.id && fileCollections.length > 0) {
         selectedCollection = fileCollections[0];
     }
 
-    $: fileFields = selectedCollection?.fields?.filter((f) => f.type === "file" && !f.protected);
+    let fileFields = $derived(selectedCollection?.fields?.filter((f) => f.type === "file" && !f.protected));
 
     // reset filter on collection change
-    $: if (selectedCollection?.id) {
+    $effect(() => { if (selectedCollection?.id) {
         clearFilter();
         refreshSizeOptions();
     }
 
     // refresh the size options on selected file change
-    $: if (selectedFile?.name) {
+    $effect(() => { if (selectedFile?.name) {
         refreshSizeOptions();
     }
 
     // reset list on filter or collection change
-    $: if (typeof filter !== "undefined" && selectedCollection?.id && pickerPanel?.isActive()) {
+    $effect(() => { if (typeof filter !== "undefined" && selectedCollection?.id && pickerPanel?.isActive()) {
         loadList(true);
     }
 
@@ -77,11 +78,11 @@
         return selectedFile?.name == name && selectedFile?.record?.id == record.id;
     };
 
-    $: hasAtleastOneFile = list.find((r) => extractFiles(r).length > 0);
+    let hasAtleastOneFile = $derived(list.find((r) => extractFiles(r).length > 0));
 
-    $: canLoadMore = !isLoading && lastItemsCount == batchSize;
+    let canLoadMore = $derived(!isLoading && lastItemsCount == batchSize);
 
-    $: canSubmit = !isLoading && !!selectedFile?.name;
+    let canSubmit = $derived(!isLoading && !!selectedFile?.name);
 
     export function show() {
         loadList(true);
@@ -126,7 +127,7 @@
             }
             normalizedFilter += "(" + fileFields.map((f) => `${f.name}:length>0`).join("||") + ")";
 
-            let sort = "";
+            let sort = $state("");
             if (selectedCollection.type != "view") {
                 sort = "-@rowid"; // all collections with exception to the view has this field
             }
@@ -181,7 +182,7 @@
     }
 
     function extractFiles(record) {
-        let result = [];
+        let result = $state([]);
 
         for (const field of fileFields) {
             const names = CommonHelper.toArray(record[field.name]);

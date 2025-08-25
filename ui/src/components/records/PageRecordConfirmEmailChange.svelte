@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import PocketBase, { getTokenPayload } from "pocketbase";
     import ApiClient from "@/utils/ApiClient";
@@ -7,11 +8,11 @@
 
     export let params;
 
-    let password = "";
-    let isLoading = false;
-    let success = false;
+    let password = $state("");
+    let isLoading = $state(false);
+    let success = $state(false);
 
-    $: newEmail = CommonHelper.getJWTPayload(params?.token).newEmail || "";
+    let newEmail = $derived(CommonHelper.getJWTPayload(params?.token).newEmail || "");
 
     async function submit() {
         if (isLoading) {

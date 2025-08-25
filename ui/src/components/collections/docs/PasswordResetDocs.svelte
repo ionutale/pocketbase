@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import PasswordResetApiConfirmDocs from "@/components/collections/docs/PasswordResetApiConfirmDocs.svelte";
     import PasswordResetApiRequestDocs from "@/components/collections/docs/PasswordResetApiRequestDocs.svelte";
@@ -12,9 +13,9 @@
         { title: "Confirm password reset", component: PasswordResetApiConfirmDocs },
     ];
 
-    let activeApiTab = 0;
+    let activeApiTab = $state(0);
 
-    $: backendAbsUrl = CommonHelper.getApiExampleUrl(ApiClient.baseURL);
+    let backendAbsUrl = $derived(CommonHelper.getApiExampleUrl(ApiClient.baseURL));
 </script>
 
 <h3 class="m-b-sm">Password reset ({collection.name})</h3>

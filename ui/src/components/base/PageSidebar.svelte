@@ -1,17 +1,18 @@
+<svelte:options runes />
 <script>
     import CommonHelper from "@/utils/CommonHelper";
     import Dragline from "@/components/base/Dragline.svelte";
 
     const widthStorageKey = "@superuserSidebarWidth";
 
-    let classes = "";
+    let classes = $state("");
     export { classes as class }; // export reserved keyword
 
-    let sidebarElem;
-    let initialSidebarWidth;
-    let sidebarWidth = localStorage.getItem(widthStorageKey) || null;
+    let sidebarElem = $state(undefined);
+    let initialSidebarWidth = $state(undefined);
+    let sidebarWidth = $state(localStorage.getItem(widthStorageKey) || null);
 
-    $: if (sidebarWidth && sidebarElem) {
+    $effect(() => { if (sidebarWidth && sidebarElem) {
         sidebarElem.style.width = sidebarWidth;
         localStorage.setItem(widthStorageKey, sidebarWidth);
     }

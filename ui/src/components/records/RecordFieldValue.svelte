@@ -13,7 +13,7 @@
     export let field;
     export let short = false;
 
-    $: rawValue = record?.[field.name];
+    let rawValue = $derived(record?.[field.name]);
 </script>
 
 {#if field.primaryKey}

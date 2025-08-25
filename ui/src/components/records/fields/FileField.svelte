@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import tooltip from "@/actions/tooltip";
     import ApiClient from "@/utils/ApiClient";
@@ -14,33 +15,33 @@
     export let uploadedFiles = []; // Array<File> array
     export let deletedFileNames = []; // Array<string> array
 
-    let fileInput;
-    let filesListElem;
-    let isDragOver = false;
+    let fileInput = $state(undefined);
+    let filesListElem = $state(undefined);
+    let isDragOver = $state(false);
 
     // normalize uploadedFiles type
-    $: if (!Array.isArray(uploadedFiles)) {
+    $effect(() => { if (!Array.isArray(uploadedFiles)) {
         uploadedFiles = CommonHelper.toArray(uploadedFiles);
     }
 
     // normalize deleted files
-    $: if (!Array.isArray(deletedFileNames)) {
+    $effect(() => { if (!Array.isArray(deletedFileNames)) {
         deletedFileNames = CommonHelper.toArray(deletedFileNames);
     }
 
-    $: isMultiple = field.maxSelect > 1;
+    let isMultiple = $derived(field.maxSelect > 1);
 
-    $: if (CommonHelper.isEmpty(value)) {
+    $effect(() => { if (CommonHelper.isEmpty(value)) {
         value = isMultiple ? [] : "";
     }
 
-    $: valueAsArray = CommonHelper.toArray(value);
+    let valueAsArray = $derived(CommonHelper.toArray(value));
 
     $: maxReached =
         (valueAsArray.length || uploadedFiles.length) &&
         field.maxSelect <= valueAsArray.length + uploadedFiles.length - deletedFileNames.length;
 
-    $: if (uploadedFiles !== -1 || deletedFileNames !== -1) {
+    $effect(() => { if (uploadedFiles !== -1 || deletedFileNames !== -1) {
         triggerListChange();
     }
 
@@ -97,7 +98,7 @@
 
     async function openInNewTab(filename) {
         try {
-            let token = await ApiClient.getSuperuserFileToken(record.collectionId);
+            let token = $state(await ApiClient.getSuperuserFileToken(record.collectionId));
             let url = ApiClient.files.getURL(record, filename, { token });
             window.open(url, "_blank", "noreferrer, noopener");
         } catch (err) {

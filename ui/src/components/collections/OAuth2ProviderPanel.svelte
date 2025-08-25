@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher } from "svelte";
     import CommonHelper from "@/utils/CommonHelper";
@@ -12,17 +13,17 @@
 
     const formId = "provider_popup_" + CommonHelper.randomString(5);
 
-    let panel;
-    let uiOptions = {};
-    let config = {};
-    let isNew = false;
-    let initialHash = "";
-    let maskSecret = false;
-    let providerIndex = 0;
+    let panel = $state(undefined);
+    let uiOptions = $state({});
+    let config = $state({});
+    let isNew = $state(false);
+    let initialHash = $state("");
+    let maskSecret = $state(false);
+    let providerIndex = $state(0);
 
-    $: hasChanges = JSON.stringify(config) != initialHash;
+    let hasChanges = $derived(JSON.stringify(config) != initialHash);
 
-    $: errPrefix = "oauth2.providers." + providerIndex;
+    let errPrefix = $derived("oauth2.providers." + providerIndex);
 
     export function show(showOptions, showConfig, showIndex) {
         providerIndex = showIndex || 0;

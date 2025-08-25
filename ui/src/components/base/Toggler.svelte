@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher, onMount } from "svelte";
     import { fly } from "svelte/transition";
@@ -7,23 +8,23 @@
     export let escClose = true;
     export let autoScroll = true;
     export let closableClass = "closable";
-    let classes = "";
+    let classes = $state("");
     export { classes as class }; // export reserved keyword
 
-    let container;
-    let containerChild;
-    let activeTrigger;
-    let scrollTimeoutId;
-    let hideTimeoutId;
-    let isOutsideMouseDown = false;
+    let container = $state(undefined);
+    let containerChild = $state(undefined);
+    let activeTrigger = $state(undefined);
+    let scrollTimeoutId = $state(undefined);
+    let hideTimeoutId = $state(undefined);
+    let isOutsideMouseDown = $state(false);
 
     const dispatch = createEventDispatcher();
 
-    $: if (container) {
+    $effect(() => { if (container) {
         bindTrigger(trigger);
     }
 
-    $: if (active) {
+    $effect(() => { if (active) {
         activeTrigger?.classList?.add("active");
         activeTrigger?.setAttribute("aria-expanded", true);
         dispatch("show");

@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { slide } from "svelte/transition";
     import ApiClient from "@/utils/ApiClient";
@@ -17,22 +18,22 @@
 
     $pageTitle = "Backups";
 
-    let backupsListComponent;
-    let originalFormSettings = {};
-    let formSettings = {};
-    let isLoading = false;
-    let isSaving = false;
-    let initialHash = "";
-    let enableAutoBackups = false;
-    let showBackupsSettings = false;
-    let isTesting = false;
-    let testError = null;
+    let backupsListComponent = $state(undefined);
+    let originalFormSettings = $state({});
+    let formSettings = $state({});
+    let isLoading = $state(false);
+    let isSaving = $state(false);
+    let initialHash = $state("");
+    let enableAutoBackups = $state(false);
+    let showBackupsSettings = $state(false);
+    let isTesting = $state(false);
+    let testError = $state(null);
 
-    $: initialHash = JSON.stringify(originalFormSettings);
+    let initialHash = $derived(JSON.stringify(originalFormSettings));
 
-    $: hasChanges = initialHash != JSON.stringify(formSettings);
+    let hasChanges = $derived(initialHash != JSON.stringify(formSettings));
 
-    $: if (!enableAutoBackups && formSettings?.backups?.cron) {
+    $effect(() => { if (!enableAutoBackups && formSettings?.backups?.cron) {
         removeError("backups.cron");
         formSettings.backups.cron = "";
     }

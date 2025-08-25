@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { onDestroy } from "svelte";
     import tooltip from "@/actions/tooltip";
@@ -16,20 +17,20 @@
     export let value;
     export let picker;
 
-    let fieldRef;
-    let list = [];
-    let isLoading = false;
-    let loadTimeoutId;
-    let invalidIds = [];
+    let fieldRef = $state(undefined);
+    let list = $state([]);
+    let isLoading = $state(false);
+    let loadTimeoutId = $state(undefined);
+    let invalidIds = $state([]);
 
-    $: isMultiple = field.maxSelect > 1;
-    $: isPolymorphic = Array.isArray(field.collectionIds) && field.collectionIds.length > 0;
+    let isMultiple = $derived(field.maxSelect > 1);
+    let isPolymorphic = $derived(Array.isArray(field.collectionIds) && field.collectionIds.length > 0);
 
-    $: if (typeof value != "undefined") {
+    $effect(() => { if (typeof value != "undefined") {
         fieldRef?.changed();
     }
 
-    $: if (needLoad(list, value)) {
+    $effect(() => { if (needLoad(list, value)) {
         isLoading = true;
         // Move the load function to the end of the execution queue.
         //
@@ -71,7 +72,7 @@
         isLoading = true;
 
         function getExpandsForCollection(collectionId) {
-            let expands = [];
+            let expands = $state([]);
             const presentableRelFields = $collections
                 .find((c) => c.id == collectionId)
                 ?.fields?.filter((f) => !f.hidden && f.presentable && f.type == "relation");
@@ -119,7 +120,7 @@
         }
 
         try {
-            let loadedItems = [];
+            let loadedItems = $state([]);
             await Promise.all(loadPromises).then((values) => {
                 loadedItems = loadedItems.concat(...values);
             });

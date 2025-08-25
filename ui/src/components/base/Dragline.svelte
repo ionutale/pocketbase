@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher } from "svelte";
 
@@ -5,12 +6,12 @@
 
     export let tolerance = 0;
 
-    let elem;
-    let startX = 0;
-    let startY = 0;
-    let shiftX = 0;
-    let shiftY = 0;
-    let dragStarted = false;
+    let elem = $state(undefined);
+    let startX = $state(0);
+    let startY = $state(0);
+    let shiftX = $state(0);
+    let shiftY = $state(0);
+    let dragStarted = $state(false);
 
     function dragInit(e) {
         e.stopPropagation();
@@ -44,10 +45,10 @@
     }
 
     function onMove(e) {
-        let diffX = e.clientX - startX;
-        let diffY = e.clientY - startY;
-        let left = e.clientX - shiftX;
-        let top = e.clientY - shiftY;
+        let diffX = $state(e.clientX - startX);
+        let diffY = $state(e.clientY - startY);
+        let left = $state(e.clientX - shiftX);
+        let top = $state(e.clientY - shiftY);
 
         if (
             !dragStarted &&

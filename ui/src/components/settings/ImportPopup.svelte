@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher } from "svelte";
     import ApiClient from "@/utils/ApiClient";
@@ -9,14 +10,14 @@
 
     const dispatch = createEventDispatcher();
 
-    let panel;
-    let oldCollections = [];
-    let newCollections = [];
-    let pairs = [];
-    let deleteMissing = false;
-    let isImporting = false;
+    let panel = $state(undefined);
+    let oldCollections = $state([]);
+    let newCollections = $state([]);
+    let pairs = $state([]);
+    let deleteMissing = $state(false);
+    let isImporting = $state(false);
 
-    $: if (Array.isArray(oldCollections) && Array.isArray(newCollections)) {
+    $effect(() => { if (Array.isArray(oldCollections) && Array.isArray(newCollections)) {
         loadPairs();
     }
 

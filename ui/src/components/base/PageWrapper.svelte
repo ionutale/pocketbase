@@ -1,9 +1,10 @@
+<svelte:options runes />
 <script>
     import { superuser } from "@/stores/superuser";
 
     export let center = false;
 
-    let classes = "";
+    let classes = $state("");
     export { classes as class }; // export reserved keyword
 </script>
 

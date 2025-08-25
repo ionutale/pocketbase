@@ -6,7 +6,7 @@
     export let field;
     export let key = "";
 
-    $: if (CommonHelper.isEmpty(field.id)) {
+    $effect(() => { if (CommonHelper.isEmpty(field.id)) {
         loadDefaults();
     }
 

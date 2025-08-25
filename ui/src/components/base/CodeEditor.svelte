@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     /**
      * This component uses Codemirror editor under the hood and its a "little heavy".
@@ -71,24 +72,24 @@
     export let language = "javascript";
     export let singleLine = false;
 
-    let editor;
-    let container;
-    let langCompartment = new Compartment();
-    let editableCompartment = new Compartment();
-    let readOnlyCompartment = new Compartment();
-    let placeholderCompartment = new Compartment();
+    let editor = $state(undefined);
+    let container = $state(undefined);
+    let langCompartment = $state(new Compartment());
+    let editableCompartment = $state(new Compartment());
+    let readOnlyCompartment = $state(new Compartment());
+    let placeholderCompartment = $state(new Compartment());
 
-    $: if (id) {
+    $effect(() => { if (id) {
         addLabelListeners();
     }
 
-    $: if (editor && language) {
+    $effect(() => { if (editor && language) {
         editor.dispatch({
             effects: [langCompartment.reconfigure(getEditorLang())],
         });
     }
 
-    $: if (editor && typeof disabled !== "undefined") {
+    $effect(() => { if (editor && typeof disabled !== "undefined") {
         editor.dispatch({
             effects: [
                 editableCompartment.reconfigure(EditorView.editable.of(!disabled)),
@@ -97,7 +98,7 @@
         });
     }
 
-    $: if (editor && value != editor.state.doc.toString()) {
+    $effect(() => { if (editor && value != editor.state.doc.toString()) {
         editor.dispatch({
             changes: {
                 from: 0,
@@ -107,7 +108,7 @@
         });
     }
 
-    $: if (editor && typeof placeholder !== "undefined") {
+    $effect(() => { if (editor && typeof placeholder !== "undefined") {
         editor.dispatch({
             effects: [placeholderCompartment.reconfigure(placeholderExt(placeholder))],
         });
@@ -178,7 +179,7 @@
                     upperCaseKeywords: true,
                 });
             case "sql-select":
-                let schema = {};
+                let schema = $state({});
                 for (let collection of $collections) {
                     schema[collection.name] = CommonHelper.getAllCollectionIdentifiers(collection);
                 }

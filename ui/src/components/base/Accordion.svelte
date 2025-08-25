@@ -1,13 +1,14 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher, onMount } from "svelte";
     import { slide } from "svelte/transition";
 
     const dispatch = createEventDispatcher();
 
-    let accordionElem;
-    let expandTimeoutId;
+    let accordionElem = $state(undefined);
+    let expandTimeoutId = $state(undefined);
 
-    let classes = "";
+    let classes = $state("");
     export { classes as class }; // export reserved keyword
 
     export let draggable = false;
@@ -15,9 +16,9 @@
     export let interactive = true;
     export let single = false; // ensures that only one accordion is expanded in its given parent container
 
-    let isDragOver = false;
+    let isDragOver = $state(false);
 
-    $: if (active) {
+    $effect(() => { if (active) {
         clearTimeout(expandTimeoutId);
         expandTimeoutId = setTimeout(() => {
             if (accordionElem?.scrollIntoViewIfNeeded) {

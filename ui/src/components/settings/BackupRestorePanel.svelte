@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import ApiClient from "@/utils/ApiClient";
     import CommonHelper from "@/utils/CommonHelper";
@@ -10,13 +11,13 @@
 
     const formId = "backup_restore_" + CommonHelper.randomString(5);
 
-    let panel;
-    let name = "";
-    let nameConfirm = "";
-    let isSubmitting = false;
-    let reloadTimeoutId = null;
+    let panel = $state(undefined);
+    let name = $state("");
+    let nameConfirm = $state("");
+    let isSubmitting = $state(false);
+    let reloadTimeoutId = $state(null);
 
-    $: canSubmit = nameConfirm != "" && name == nameConfirm;
+    let canSubmit = $derived(nameConfirm != "" && name == nameConfirm);
 
     export function show(backupName) {
         setErrors({});

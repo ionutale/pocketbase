@@ -3,7 +3,7 @@
 
     export let level;
 
-    $: label = logLevels.find((l) => l.level == level)?.label;
+    let label = $derived(logLevels.find((l) => l.level == level)?.label);
 </script>
 
 <div class="label log-level-label level-{level}">

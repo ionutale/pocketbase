@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     /**
      * @todo consider combining with the CodeEditor component.
@@ -78,24 +79,24 @@
     export let disableRequestKeys = false;
     export let disableCollectionJoinKeys = false;
 
-    let editor;
-    let container;
-    let oldDisabledState = disabled;
-    let langCompartment = new Compartment();
-    let editableCompartment = new Compartment();
-    let readOnlyCompartment = new Compartment();
-    let placeholderCompartment = new Compartment();
-    let autocompleteWorker = new AutocompleteWorker();
+    let editor = $state(undefined);
+    let container = $state(undefined);
+    let oldDisabledState = $state(disabled);
+    let langCompartment = $state(new Compartment());
+    let editableCompartment = $state(new Compartment());
+    let readOnlyCompartment = $state(new Compartment());
+    let placeholderCompartment = $state(new Compartment());
+    let autocompleteWorker = $state(new AutocompleteWorker());
 
-    let cachedRequestKeys = [];
-    let cachedCollectionJoinKeys = [];
-    let cachedBaseKeys = [];
-    let baseKeysChangeHash = "";
-    let oldBaseKeysChangeHash = "";
+    let cachedRequestKeys = $state([]);
+    let cachedCollectionJoinKeys = $state([]);
+    let cachedBaseKeys = $state([]);
+    let baseKeysChangeHash = $state("");
+    let oldBaseKeysChangeHash = $state("");
 
-    $: baseKeysChangeHash = getCollectionKeysChangeHash(baseCollection);
+    let baseKeysChangeHash = $derived(getCollectionKeysChangeHash(baseCollection));
 
-    $: if (
+    $effect(() => { if (
         !disabled &&
         (oldBaseKeysChangeHash != baseKeysChangeHash ||
             disableRequestKeys !== -1 ||
@@ -105,17 +106,17 @@
         refreshCachedKeys();
     }
 
-    $: if (id) {
+    $effect(() => { if (id) {
         addLabelListeners();
     }
 
-    $: if (editor && baseCollection?.fields) {
+    $effect(() => { if (editor && baseCollection?.fields) {
         editor.dispatch({
             effects: [langCompartment.reconfigure(ruleLang())],
         });
     }
 
-    $: if (editor && oldDisabledState != disabled) {
+    $effect(() => { if (editor && oldDisabledState != disabled) {
         editor.dispatch({
             effects: [
                 editableCompartment.reconfigure(EditorView.editable.of(!disabled)),
@@ -126,7 +127,7 @@
         triggerNativeChange();
     }
 
-    $: if (editor && value != editor.state.doc.toString()) {
+    $effect(() => { if (editor && value != editor.state.doc.toString()) {
         editor.dispatch({
             changes: {
                 from: 0,
@@ -136,7 +137,7 @@
         });
     }
 
-    $: if (editor && typeof placeholder !== "undefined") {
+    $effect(() => { if (editor && typeof placeholder !== "undefined") {
         editor.dispatch({
             effects: [placeholderCompartment.reconfigure(placeholderExt(placeholder))],
         });
@@ -149,7 +150,7 @@
 
     // Refresh the cached autocomplete keys.
     // ---
-    let refreshDebounceId = null;
+    let refreshDebounceId = $state(null);
 
     autocompleteWorker.onmessage = (e) => {
         cachedBaseKeys = e.data.baseKeys || [];
@@ -177,7 +178,7 @@
 
     // Merge the base collection in a new list with the provided collections.
     function concatWithBaseCollection(collections) {
-        let copy = collections.slice();
+        let copy = $state(collections.slice());
 
         if (baseCollection) {
             CommonHelper.pushOrReplaceByKey(copy, baseCollection, "id");
@@ -224,7 +225,7 @@
 
     // Returns an array with all the supported keys.
     function getAllKeys(includeRequestKeys = true, includeCollectionJoinKeys = true) {
-        let result = [].concat(extraAutocompleteKeys);
+        let result = $state([].concat(extraAutocompleteKeys));
 
         // add base keys
         result = result.concat(cachedBaseKeys || []);
@@ -244,7 +245,7 @@
 
     // Returns object with all the completions matching the context.
     function completions(context) {
-        let word = context.matchBefore(/[\'\"\@\w\.]*/);
+        let word = $state(context.matchBefore(/[\'\"\@\w\.]*/));
         if (word && word.from == word.to && !context.explicit) {
             return null;
         }

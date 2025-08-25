@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import Field from "@/components/base/Field.svelte";
     import { errors, removeError } from "@/stores/errors";
@@ -6,9 +7,9 @@
 
     export let collection;
 
-    let codeEditorComponent;
-    let isCodeEditorComponentLoading = false;
-    let fieldsErrors = [];
+    let codeEditorComponent = $state(undefined);
+    let isCodeEditorComponentLoading = $state(false);
+    let fieldsErrors = $state([]);
 
     $: checkFieldsErrors($errors);
 

@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import Field from "@/components/base/Field.svelte";
     import SchemaField from "@/components/collections/schema/SchemaField.svelte";
@@ -7,14 +8,14 @@
     export let field;
     export let key = "";
 
-    let pickerMinValue = field?.min;
-    let pickerMaxValue = field?.max;
+    let pickerMinValue = $state(field?.min);
+    let pickerMaxValue = $state(field?.max);
 
-    $: if (pickerMinValue != field?.min) {
+    $effect(() => { if (pickerMinValue != field?.min) {
         pickerMinValue = field?.min;
     }
 
-    $: if (pickerMaxValue != field?.max) {
+    $effect(() => { if (pickerMaxValue != field?.max) {
         pickerMaxValue = field?.max;
     }
 

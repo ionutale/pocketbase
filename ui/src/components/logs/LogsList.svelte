@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import Scroller from "@/components/base/Scroller.svelte";
     import SortHeader from "@/components/base/SortHeader.svelte";
@@ -17,14 +18,14 @@
     export let zoom = {};
     export let sort = "-@rowid";
 
-    let logs = [];
-    let currentPage = 1;
-    let lastLoadCount = 0;
-    let isLoading = false;
-    let yieldedId = 0;
-    let bulkSelected = {};
+    let logs = $state([]);
+    let currentPage = $state(1);
+    let lastLoadCount = $state(0);
+    let isLoading = $state(false);
+    let yieldedId = $state(0);
+    let bulkSelected = $state({});
 
-    $: if (
+    $effect(() => { if (
         typeof sort !== "undefined" ||
         typeof filter !== "undefined" ||
         typeof presets !== "undefined" ||
@@ -34,11 +35,11 @@
         load(1);
     }
 
-    $: canLoadMore = lastLoadCount >= perPage;
+    let canLoadMore = $derived(lastLoadCount >= perPage);
 
-    $: totalBulkSelected = Object.keys(bulkSelected).length;
+    let totalBulkSelected = $derived(Object.keys(bulkSelected).length);
 
-    $: areAllLogsSelected = logs.length && totalBulkSelected === logs.length;
+    let areAllLogsSelected = $derived(logs.length && totalBulkSelected === logs.length);
 
     export async function load(page = 1, breakTasks = true) {
         isLoading = true;
@@ -178,7 +179,7 @@
     }
 
     function getLogPreviewKeys(log) {
-        let keys = [];
+        let keys = $state([]);
 
         if (!log.data) {
             return keys;

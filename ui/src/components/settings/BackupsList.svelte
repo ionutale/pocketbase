@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { onMount } from "svelte";
     import { slide } from "svelte/transition";
@@ -9,13 +10,13 @@
     import BackupCreatePanel from "@/components/settings/BackupCreatePanel.svelte";
     import BackupRestorePanel from "@/components/settings/BackupRestorePanel.svelte";
 
-    let createPanel;
-    let restorePanel;
-    let backups = [];
-    let isLoading = false;
-    let isDownloading = {};
-    let isDeleting = {};
-    let canBackup = true;
+    let createPanel = $state(undefined);
+    let restorePanel = $state(undefined);
+    let backups = $state([]);
+    let isLoading = $state(false);
+    let isDownloading = $state({});
+    let isDeleting = $state({});
+    let canBackup = $state(true);
 
     loadBackups();
     loadCanBackup();

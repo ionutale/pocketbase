@@ -1,5 +1,6 @@
+<svelte:options runes />
 <script>
-    let expanded = false;
+    let expanded = $state(false);
 
     function toggle() {
         expanded = !expanded;

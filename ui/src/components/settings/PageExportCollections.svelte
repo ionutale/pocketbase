@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import ApiClient from "@/utils/ApiClient";
     import CommonHelper from "@/utils/CommonHelper";
@@ -11,16 +12,16 @@
 
     const uniqueId = "export_" + CommonHelper.randomString(5);
 
-    let previewContainer;
-    let collections = [];
-    let bulkSelected = {};
-    let isLoadingCollections = false;
+    let previewContainer = $state(undefined);
+    let collections = $state([]);
+    let bulkSelected = $state({});
+    let isLoadingCollections = $state(false);
 
-    $: schema = JSON.stringify(Object.values(bulkSelected), null, 4);
+    let schema = $derived(JSON.stringify(Object.values(bulkSelected), null, 4));
 
-    $: totalBulkSelected = Object.keys(bulkSelected).length;
+    let totalBulkSelected = $derived(Object.keys(bulkSelected).length);
 
-    $: areAllSelected = collections.length && totalBulkSelected === collections.length;
+    let areAllSelected = $derived(collections.length && totalBulkSelected === collections.length);
 
     loadCollections();
 

@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import tooltip from "@/actions/tooltip";
     import Field from "@/components/base/Field.svelte";
@@ -17,17 +18,17 @@
         { label: "Multiple", value: false },
     ];
 
-    let mimeTypesList = baseMimeTypesList.slice();
-    let isSingle = field.maxSelect <= 1;
-    let oldIsSingle = isSingle;
+    let mimeTypesList = $state(baseMimeTypesList.slice());
+    let isSingle = $state(field.maxSelect <= 1);
+    let oldIsSingle = $state(isSingle);
 
-    $: if (typeof field.maxSelect == "undefined") {
+    $effect(() => { if (typeof field.maxSelect == "undefined") {
         loadDefaults();
     } else {
         appendMissingMimeTypes();
     }
 
-    $: if (oldIsSingle != isSingle) {
+    $effect(() => { if (oldIsSingle != isSingle) {
         oldIsSingle = isSingle;
         if (isSingle) {
             field.maxSelect = 1;

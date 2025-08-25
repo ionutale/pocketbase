@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { onMount } from "svelte";
     import tooltip from "@/actions/tooltip";
@@ -7,16 +8,16 @@
     export let field;
     export let value = undefined;
 
-    let editorComponent;
+    let editorComponent = $state(undefined);
 
-    let serialized = serialize(value);
+    let serialized = $state(serialize(value));
 
-    $: if (value !== serialized?.trim()) {
+    $effect(() => { if (value !== serialized?.trim()) {
         serialized = serialize(value);
         value = serialized;
     }
 
-    $: isValid = isValidJson(serialized);
+    let isValid = $derived(isValidJson(serialized));
 
     function serialize(val) {
         if (typeof val == "string" && isValidJson(val)) {

@@ -1,10 +1,11 @@
+<svelte:options runes />
 <script>
     import AppleSecretPopup from "@/components/collections/providers/AppleSecretPopup.svelte";
 
     export let key = "";
     export let config = {};
 
-    let generatorPopup;
+    let generatorPopup = $state(undefined);
 </script>
 
 <button

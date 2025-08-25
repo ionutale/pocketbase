@@ -9,7 +9,7 @@
 
     export let collection;
 
-    $: hasErrors = !CommonHelper.isEmpty($errors?.mfa);
+    let hasErrors = $derived(!CommonHelper.isEmpty($errors?.mfa));
 </script>
 
 <Accordion single>

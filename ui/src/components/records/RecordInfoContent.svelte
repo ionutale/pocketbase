@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import CommonHelper from "@/utils/CommonHelper";
     import RecordFileThumb from "@/components/records/RecordFileThumb.svelte";
@@ -7,12 +8,12 @@
 
     export let record;
 
-    let fileDisplayFields = [];
-    let nonFileDisplayFields = [];
+    let fileDisplayFields = $state([]);
+    let nonFileDisplayFields = $state([]);
 
-    $: collection = $collections?.find((item) => item.id == record?.collectionId);
+    let collection = $derived($collections?.find((item) => item.id == record?.collectionId));
 
-    $: if (collection) {
+    $effect(() => { if (collection) {
         loadDisplayFields();
     }
 

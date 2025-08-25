@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import SdkTabs from "@/components/base/SdkTabs.svelte";
     import VerificationApiConfirmDocs from "@/components/collections/docs/VerificationApiConfirmDocs.svelte";
@@ -12,9 +13,9 @@
         { title: "Confirm verification", component: VerificationApiConfirmDocs },
     ];
 
-    let activeApiTab = 0;
+    let activeApiTab = $state(0);
 
-    $: backendAbsUrl = CommonHelper.getApiExampleUrl(ApiClient.baseURL);
+    let backendAbsUrl = $derived(CommonHelper.getApiExampleUrl(ApiClient.baseURL));
 </script>
 
 <h3 class="m-b-sm">Account verification ({collection.name})</h3>

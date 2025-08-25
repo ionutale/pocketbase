@@ -6,15 +6,15 @@
     export let field;
     export let value = undefined;
 
-    $: isMultiple = field.maxSelect > 1;
+    let isMultiple = $derived(field.maxSelect > 1);
 
-    $: if (typeof value === "undefined") {
+    $effect(() => { if (typeof value === "undefined") {
         value = isMultiple ? [] : "";
     }
 
-    $: maxSelect = field.maxSelect || field.values.length;
+    let maxSelect = $derived(field.maxSelect || field.values.length);
 
-    $: if (isMultiple && Array.isArray(value)) {
+    $effect(() => { if (isMultiple && Array.isArray(value)) {
         value = value.filter((v) => field.values.includes(v));
         if (value.length > maxSelect) {
             value = value.slice(value.length - maxSelect);

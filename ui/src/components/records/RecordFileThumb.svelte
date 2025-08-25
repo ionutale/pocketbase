@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import PreviewPopup from "@/components/base/PreviewPopup.svelte";
     import ApiClient from "@/utils/ApiClient";
@@ -7,16 +8,16 @@
     export let filename = "";
     export let size = ""; // sm/lg/xl
 
-    let previewPopup;
-    let thumbUrl = "";
-    let token = "";
-    let isLoadingToken = true;
+    let previewPopup = $state(undefined);
+    let thumbUrl = $state("");
+    let token = $state("");
+    let isLoadingToken = $state(true);
 
     loadThumbUrlToken();
 
-    $: type = CommonHelper.getFileType(filename);
+    let type = $derived(CommonHelper.getFileType(filename));
 
-    $: hasPreview = ["image", "audio", "video"].includes(type) || filename.endsWith(".pdf");
+    let hasPreview = $derived(["image", "audio", "video"].includes(type) || filename.endsWith(".pdf"));
 
     $: thumbUrl = !isLoadingToken
         ? ApiClient.files.getURL(record, filename, { thumb: "100x100", token: token })

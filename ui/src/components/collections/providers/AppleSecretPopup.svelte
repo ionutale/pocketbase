@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher } from "svelte";
     import ApiClient from "@/utils/ApiClient";
@@ -14,15 +15,15 @@
 
     const maxDuration = 15777000; // 6 months
 
-    let panel;
-    let clientId;
-    let teamId;
-    let keyId;
-    let privateKey;
-    let duration;
-    let isSubmitting = false;
+    let panel = $state(undefined);
+    let clientId = $state(undefined);
+    let teamId = $state(undefined);
+    let keyId = $state(undefined);
+    let privateKey = $state(undefined);
+    let duration = $state(undefined);
+    let isSubmitting = $state(false);
 
-    $: canSubmit = true;
+    let canSubmit = $derived(true);
 
     export function show(config = {}) {
         clientId = config.clientId || "";

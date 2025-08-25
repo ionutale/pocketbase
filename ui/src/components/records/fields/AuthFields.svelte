@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import tooltip from "@/actions/tooltip";
     import Field from "@/components/base/Field.svelte";
@@ -11,15 +12,15 @@
     export let collection;
     export let isNew = !record?.id;
 
-    $: isSuperusers = collection?.name == "_superusers";
+    let isSuperusers = $derived(collection?.name == "_superusers");
 
-    $: emailField = collection?.fields?.find((f) => f.name == "email") || {};
+    let emailField = $derived(collection?.fields?.find((f) => f.name == "email") || {});
 
-    $: passwordField = collection?.fields?.find((f) => f.name == "password") || {};
+    let passwordField = $derived(collection?.fields?.find((f) => f.name == "password") || {});
 
-    let changePasswordToggle = false;
+    let changePasswordToggle = $state(false);
 
-    $: if (!changePasswordToggle) {
+    $effect(() => { if (!changePasswordToggle) {
         record.password = undefined;
         record.passwordConfirm = undefined;
         removeError("password");

@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher } from "svelte";
     import ApiClient from "@/utils/ApiClient";
@@ -14,12 +15,12 @@
     export let collection;
     export let record;
 
-    let panel;
-    let duration = 0;
-    let isSubmitting = false;
-    let impersonateClient;
+    let panel = $state(undefined);
+    let duration = $state(0);
+    let isSubmitting = $state(false);
+    let impersonateClient = $state(undefined);
 
-    $: backendAbsUrl = CommonHelper.getApiExampleUrl(impersonateClient?.baseURL);
+    let backendAbsUrl = $derived(CommonHelper.getApiExampleUrl(impersonateClient?.baseURL));
 
     export function show() {
         if (!record) {

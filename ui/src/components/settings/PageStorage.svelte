@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { slide } from "svelte/transition";
     import ApiClient from "@/utils/ApiClient";
@@ -14,16 +15,16 @@
 
     const testRequestKey = "s3_test_request";
 
-    let originalFormSettings = {};
-    let formSettings = {};
-    let isLoading = false;
-    let isSaving = false;
-    let isTesting = false;
-    let testError = null;
+    let originalFormSettings = $state({});
+    let formSettings = $state({});
+    let isLoading = $state(false);
+    let isSaving = $state(false);
+    let isTesting = $state(false);
+    let testError = $state(null);
 
-    $: initialHash = JSON.stringify(originalFormSettings);
+    let initialHash = $derived(JSON.stringify(originalFormSettings));
 
-    $: hasChanges = initialHash != JSON.stringify(formSettings);
+    let hasChanges = $derived(initialHash != JSON.stringify(formSettings));
 
     loadSettings();
 

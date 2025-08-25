@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import ApiClient from "@/utils/ApiClient";
     import tooltip from "@/actions/tooltip";
@@ -9,9 +10,9 @@
 
     $pageTitle = "Crons";
 
-    let crons = [];
-    let isLoading = false;
-    let isRunning = {};
+    let crons = $state([]);
+    let isLoading = $state(false);
+    let isRunning = $state({});
 
     loadCrons();
 

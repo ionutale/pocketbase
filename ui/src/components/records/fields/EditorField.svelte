@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { onMount } from "svelte";
     import ApiClient from "@/utils/ApiClient";
@@ -10,10 +11,10 @@
     export let field;
     export let value = "";
 
-    let picker;
-    let editor;
-    let mounted = false;
-    let mountedTimeoutId = null;
+    let picker = $state(undefined);
+    let editor = $state(undefined);
+    let mounted = $state(false);
+    let mountedTimeoutId = $state(null);
 
     $: conf = Object.assign(CommonHelper.defaultEditorOptions(), {
         convert_urls: field.convertURLs,
@@ -22,7 +23,7 @@
 
     // normalize value
     // (depending on the editor plugins, `undefined` may throw an error in case the TinyMCE text functions are used)
-    $: if (typeof value == "undefined") {
+    $effect(() => { if (typeof value == "undefined") {
         value = "";
     }
 

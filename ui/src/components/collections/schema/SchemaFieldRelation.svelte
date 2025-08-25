@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import tooltip from "@/actions/tooltip";
     import Field from "@/components/base/Field.svelte";
@@ -19,18 +20,18 @@
         { label: "True", value: true },
     ];
 
-    let upsertPanel = null;
-    let isSingle = field.maxSelect <= 1;
-    let oldIsSingle = isSingle;
+    let upsertPanel = $state(null);
+    let isSingle = $state(field.maxSelect <= 1);
+    let oldIsSingle = $state(isSingle);
 
-    $: selectCollections = $collections.filter((c) => !c.system && c.type != "view");
+    let selectCollections = $derived($collections.filter((c) => !c.system && c.type != "view"));
 
     // load defaults
-    $: if (typeof field.maxSelect == "undefined") {
+    $effect(() => { if (typeof field.maxSelect == "undefined") {
         loadDefaults();
     }
 
-    $: if (oldIsSingle != isSingle) {
+    $effect(() => { if (oldIsSingle != isSingle) {
         oldIsSingle = isSingle;
         if (isSingle) {
             field.minSelect = 0;
@@ -40,10 +41,10 @@
         }
     }
 
-    $: selectedColection = $collections.find((c) => c.id == field.collectionId) || null;
+    let selectedColection = $derived($collections.find((c) => c.id == field.collectionId) || null);
 
     // polymorphic toggle: when field.collectionIds has values, treat as polymorphic
-    $: isPolymorphic = Array.isArray(field.collectionIds) && field.collectionIds.length > 0;
+    let isPolymorphic = $derived(Array.isArray(field.collectionIds) && field.collectionIds.length > 0);
 
     function loadDefaults() {
         field.maxSelect = 1;

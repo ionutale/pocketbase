@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import Field from "@/components/base/Field.svelte";
     import SchemaField from "@/components/collections/schema/SchemaField.svelte";
@@ -6,7 +7,7 @@
     export let field;
     export let key = "";
 
-    let showInfo = false;
+    let showInfo = $state(false);
 </script>
 
 <SchemaField bind:field {key} on:rename on:remove on:duplicate {...$$restProps}>

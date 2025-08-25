@@ -1,13 +1,14 @@
+<svelte:options runes />
 <script>
     export let content = "";
     export let language = "javascript"; // javascript, html, dart, go, sql
 
-    let classes = "";
+    let classes = $state("");
     export { classes as class }; // export reserved keyword
 
-    let formattedContent = "";
+    let formattedContent = $state("");
 
-    $: if (typeof Prism !== "undefined" && content) {
+    $effect(() => { if (typeof Prism !== "undefined" && content) {
         formattedContent = highlight(content);
     }
 

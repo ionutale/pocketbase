@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { onMount } from "svelte";
     import { scale } from "svelte/transition";
@@ -20,18 +21,18 @@
     export let zoom = {};
     export let presets = "";
 
-    let chartCanvas;
-    let chartInst;
-    let chartData = [];
-    let totalLogs = 0;
-    let isLoading = false;
-    let isZoomedOrPanned = false;
+    let chartCanvas = $state(undefined);
+    let chartInst = $state(undefined);
+    let chartData = $state([]);
+    let totalLogs = $state(0);
+    let isLoading = $state(false);
+    let isZoomedOrPanned = $state(false);
 
-    $: if (typeof filter !== "undefined" || typeof presets !== "undefined") {
+    $effect(() => { if (typeof filter !== "undefined" || typeof presets !== "undefined") {
         load();
     }
 
-    $: if (typeof chartData !== "undefined" && chartInst) {
+    $effect(() => { if (typeof chartData !== "undefined" && chartInst) {
         chartInst.data.datasets[0].data = chartData;
         chartInst.update();
     }

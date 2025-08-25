@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher, onDestroy } from "svelte";
     import ApiClient from "@/utils/ApiClient";
@@ -11,10 +12,10 @@
 
     const formId = "backup_create_" + CommonHelper.randomString(5);
 
-    let panel;
-    let name = "";
-    let isSubmitting = false;
-    let submitTimeoutId;
+    let panel = $state(undefined);
+    let name = $state("");
+    let isSubmitting = $state(false);
+    let submitTimeoutId = $state(undefined);
 
     export function show(newName) {
         setErrors({});

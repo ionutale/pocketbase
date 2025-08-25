@@ -8,9 +8,9 @@
 
     export let formSettings;
 
-    $: hasErrors = !CommonHelper.isEmpty($errors?.batch);
+    let hasErrors = $derived(!CommonHelper.isEmpty($errors?.batch));
 
-    $: isEnabled = !!formSettings.batch?.enabled;
+    let isEnabled = $derived(!!formSettings.batch?.enabled);
 </script>
 
 <Accordion single>

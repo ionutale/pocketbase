@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { querystring } from "svelte-spa-router";
     import { pageTitle } from "@/stores/app";
@@ -21,29 +22,29 @@
 
     const initialQueryParams = new URLSearchParams($querystring);
 
-    let logViewPanel;
-    let logsSettingsPanel;
-    let refreshKey = 1;
-    let filter = initialQueryParams.get("filter") || "";
-    let zoom = {};
+    let logViewPanel = $state(undefined);
+    let logsSettingsPanel = $state(undefined);
+    let refreshKey = $state(1);
+    let filter = $state(initialQueryParams.get("filter") || "");
+    let zoom = $state({});
     let withSuperuserLogs =
         (initialQueryParams.get(ADMIN_REQUESTS_QUERY_KEY) ||
             window.localStorage?.getItem(ADMIN_REQUESTS_STORAGE_KEY)) << 0;
-    let initialWithSuperuserLogs = withSuperuserLogs;
+    let initialWithSuperuserLogs = $state(withSuperuserLogs);
 
-    $: if (initialQueryParams.get(LOG_QUERY_KEY) && logViewPanel) {
+    $effect(() => { if (initialQueryParams.get(LOG_QUERY_KEY) && logViewPanel) {
         logViewPanel.show(initialQueryParams.get(LOG_QUERY_KEY));
     }
 
-    $: presets = !withSuperuserLogs ? 'data.auth!="_superusers"' : "";
+    let presets = $derived(!withSuperuserLogs ? 'data.auth!="_superusers"' : "");
 
-    $: if (initialWithSuperuserLogs != withSuperuserLogs) {
+    $effect(() => { if (initialWithSuperuserLogs != withSuperuserLogs) {
         initialWithSuperuserLogs = withSuperuserLogs;
         window.localStorage?.setItem(ADMIN_REQUESTS_STORAGE_KEY, withSuperuserLogs << 0);
         updateQueryParams();
     }
 
-    $: if (typeof filter !== "undefined") {
+    $effect(() => { if (typeof filter !== "undefined") {
         updateQueryParams();
     }
 
@@ -52,7 +53,7 @@
     }
 
     function updateQueryParams(extra = {}) {
-        let queryParams = {};
+        let queryParams = $state({});
         queryParams.filter = filter || null;
         queryParams[ADMIN_REQUESTS_QUERY_KEY] = withSuperuserLogs << 0 || null;
         CommonHelper.replaceHashQueryParams(Object.assign(queryParams, extra));

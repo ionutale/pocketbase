@@ -4,9 +4,9 @@
 
     export let date = "";
 
-    $: dateOnly = date ? date.substring(0, 10) : null;
+    let dateOnly = $derived(date ? date.substring(0, 10) : null);
 
-    $: timeOnly = date ? date.substring(10, 19) : null;
+    let timeOnly = $derived(date ? date.substring(10, 19) : null);
 
     const tooltipData = {
         // generate the tooltip text as getter to speed up the initial load

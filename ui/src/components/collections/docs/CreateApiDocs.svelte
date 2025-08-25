@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import CodeBlock from "@/components/base/CodeBlock.svelte";
     import FieldsQueryParam from "@/components/collections/docs/FieldsQueryParam.svelte";
@@ -7,21 +8,21 @@
 
     export let collection;
 
-    let responseTab = 200;
-    let responses = [];
+    let responseTab = $state(200);
+    let responses = $state([]);
 
-    $: isAuth = collection.type === "auth";
+    let isAuth = $derived(collection.type === "auth");
 
-    $: superusersOnly = collection?.createRule === null;
+    let superusersOnly = $derived(collection?.createRule === null);
 
-    $: excludedTableFields = isAuth ? ["password", "verified", "email", "emailVisibility"] : [];
+    let excludedTableFields = $derived(isAuth ? ["password", "verified", "email", "emailVisibility"] : []);
 
     $: tableFields =
         collection?.fields?.filter((f) => {
             return !f.hidden && f.type != "autodate" && !excludedTableFields.includes(f.name);
         }) || [];
 
-    $: backendAbsUrl = CommonHelper.getApiExampleUrl(ApiClient.baseURL);
+    let backendAbsUrl = $derived(CommonHelper.getApiExampleUrl(ApiClient.baseURL));
 
     $: responses = [
         {

@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import tooltip from "@/actions/tooltip";
     import Field from "@/components/base/Field.svelte";
@@ -9,15 +10,15 @@
     export let field;
     export let value = undefined;
 
-    let mapComponent;
-    let isMapComponentLoading = false;
-    let isMapVisible = false;
+    let mapComponent = $state(undefined);
+    let isMapComponentLoading = $state(false);
+    let isMapVisible = $state(false);
 
-    $: if (typeof value === "undefined") {
+    $effect(() => { if (typeof value === "undefined") {
         value = { lat: 0, lon: 0 };
     }
 
-    $: if (value) {
+    $effect(() => { if (value) {
         normalize();
     }
 

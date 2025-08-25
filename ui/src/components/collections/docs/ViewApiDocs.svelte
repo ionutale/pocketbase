@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import ApiClient from "@/utils/ApiClient";
     import CommonHelper from "@/utils/CommonHelper";
@@ -7,14 +8,14 @@
 
     export let collection;
 
-    let responseTab = 200;
-    let responses = [];
+    let responseTab = $state(200);
+    let responses = $state([]);
 
-    $: superusersOnly = collection?.viewRule === null;
+    let superusersOnly = $derived(collection?.viewRule === null);
 
-    $: backendAbsUrl = CommonHelper.getApiExampleUrl(ApiClient.baseURL);
+    let backendAbsUrl = $derived(CommonHelper.getApiExampleUrl(ApiClient.baseURL));
 
-    $: if (collection?.id) {
+    $effect(() => { if (collection?.id) {
         responses.push({
             code: 200,
             body: JSON.stringify(CommonHelper.dummyCollectionRecord(collection), null, 2),

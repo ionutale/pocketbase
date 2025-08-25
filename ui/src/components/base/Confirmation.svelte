@@ -1,13 +1,14 @@
+<svelte:options runes />
 <script>
     import { tick } from "svelte";
     import OverlayPanel from "@/components/base/OverlayPanel.svelte";
     import { confirmation, resetConfirmation } from "@/stores/confirmation";
 
-    let confirmationPopup;
-    let isConfirmationBusy = false;
-    let confirmed = false;
+    let confirmationPopup = $state(undefined);
+    let isConfirmationBusy = $state(false);
+    let confirmed = $state(false);
 
-    $: if ($confirmation?.text) {
+    $effect(() => { if ($confirmation?.text) {
         confirmed = false;
         confirmationPopup?.show();
     }

@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import CodeBlock from "@/components/base/CodeBlock.svelte";
     import FieldsQueryParam from "@/components/collections/docs/FieldsQueryParam.svelte";
@@ -7,12 +8,12 @@
 
     export let collection;
 
-    let responseTab = 200;
-    let responses = [];
-    let authMethods = {};
-    let isLoading = false;
+    let responseTab = $state(200);
+    let responses = $state([]);
+    let authMethods = $state({});
+    let isLoading = $state(false);
 
-    $: backendAbsUrl = CommonHelper.getApiExampleUrl(ApiClient.baseURL);
+    let backendAbsUrl = $derived(CommonHelper.getApiExampleUrl(ApiClient.baseURL));
 
     $: responses = [
         {

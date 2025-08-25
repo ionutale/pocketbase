@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher } from "svelte";
     import CommonHelper from "@/utils/CommonHelper";
@@ -11,15 +12,15 @@
     const dispatch = createEventDispatcher();
     const formId = "logs_settings_" + CommonHelper.randomString(3);
 
-    let panel;
-    let isSaving = false;
-    let isLoading = false;
-    let originalFormSettings = {};
-    let formSettings = {};
+    let panel = $state(undefined);
+    let isSaving = $state(false);
+    let isLoading = $state(false);
+    let originalFormSettings = $state({});
+    let formSettings = $state({});
 
-    $: initialHash = JSON.stringify(originalFormSettings);
+    let initialHash = $derived(JSON.stringify(originalFormSettings));
 
-    $: hasChanges = initialHash != JSON.stringify(formSettings);
+    let hasChanges = $derived(initialHash != JSON.stringify(formSettings));
 
     export function show() {
         reset();

@@ -1,7 +1,8 @@
+<svelte:options runes />
 <script context="module">
-    let holder;
+    let holder = $state(undefined);
 
-    let activePanels = [];
+    let activePanels = $state([]);
 
     function getHolder() {
         holder = holder || document.querySelector(".overlays");
@@ -35,7 +36,7 @@
     import { fade, fly } from "svelte/transition";
     import CommonHelper from "@/utils/CommonHelper";
 
-    let classes = "";
+    let classes = $state("");
     export { classes as class }; // export reserved keyword
 
     export let active = false;
@@ -49,25 +50,25 @@
     const dispatch = createEventDispatcher();
     const uniqueId = "op_" + CommonHelper.randomString(10);
 
-    let wrapper;
-    let contentPanel;
-    let oldFocusedElem;
-    let transitionSpeed = 150;
-    let contentScrollThrottle;
-    let contentScrollClass = "";
-    let oldActive = active;
+    let wrapper = $state(undefined);
+    let contentPanel = $state(undefined);
+    let oldFocusedElem = $state(undefined);
+    let transitionSpeed = $state(150);
+    let contentScrollThrottle = $state(undefined);
+    let contentScrollClass = $state("");
+    let oldActive = $state(active);
 
-    $: if (oldActive != active) {
+    $effect(() => { if (oldActive != active) {
         onActiveChange(active);
     }
 
     $: handleContentScroll(contentPanel, true);
 
-    $: if (wrapper) {
+    $effect(() => { if (wrapper) {
         zIndexUpdate();
     }
 
-    $: if (active) {
+    $effect(() => { if (active) {
         registerActivePanel();
     } else {
         unregisterActivePanel();
@@ -179,7 +180,7 @@
                 return; // deleted during timeout
             }
 
-            let heightDiff = panel.scrollHeight - panel.offsetHeight;
+            let heightDiff = $state(panel.scrollHeight - panel.offsetHeight);
             if (heightDiff > 0) {
                 contentScrollClass = "scrollable";
             } else {
@@ -199,7 +200,7 @@
         // move outside of its current parent
         getHolder().appendChild(wrapper);
 
-        let wrapperCopy = wrapper;
+        let wrapperCopy = $state(wrapper);
 
         return () => {
             clearTimeout(contentScrollThrottle);

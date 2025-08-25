@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { scale } from "svelte/transition";
     import tooltip from "@/actions/tooltip";
@@ -40,11 +41,11 @@
         { value: "*:confirmEmailChange" },
     ];
 
-    let predefinedTags = basePredefinedTags;
+    let predefinedTags = $state(basePredefinedTags);
 
-    let formatInfoPanel;
+    let formatInfoPanel = $state(undefined);
 
-    $: hasErrors = !CommonHelper.isEmpty($errors?.rateLimits);
+    let hasErrors = $derived(!CommonHelper.isEmpty($errors?.rateLimits));
 
     loadPredefinedTags();
 

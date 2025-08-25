@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher } from "svelte";
 
@@ -9,8 +10,8 @@
     export let disabled = false;
     export let dragHandleClass = ""; // by default the entire element
 
-    let dragging = false;
-    let dragover = false;
+    let dragging = $state(false);
+    let dragover = $state(false);
 
     function onDrag(e, i) {
         if (!e || disabled) {
@@ -50,7 +51,7 @@
 
         e.dataTransfer.dropEffect = "move";
 
-        let dragData = {};
+        let dragData = $state({});
         try {
             dragData = JSON.parse(e.dataTransfer.getData("text/plain"));
         } catch (_) {}

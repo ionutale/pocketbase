@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import tooltip from "@/actions/tooltip";
     import Accordion from "@/components/base/Accordion.svelte";
@@ -16,15 +17,15 @@
     const allowedRegularTypes = ["text", "editor", "url", "email", "json"];
     const allowedRegularAndFileTypes = allowedRegularTypes.concat("file");
 
-    let providersListPanel;
-    let providerPanel;
-    let showMappedFields = false;
-    let regularFieldOptions = [];
-    let regularAndFileFieldOptions = [];
+    let providersListPanel = $state(undefined);
+    let providerPanel = $state(undefined);
+    let showMappedFields = $state(false);
+    let regularFieldOptions = $state([]);
+    let regularAndFileFieldOptions = $state([]);
 
     $: refreshFieldOptions(collection.fields);
 
-    $: if (CommonHelper.isEmpty(collection.oauth2)) {
+    $effect(() => { if (CommonHelper.isEmpty(collection.oauth2)) {
         collection.oauth2 = {
             enabled: false,
             mappedFields: {},
@@ -32,9 +33,9 @@
         };
     }
 
-    $: hasErrors = !CommonHelper.isEmpty($errors?.oauth2);
+    let hasErrors = $derived(!CommonHelper.isEmpty($errors?.oauth2));
 
-    $: totalProviders = collection.oauth2?.providers?.length || 0;
+    let totalProviders = $derived(collection.oauth2?.providers?.length || 0);
 
     function refreshFieldOptions(fields = []) {
         regularFieldOptions =

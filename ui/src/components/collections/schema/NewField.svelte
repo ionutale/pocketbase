@@ -1,9 +1,10 @@
+<svelte:options runes />
 <script>
     import Toggler from "@/components/base/Toggler.svelte";
     import CommonHelper from "@/utils/CommonHelper";
     import { createEventDispatcher } from "svelte";
 
-    let classes = "";
+    let classes = $state("");
     export { classes as class }; // export reserved keyword
 
     const dispatch = createEventDispatcher();

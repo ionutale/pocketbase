@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher, tick } from "svelte";
     import { scale } from "svelte/transition";
@@ -32,45 +33,45 @@
 
     const dispatch = createEventDispatcher();
 
-    let collectionPanel;
-    let confirmChangesPanel;
-    let original = null;
-    let collection = {};
-    let isSaving = false;
-    let isLoadingConfirmation = false;
+    let collectionPanel = $state(undefined);
+    let confirmChangesPanel = $state(undefined);
+    let original = $state(null);
+    let collection = $state({});
+    let isSaving = $state(false);
+    let isLoadingConfirmation = $state(false);
     let confirmClose = false; // prevent close recursion
-    let activeTab = TAB_SCHEMA;
-    let initialFormHash = calculateFormHash(collection);
-    let fieldsTabError = "";
-    let baseCollectionKeys = [];
+    let activeTab = $state(TAB_SCHEMA);
+    let initialFormHash = $state(calculateFormHash(collection));
+    let fieldsTabError = $state("");
+    let baseCollectionKeys = $state([]);
 
-    $: baseCollectionKeys = Object.keys($scaffolds["base"] || {});
+    let baseCollectionKeys = $derived(Object.keys($scaffolds["base"] || {}));
 
-    $: isAuth = collection.type === TYPE_AUTH;
+    let isAuth = $derived(collection.type === TYPE_AUTH);
 
-    $: isView = collection.type === TYPE_VIEW;
+    let isView = $derived(collection.type === TYPE_VIEW);
 
-    $: if ($errors.fields || $errors.viewQuery || $errors.indexes) {
+    $effect(() => { if ($errors.fields || $errors.viewQuery || $errors.indexes) {
         // extract the direct fields list error, otherwise - return a generic message
         fieldsTabError = CommonHelper.getNestedVal($errors, "fields.message") || "Has errors";
     } else {
         fieldsTabError = "";
     }
 
-    $: isSystemUpdate = !!collection.id && collection.system;
+    let isSystemUpdate = $derived(!!collection.id && collection.system);
 
-    $: isSuperusers = !!collection.id && collection.system && collection.name == "_superusers";
+    let isSuperusers = $derived(!!collection.id && collection.system && collection.name == "_superusers");
 
-    $: hasChanges = initialFormHash != calculateFormHash(collection);
+    let hasChanges = $derived(initialFormHash != calculateFormHash(collection));
 
-    $: canSave = !collection.id || hasChanges;
+    let canSave = $derived(!collection.id || hasChanges);
 
-    $: if (activeTab === TAB_OPTIONS && collection.type !== "auth") {
+    $effect(() => { if (activeTab === TAB_OPTIONS && collection.type !== "auth") {
         // reset selected tab
         changeTab(TAB_SCHEMA);
     }
 
-    $: if (collection.type === "view") {
+    $effect(() => { if (collection.type === "view") {
         // reset non-view fields
         collection.createRule = null;
         collection.updateRule = null;
@@ -79,7 +80,7 @@
     }
 
     // update indexes on collection rename
-    $: if (collection.name && original?.name != collection.name && collection.indexes.length > 0) {
+    $effect(() => { if (collection.name && original?.name != collection.name && collection.indexes.length > 0) {
         collection.indexes = collection.indexes?.map((idx) =>
             CommonHelper.replaceIndexTableName(idx, collection.name),
         );
@@ -171,7 +172,7 @@
         const data = exportFormData();
         const isNew = !collection.id;
 
-        let request;
+        let request = $state(undefined);
         if (isNew) {
             request = ApiClient.collections.create(data);
         } else {

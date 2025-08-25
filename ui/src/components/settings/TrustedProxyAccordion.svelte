@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import tooltip from "@/actions/tooltip";
     import Accordion from "@/components/base/Accordion.svelte";
@@ -13,19 +14,19 @@
     export let formSettings;
     export let healthData;
 
-    let initialSettingsHash = "";
+    let initialSettingsHash = $state("");
 
-    $: settingsHash = JSON.stringify(formSettings);
+    let settingsHash = $derived(JSON.stringify(formSettings));
 
-    $: if (initialSettingsHash != settingsHash) {
+    $effect(() => { if (initialSettingsHash != settingsHash) {
         initialSettingsHash = settingsHash;
     }
 
-    $: hasChanges = initialSettingsHash != settingsHash;
+    let hasChanges = $derived(initialSettingsHash != settingsHash);
 
-    $: hasErrors = !CommonHelper.isEmpty($errors?.trustedProxy);
+    let hasErrors = $derived(!CommonHelper.isEmpty($errors?.trustedProxy));
 
-    $: isEnabled = !CommonHelper.isEmpty(formSettings.trustedProxy.headers);
+    let isEnabled = $derived(!CommonHelper.isEmpty(formSettings.trustedProxy.headers));
 
     $: suggestedProxyHeaders = !healthData.possibleProxyHeader
         ? commonProxyHeaders

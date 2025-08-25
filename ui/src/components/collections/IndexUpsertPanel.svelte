@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import tooltip from "@/actions/tooltip";
     import Field from "@/components/base/Field.svelte";
@@ -9,19 +10,19 @@
 
     export let collection;
 
-    let panel;
-    let original = "";
-    let index = "";
-    let key = "";
-    let codeEditorComponent;
-    let isCodeEditorComponentLoading = false;
+    let panel = $state(undefined);
+    let original = $state("");
+    let index = $state("");
+    let key = $state("");
+    let codeEditorComponent = $state(undefined);
+    let isCodeEditorComponentLoading = $state(false);
 
     $: presetColumns =
         collection?.fields?.filter((f) => !f.toDelete && f.name != "id")?.map((f) => f.name) || [];
 
-    $: indexParts = CommonHelper.parseIndex(index);
+    let indexParts = $derived(CommonHelper.parseIndex(index));
 
-    $: indexColumns = indexParts.columns?.map((c) => c.name) || [];
+    let indexColumns = $derived(indexParts.columns?.map((c) => c.name) || []);
 
     export function show(showIndex, showKey) {
         key = !CommonHelper.isEmpty(showKey) ? showKey : "";

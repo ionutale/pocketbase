@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { createEventDispatcher, tick } from "svelte";
     import CommonHelper from "@/utils/CommonHelper";
@@ -7,14 +8,14 @@
 
     const dispatch = createEventDispatcher();
 
-    let classes = "btn-sm btn-hint btn-transparent";
+    let classes = $state("btn-sm btn-hint btn-transparent");
     export { classes as class };
 
     export let length = 32;
 
-    let secret = "";
-    let secretElem;
-    let togglerActive = false;
+    let secret = $state("");
+    let secretElem = $state(undefined);
+    let togglerActive = $state(false);
 
     async function generate() {
         secret = CommonHelper.randomSecret(length);
@@ -24,7 +25,7 @@
         await tick();
 
         if (secretElem) {
-            let range = document.createRange();
+            let range = $state(document.createRange());
             range.selectNode(secretElem);
             window.getSelection().removeAllRanges();
             window.getSelection().addRange(range);

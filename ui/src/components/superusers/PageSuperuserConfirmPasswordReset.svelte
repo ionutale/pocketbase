@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { link, replace } from "svelte-spa-router";
     import ApiClient from "@/utils/ApiClient";
@@ -8,11 +9,11 @@
 
     export let params;
 
-    let newPassword = "";
-    let newPasswordConfirm = "";
-    let isLoading = false;
+    let newPassword = $state("");
+    let newPasswordConfirm = $state("");
+    let isLoading = $state(false);
 
-    $: email = CommonHelper.getJWTPayload(params?.token).email || "";
+    let email = $derived(CommonHelper.getJWTPayload(params?.token).email || "");
 
     async function submit() {
         if (isLoading) {

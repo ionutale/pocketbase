@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import { scale } from "svelte/transition";
     import CommonHelper from "@/utils/CommonHelper";
@@ -7,7 +8,7 @@
 
     export let collection;
 
-    let upsertPanel;
+    let upsertPanel = $state(undefined);
 
     function pushOrReplace(oldIndex, newIndex) {
         for (let i = 0; i < collection.indexes.length; i++) {

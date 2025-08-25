@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import tooltip from "@/actions/tooltip";
     import Field from "@/components/base/Field.svelte";
@@ -17,7 +18,7 @@
     export let field;
     export let key = "";
 
-    let selectedOption = optionFromField();
+    let selectedOption = $state(optionFromField());
 
     $: updateField(selectedOption);
 

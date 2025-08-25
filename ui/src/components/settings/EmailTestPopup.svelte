@@ -1,3 +1,4 @@
+<svelte:options runes />
 <script>
     import Field from "@/components/base/Field.svelte";
     import OverlayPanel from "@/components/base/OverlayPanel.svelte";
@@ -22,17 +23,17 @@
         { label: "Login alert", value: "login-alert" },
     ];
 
-    let panel;
-    let collectionIdOrName = "";
-    let email = localStorage.getItem(emailStorageKey);
-    let template = templateOptions[0].value;
-    let isSubmitting = false;
-    let testTimeoutId = null;
-    let authCollections = [];
-    let isAuthCollectionsLoading = false;
-    let showAuthCollections = false;
+    let panel = $state(undefined);
+    let collectionIdOrName = $state("");
+    let email = $state(localStorage.getItem(emailStorageKey));
+    let template = $state(templateOptions[0].value);
+    let isSubmitting = $state(false);
+    let testTimeoutId = $state(null);
+    let authCollections = $state([]);
+    let isAuthCollectionsLoading = $state(false);
+    let showAuthCollections = $state(false);
 
-    $: canSubmit = !!email && !!template && !!collectionIdOrName;
+    let canSubmit = $derived(!!email && !!template && !!collectionIdOrName);
 
     export function show(collectionArg = "", emailArg = "", templateArg = "") {
         setErrors({}); // reset any previous errors
