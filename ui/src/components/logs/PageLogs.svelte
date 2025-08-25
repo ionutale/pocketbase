@@ -45,13 +45,14 @@
 
     $: if (typeof filter !== "undefined") {
         updateQueryParams();
+    }
 
     function refresh() {
         refreshKey++;
     }
 
     function updateQueryParams(extra = {}) {
-    let queryParams = {};
+        let queryParams = {};
         queryParams.filter = filter || null;
         queryParams[ADMIN_REQUESTS_QUERY_KEY] = withSuperuserLogs << 0 || null;
         CommonHelper.replaceHashQueryParams(Object.assign(queryParams, extra));

@@ -20,19 +20,23 @@
 
     const dispatch = createEventDispatcher();
 
-    $effect(() => { if (container) {
-        bindTrigger(trigger);
-    }
+    $effect(() => {
+        if (container) {
+            bindTrigger(trigger);
+        }
+    });
 
-    $effect(() => { if (active) {
-        activeTrigger?.classList?.add("active");
-        activeTrigger?.setAttribute("aria-expanded", true);
-        dispatch("show");
-    } else {
-        activeTrigger?.classList?.remove("active");
-        activeTrigger?.setAttribute("aria-expanded", false);
-        dispatch("hide");
-    }
+    $effect(() => {
+        if (active) {
+            activeTrigger?.classList?.add("active");
+            activeTrigger?.setAttribute("aria-expanded", true);
+            dispatch("show");
+        } else {
+            activeTrigger?.classList?.remove("active");
+            activeTrigger?.setAttribute("aria-expanded", false);
+            dispatch("hide");
+        }
+    });
 
     export function hideWithDelay(delay = 0) {
         if (!active) {
