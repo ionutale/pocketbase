@@ -435,4 +435,4 @@
     });
 </script>
 
-<div bind:this={container} class="code-editor" />
+<div bind:this={container} class="code-editor"></div>

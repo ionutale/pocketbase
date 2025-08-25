@@ -41,4 +41,4 @@
         text: tooltipDates.join("\n"),
         position: "left",
     }}
-/>
+></i>
