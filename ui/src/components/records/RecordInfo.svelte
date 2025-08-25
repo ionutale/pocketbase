@@ -22,6 +22,7 @@
         target="_blank"
         class="inline-flex link-hint"
         rel="noopener noreferrer"
+    aria-label="Open related record in new tab"
         use:tooltip={{
             text:
                 "Open relation record in new tab:\n" +

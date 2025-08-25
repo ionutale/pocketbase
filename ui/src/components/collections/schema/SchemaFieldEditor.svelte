@@ -32,7 +32,7 @@
                     use:tooltip={{
                         text: `This could help making the editor content more portable between environments since there will be no local base url to replace.`,
                     }}
-                />
+                ></i>
             </label>
         </Field>
     </svelte:fragment>

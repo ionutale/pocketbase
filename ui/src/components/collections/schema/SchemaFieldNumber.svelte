@@ -36,7 +36,7 @@
                     use:tooltip={{
                         text: `Existing decimal numbers will not be affected.`,
                     }}
-                />
+                ></i>
             </label>
         </Field>
     </svelte:fragment>
