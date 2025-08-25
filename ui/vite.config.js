@@ -15,6 +15,9 @@ export default defineConfig({
     plugins: [
         svelte({
             preprocess: [vitePreprocess()],
+            // If you rely on third-party components that still use `new Component(...)`
+            // you can temporarily enable backwards compatibility by uncommenting:
+            // compilerOptions: { compatibility: { componentApi: 4 } },
             onwarn: (warning, handler) => {
                 if (warning.code.startsWith('a11y-')) {
                     return; // silence a11y warnings
