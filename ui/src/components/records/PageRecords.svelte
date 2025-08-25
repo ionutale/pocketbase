@@ -33,7 +33,7 @@
     let filter = $state(initialQueryParams.get("filter") || "");
     let sort = $state(initialQueryParams.get("sort") || "-@rowid");
     let selectedCollectionIdOrName = $state(initialQueryParams.get("collection") || $activeCollection?.id);
-    let totalCount = 0; // used to manully change the count without the need of reloading the recordsCount component
+    let totalCount = $state(0); // used to manually change the count without reloading the recordsCount component
 
     loadCollections(selectedCollectionIdOrName);
 
@@ -41,39 +41,48 @@
 
     let collectionQueryParam = $derived(reactiveParams.get("collection"));
 
-    $effect(() => { if (
-        !$isCollectionsLoading &&
-        collectionQueryParam &&
-        collectionQueryParam != selectedCollectionIdOrName &&
-        collectionQueryParam != $activeCollection?.id &&
-        collectionQueryParam != $activeCollection?.name
-    ) {
-        changeActiveCollectionByIdOrName(collectionQueryParam);
-    }
+    $effect(() => {
+        if (
+            !$isCollectionsLoading &&
+            collectionQueryParam &&
+            collectionQueryParam != selectedCollectionIdOrName &&
+            collectionQueryParam != $activeCollection?.id &&
+            collectionQueryParam != $activeCollection?.name
+        ) {
+            changeActiveCollectionByIdOrName(collectionQueryParam);
+        }
+    });
 
-    // reset filter and sort on collection change
-    $effect(() => { if (
-        $activeCollection?.id &&
-        selectedCollectionIdOrName != $activeCollection.id &&
-        selectedCollectionIdOrName != $activeCollection.name
-    ) {
-        reset();
-    }
+    $effect(() => {
+        if (
+            $activeCollection?.id &&
+            selectedCollectionIdOrName != $activeCollection.id &&
+            selectedCollectionIdOrName != $activeCollection.name
+        ) {
+            reset();
+        }
+    });
 
-    $effect(() => { if ($activeCollection?.id) {
-        normalizeSort();
-    }
+    $effect(() => {
+        if ($activeCollection?.id) {
+            normalizeSort();
+        }
+    });
 
-    $effect(() => { if (!$isCollectionsLoading && initialQueryParams.get("recordId")) {
-        showRecordById(initialQueryParams.get("recordId"));
-    }
+    $effect(() => {
+        if (!$isCollectionsLoading && initialQueryParams.get("recordId")) {
+            showRecordById(initialQueryParams.get("recordId"));
+        }
+    });
 
-    // keep the url params in sync
-    $effect(() => { if (!$isCollectionsLoading && (sort || filter || $activeCollection?.id)) {
-        updateQueryParams();
-    }
+    $effect(() => {
+        if (!$isCollectionsLoading && (sort || filter || $activeCollection?.id)) {
+            updateQueryParams();
+        }
+    });
 
-    let $pageTitle = $derived($activeCollection?.name || "Collections");
+    let pageTitleLocal = $derived($activeCollection?.name || "Collections");
+    $pageTitle = pageTitleLocal;
 
     async function showRecordById(recordId) {
         await tick(); // ensure that the reactive component params are resolved

@@ -13,46 +13,62 @@
     import LogsSettingsPanel from "@/components/logs/LogsSettingsPanel.svelte";
     import LogsLevelsInfo from "@/components/logs/LogsLevelsInfo.svelte";
 
+    // Page title
     $pageTitle = "Logs";
 
+    // Constants
     const LOG_QUERY_KEY = "logId";
     const ADMIN_REQUESTS_QUERY_KEY = "superuserRequests";
     const ADMIN_REQUESTS_STORAGE_KEY = "superuserLogRequests";
 
+    // Initial query params snapshot
     const initialQueryParams = new URLSearchParams($querystring);
 
-    let logViewPanel;
-    let logsSettingsPanel;
-    let refreshKey = 1;
-    let filter = initialQueryParams.get("filter") || "";
-    let zoom = {};
-    let withSuperuserLogs =
-        (initialQueryParams.get(ADMIN_REQUESTS_QUERY_KEY) ||
-            window.localStorage?.getItem(ADMIN_REQUESTS_STORAGE_KEY)) << 0;
-    let initialWithSuperuserLogs = withSuperuserLogs;
+    // State (runes)
+    let refreshKey = $state(1);
+    let filter = $state(initialQueryParams.get("filter") || "");
+    let zoom = $state({});
+    let withSuperuserLogs = $state(
+        (initialQueryParams.get(ADMIN_REQUESTS_QUERY_KEY) ??
+            window.localStorage?.getItem(ADMIN_REQUESTS_STORAGE_KEY) ?? 0) << 0
+    );
 
-    $effect(() => { if (initialQueryParams.get(LOG_QUERY_KEY) && logViewPanel) {
-        logViewPanel.show(initialQueryParams.get(LOG_QUERY_KEY));
-    }
+    // Element refs as state so effects track them
+    let logViewPanel = $state();
+    let logsSettingsPanel = $state();
 
+    // Derived
     let presets = $derived(!withSuperuserLogs ? 'data.auth!="_superusers"' : "");
 
-    $effect(() => { if (initialWithSuperuserLogs != withSuperuserLogs) {
-        initialWithSuperuserLogs = withSuperuserLogs;
-        window.localStorage?.setItem(ADMIN_REQUESTS_STORAGE_KEY, withSuperuserLogs << 0);
-        updateQueryParams();
-    }
+    // Show a log panel if there is an initial log id
+    $effect(() => {
+        const initialId = initialQueryParams.get(LOG_QUERY_KEY);
+        if (initialId && logViewPanel) {
+            logViewPanel.show(initialId);
+        }
+    });
 
-    $effect(() => { if (typeof filter !== "undefined") {
+    // Persist and reflect superuser filter changes in the URL
+    $effect(() => {
+        window.localStorage?.setItem(
+            ADMIN_REQUESTS_STORAGE_KEY,
+            withSuperuserLogs << 0
+        );
         updateQueryParams();
-    }
+    });
+
+    // Reflect filter changes in the URL
+    $effect(() => {
+        // ensure undefined doesn't appear
+        updateQueryParams();
+    });
 
     function refresh() {
         refreshKey++;
     }
 
     function updateQueryParams(extra = {}) {
-        let queryParams = {};
+        const queryParams = {};
         queryParams.filter = filter || null;
         queryParams[ADMIN_REQUESTS_QUERY_KEY] = withSuperuserLogs << 0 || null;
         CommonHelper.replaceHashQueryParams(Object.assign(queryParams, extra));

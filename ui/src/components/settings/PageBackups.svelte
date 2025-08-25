@@ -23,7 +23,7 @@
     let formSettings = $state({});
     let isLoading = $state(false);
     let isSaving = $state(false);
-    let initialHash = $state("");
+    // removed $state initialHash; using derived hash below
     let enableAutoBackups = $state(false);
     let showBackupsSettings = $state(false);
     let isTesting = $state(false);
@@ -33,10 +33,13 @@
 
     let hasChanges = $derived(initialHash != JSON.stringify(formSettings));
 
-    $effect(() => { if (!enableAutoBackups && formSettings?.backups?.cron) {
-        removeError("backups.cron");
-        formSettings.backups.cron = "";
-    }
+    // Clear cron when auto backups disabled
+    $effect(() => {
+        if (!enableAutoBackups && formSettings?.backups?.cron) {
+            removeError("backups.cron");
+            formSettings.backups.cron = "";
+        }
+    });
 
     loadSettings();
 
