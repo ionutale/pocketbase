@@ -1,6 +1,7 @@
 <script>
     // Minimal router adapted for runes mode
-    const { routes = {}, restoreScrollState = false } = $props();
+    const _p = $props();
+    let { routes = {}, restoreScrollState = false } = _p;
 
     let current = $state({ location: '/', querystring: '' });
     let component = $state(null);
