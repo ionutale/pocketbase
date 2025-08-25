@@ -369,7 +369,7 @@
         </h4>
 
         {#if !!collection.id && (!collection.system || !isView)}
-            <div class="flex-fill" />
+            <div class="flex-fill"></div>
             <div
                 tabindex="0"
                 role="button"
@@ -451,7 +451,7 @@
                         class:btn-disabled={!!collection.id}
                     >
                         <!-- empty span for alignment -->
-                        <span aria-hidden="true" />
+                        <span aria-hidden="true"></span>
                         <span class="txt">Type: {collectionTypes[collection.type] || "N/A"}</span>
                         {#if !collection.id}
                             <i class="ri-arrow-down-s-fill" aria-hidden="true"></i>
@@ -467,7 +467,7 @@
                                         <i
                                             class={CommonHelper.getCollectionTypeIcon(type)}
                                             aria-hidden="true"
-                                        />
+                                        ></i>
                                         <span class="txt">{label} collection</span>
                                     </button>
                                 {/each}
@@ -497,7 +497,7 @@
                         class="ri-error-warning-fill txt-danger"
                         transition:scale={{ duration: 150, start: 0.7 }}
                         use:tooltip={fieldsTabError}
-                    />
+                    ></i>
                 {/if}
             </button>
 
@@ -514,7 +514,7 @@
                             class="ri-error-warning-fill txt-danger"
                             transition:scale={{ duration: 150, start: 0.7 }}
                             use:tooltip={"Has errors"}
-                        />
+                        ></i>
                     {/if}
                 </button>
             {/if}
@@ -532,7 +532,7 @@
                             class="ri-error-warning-fill txt-danger"
                             transition:scale={{ duration: 150, start: 0.7 }}
                             use:tooltip={"Has errors"}
-                        />
+                        ></i>
                     {/if}
                 </button>
             {/if}
