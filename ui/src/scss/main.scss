@@ -1,4 +1,4 @@
-// NOTE: Legacy @import usage (deprecation warnings). TODO: migrate to @use once variable/mixin namespace strategy is finalized.
+// Revert to legacy @import chain (full @use migration requires refactoring mixin/variable order).
 @import 'fonts';
 @import 'vars';
 @import 'mixins';
