@@ -382,7 +382,7 @@
         >
             <span class="txt">Reset</span>
         </button>
-        <div class="flex-fill" />
+    <div class="flex-fill"></div>
         <button type="button" class="btn btn-sm" on:click={downloadSelected}>
             <span class="txt">Download as JSON</span>
         </button>
