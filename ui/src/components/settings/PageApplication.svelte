@@ -19,9 +19,7 @@
     let formSettings = $state({});
     let isLoading = $state(false);
     let isSaving = $state(false);
-    let initialHash = $state("");
     let healthData = $state({});
-
     let initialHash = $derived(JSON.stringify(originalFormSettings));
 
     let hasChanges = $derived(initialHash != JSON.stringify(formSettings));
