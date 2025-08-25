@@ -80,7 +80,7 @@
     use:tooltip={"Upload backup"}
     on:click={() => fileInput?.click()}
 >
-    <i class="ri-upload-cloud-line" />
+    <i class="ri-upload-cloud-line"></i>
 </button>
 
 <input

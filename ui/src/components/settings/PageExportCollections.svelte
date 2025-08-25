@@ -105,7 +105,7 @@
     <div class="wrapper">
         <div class="panel">
             {#if isLoadingCollections}
-                <div class="loader" />
+                <div class="loader"></div>
             {:else}
                 <div class="content txt-xl m-b-base">
                     <p>
@@ -175,14 +175,14 @@
                 </div>
 
                 <div class="flex m-t-base">
-                    <div class="flex-fill" />
+                    <div class="flex-fill"></div>
                     <button
                         type="button"
                         class="btn btn-expanded"
                         disabled={!totalBulkSelected}
                         on:click={() => download()}
                     >
-                        <i class="ri-download-line" />
+                        <i class="ri-download-line"></i>
                         <span class="txt">Download as JSON</span>
                     </button>
                 </div>

@@ -73,12 +73,12 @@
                 use:tooltip={{ text: "Logs settings", position: "right" }}
                 on:click={() => logsSettingsPanel?.show()}
             >
-                <i class="ri-settings-4-line" />
+                <i class="ri-settings-4-line"></i>
             </button>
 
             <RefreshButton on:refresh={() => refresh()} />
 
-            <div class="flex-fill" />
+            <div class="flex-fill"></div>
 
             <div class="inline-flex">
                 <Field class="form-field form-field-toggle m-0" let:uniqueId>

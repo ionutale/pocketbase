@@ -221,7 +221,7 @@
     {/each}
 </div>
 
-<NewField class="btn btn-block btn-outline" on:select={(e) => newField(e.detail)} />
+<NewField class="btn btn-block btn-outline" on:select={(e) => newField(e.detail)}></NewField>
 
 <hr />
 
