@@ -7,18 +7,16 @@
 
     let collection;
 
-    let responseTab = 200;
-    let responses = [];
+    let responseTab = $state(200);
+    let responses = $state([]);
 
-    let backendAbsUrl = CommonHelper.getApiExampleUrl(ApiClient.baseURL);
+    let backendAbsUrl = $derived(CommonHelper.getApiExampleUrl(ApiClient.baseURL));
 
-    let dummyRecord = CommonHelper.dummyCollectionRecord(collection);
+    let dummyRecord = $derived(CommonHelper.dummyCollectionRecord(collection));
 
-    // recompute responses when collection changes
-    $: if (collection?.id) {
+    $effect(() => {
+        if (!collection?.id) return; // wait for collection
         responses = [];
-        if (!collection?.id) return;
-        if (collection?.id) {
         responses.push({
             code: 200,
             body: JSON.stringify(
@@ -76,8 +74,17 @@
                 }
             `,
         });
-        }
-    }
+        responses.push({
+            code: 403,
+            body: `
+                {
+                  "status": 403,
+                  "message": "Batch requests are not allowed.",
+                  "data": {}
+                }
+            `,
+        });
+    });
 </script>
 
 <h3 class="m-b-sm">Batch create/update/upsert/delete ({collection.name})</h3>

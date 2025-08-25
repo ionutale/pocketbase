@@ -8,11 +8,11 @@
 
     let params;
 
-    let newPassword = "";
-    let newPasswordConfirm = "";
-    let isLoading = false;
+    let newPassword = $state("");
+    let newPasswordConfirm = $state("");
+    let isLoading = $state(false);
 
-    let email = CommonHelper.getJWTPayload(params?.token).email || "";
+    let email = $derived(CommonHelper.getJWTPayload(params?.token).email || "");
 
     async function submit() {
         if (isLoading) {

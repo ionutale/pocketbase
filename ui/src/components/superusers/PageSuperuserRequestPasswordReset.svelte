@@ -4,9 +4,9 @@
     import FullPage from "@/components/base/FullPage.svelte";
     import Field from "@/components/base/Field.svelte";
 
-    let email = "";
-    let isLoading = false;
-    let success = false;
+    let email = $state("");
+    let isLoading = $state(false);
+    let success = $state(false);
 
     async function submit() {
         if (isLoading) {

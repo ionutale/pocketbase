@@ -9,32 +9,32 @@
 
     const queryParams = new URLSearchParams($querystring);
 
-    let identity = queryParams.get("demoEmail") || "";
-    let password = queryParams.get("demoPassword") || "";
+    let identity = $state(queryParams.get("demoEmail") || "");
+    let password = $state(queryParams.get("demoPassword") || "");
 
-    let authMethods = {};
-    let currentStep = 1;
-    let totalSteps = 1;
+    let authMethods = $state({});
+    let currentStep = $state(1);
+    let totalSteps = $state(1);
 
-    let passwordAuthSubmitting = false;
-    let otpRequestSubmitting = false;
-    let otpAuthSubmitting = false;
-    let isLoading = false;
+    let passwordAuthSubmitting = $state(false);
+    let otpRequestSubmitting = $state(false);
+    let otpAuthSubmitting = $state(false);
+    let isLoading = $state(false);
 
-    let mfaId = "";
-    let otpId = "";
-    let lastOTPId = "";
-    let otpEmail = "";
-    let otpPassword = "";
+    let mfaId = $state("");
+    let otpId = $state("");
+    let lastOTPId = $state("");
+    let otpEmail = $state("");
+    let otpPassword = $state("");
 
-    $: {
+    $effect(() => {
         totalSteps = 1;
         currentStep = 1;
         if (authMethods?.mfa?.enabled) totalSteps++;
         if (authMethods?.otp?.enabled) totalSteps++;
         if (mfaId != "") currentStep++;
         if (otpId != "") currentStep++;
-    }
+    });
 
     loadAuthMethods();
 
