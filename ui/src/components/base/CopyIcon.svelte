@@ -42,4 +42,4 @@
     aria-label={"Copy to clipboard"}
     use:tooltipAction={!copyTimeout ? tooltip : undefined}
     on:click|stopPropagation={copy}
-/>
+></i>
