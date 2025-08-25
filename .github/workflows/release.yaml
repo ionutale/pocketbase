@@ -7,6 +7,8 @@ on:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # needed to push/move the lightweight "latest" tag
     env:
       flags: ""
     steps:
@@ -29,6 +31,21 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '>=1.23.12'
+
+      # Update (force-move) the floating "latest" tag to the current version tag commit.
+      # This runs only when the workflow is triggered by a version tag (refs/tags/v*).
+      - name: Update latest tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          VERSION_TAG="${GITHUB_REF#refs/tags/}"
+          echo "Moving 'latest' tag to ${VERSION_TAG}";
+          # Delete remote latest if exists (ignore failure), then recreate & push
+          git tag -f latest "$VERSION_TAG"
+          git push origin :refs/tags/latest || true
+          git push origin refs/tags/latest
 
       # This step usually is not needed because the /ui/dist is pregenerated locally
       # but its here to ensure that each release embeds the latest admin ui artifacts.
