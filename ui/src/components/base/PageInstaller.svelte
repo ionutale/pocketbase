@@ -1,4 +1,3 @@
-<svelte:options runes={true} />
 <script>
     import { tick } from "svelte";
     import { replace } from "@/lib/router";

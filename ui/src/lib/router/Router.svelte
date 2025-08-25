@@ -1,12 +1,11 @@
 <script>
-    // Minimal router for runes migration phase (kept legacy style to avoid compile issues)
-    export let routes = {};
-    export let restoreScrollState = false;
+    // Minimal router adapted for runes mode
+    const { routes = {}, restoreScrollState = false } = $props();
 
-    let current = { location: '/', querystring: '' };
-    let component = null;
-    let componentParams = null;
-    let userData = null;
+    let current = $state({ location: '/', querystring: '' });
+    let component = $state(null);
+    let componentParams = $state(null);
+    let userData = $state(null);
 
     function parseLocation() {
         const href = window.location.href;
