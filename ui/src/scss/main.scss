@@ -1,5 +1,4 @@
-// NOTE: Reverted to legacy @import for now to maintain global scope across partials.
-// A future refactor will modularize partials with explicit @use dependencies.
+// NOTE: Legacy @import usage (deprecation warnings). TODO: migrate to @use once variable/mixin namespace strategy is finalized.
 @import 'fonts';
 @import 'vars';
 @import 'mixins';
