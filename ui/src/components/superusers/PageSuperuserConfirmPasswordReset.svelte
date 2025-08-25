@@ -1,3 +1,4 @@
+<svelte:options runes={true} />
 <script>
     import { link, replace } from "@/lib/router";
     import ApiClient from "@/utils/ApiClient";
