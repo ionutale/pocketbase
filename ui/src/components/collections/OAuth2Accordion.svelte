@@ -68,7 +68,7 @@
             <span class="txt">OAuth2</span>
         </div>
 
-        <div class="flex-fill" />
+    <div class="flex-fill"></div>
 
         {#if collection.oauth2.enabled}
             <span class="label" class:label-warning={!totalProviders} class:label-info={totalProviders > 0}>

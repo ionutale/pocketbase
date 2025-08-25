@@ -83,7 +83,7 @@
                         class="btn btn-transparent btn-block btn-sm"
                         on:click={() => upsertPanel?.show()}
                     >
-                        <i class="ri-add-line" />
+                        <i class="ri-add-line"></i>
                         <span class="txt">New collection</span>
                     </button>
                 </svelte:fragment>
@@ -103,7 +103,7 @@
                         text: "If set, the relation can point to records from multiple collections. Values are stored as '<collectionId>:<id>'.",
                         position: "top",
                     }}
-                />
+                ></i>
             </label>
             <ObjectSelect
                 id={uniqueId}
