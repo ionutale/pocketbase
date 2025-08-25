@@ -7,8 +7,8 @@
     let classes = $state("m-b-sm");
     export { classes as class }; // export reserved keyword
 
-    export let js = "";
-    export let dart = "";
+    let js = "";
+    let dart = "";
 
     let activeTab = $state(localStorage.getItem(SDK_PREFERENCE_KEY) || "javascript");
 

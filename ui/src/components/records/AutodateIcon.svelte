@@ -6,7 +6,7 @@
 
     const detailedDateFormat = "yyyy-MM-dd HH:mm:ss.SSS";
 
-    export let record;
+    let record;
 
     let tooltipDates = $state([]);
 

@@ -4,11 +4,11 @@
     import CommonHelper from "@/utils/CommonHelper";
     import tooltipAction from "@/actions/tooltip";
 
-    export let value = "";
-    export let tooltip = "Copy";
-    export let idleClasses = "ri-file-copy-line txt-sm link-hint";
-    export let successClasses = "ri-check-line txt-sm txt-success";
-    export let successDuration = 500; // ms
+    let value = "";
+    let tooltip = "Copy";
+    let idleClasses = "ri-file-copy-line txt-sm link-hint";
+    let successClasses = "ri-check-line txt-sm txt-success";
+    let successDuration = 500; // ms
 
     let copyTimeout = $state(undefined);
 

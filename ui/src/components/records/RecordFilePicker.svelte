@@ -16,9 +16,9 @@
     const uniqueId = "file_picker_" + CommonHelper.randomString(5);
     const batchSize = 50;
 
-    export let title = "Select a file";
-    export let submitText = "Insert";
-    export let fileTypes = ["image", "document", "video", "audio", "file"];
+    let title = "Select a file";
+    let submitText = "Insert";
+    let fileTypes = ["image", "document", "video", "audio", "file"];
 
     let pickerPanel = $state(undefined);
     let upsertPanel = $state(undefined);

@@ -39,13 +39,13 @@
     let classes = $state("");
     export { classes as class }; // export reserved keyword
 
-    export let active = false;
-    export let popup = false;
-    export let overlayClose = true;
-    export let btnClose = true;
-    export let escClose = true;
-    export let beforeOpen = undefined; // function callback called before open; if return false - no open
-    export let beforeHide = undefined; // function callback called before hide; if return false - no close
+    let active = false;
+    let popup = false;
+    let overlayClose = true;
+    let btnClose = true;
+    let escClose = true;
+    let beforeOpen = undefined; // function callback called before open; if return false - no open
+    let beforeHide = undefined; // function callback called before hide; if return false - no close
 
     const dispatch = createEventDispatcher();
     const uniqueId = "op_" + CommonHelper.randomString(10);

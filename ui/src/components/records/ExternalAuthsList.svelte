@@ -9,7 +9,7 @@
 
     const dispatch = createEventDispatcher();
 
-    export let record;
+    let record;
 
     let externalAuths = $state([]);
     let isLoading = $state(false);

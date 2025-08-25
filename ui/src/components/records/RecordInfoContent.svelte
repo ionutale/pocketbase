@@ -6,7 +6,7 @@
     import GeoPointValue from "@/components/records/fields/GeoPointValue.svelte";
     import { collections } from "@/stores/collections";
 
-    export let record;
+    let record;
 
     let fileDisplayFields = $state([]);
     let nonFileDisplayFields = $state([]);

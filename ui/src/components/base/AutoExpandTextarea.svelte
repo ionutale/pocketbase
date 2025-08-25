@@ -2,8 +2,8 @@
 <script>
     import { onMount } from "svelte";
 
-    export let value = "";
-    export let maxHeight = 200;
+    let value = "";
+    let maxHeight = 200;
 
     let inputElem = $state(undefined);
     let updateTimeoutId = $state(undefined);

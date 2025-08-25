@@ -4,7 +4,7 @@
     import CodeBlock from "@/components/base/CodeBlock.svelte";
     import FieldsQueryParam from "@/components/collections/docs/FieldsQueryParam.svelte";
 
-    export let collection;
+    let collection;
 
     let responseTab = $state(200);
     let responses = $state([]);

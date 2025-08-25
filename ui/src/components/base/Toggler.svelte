@@ -3,11 +3,11 @@
     import { createEventDispatcher, onMount } from "svelte";
     import { fly } from "svelte/transition";
 
-    export let trigger = undefined;
-    export let active = false;
-    export let escClose = true;
-    export let autoScroll = true;
-    export let closableClass = "closable";
+    let trigger = undefined;
+    let active = false;
+    let escClose = true;
+    let autoScroll = true;
+    let closableClass = "closable";
     let classes = $state("");
     export { classes as class }; // export reserved keyword
 

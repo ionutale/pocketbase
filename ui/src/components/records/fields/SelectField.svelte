@@ -3,8 +3,8 @@
     import Select from "@/components/base/Select.svelte";
     import FieldLabel from "@/components/records/fields/FieldLabel.svelte";
 
-    export let field;
-    export let value = undefined;
+    let field;
+    let value = undefined;
 
     let isMultiple = $derived(field.maxSelect > 1);
 

@@ -15,8 +15,8 @@
         { label: "Create/Update", value: ON_CREATE_UPDATE },
     ];
 
-    export let field;
-    export let key = "";
+    let field;
+    let key = "";
 
     let selectedOption = $state(optionFromField());
 

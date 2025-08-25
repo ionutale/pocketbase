@@ -5,7 +5,7 @@
     import CommonHelper from "@/utils/CommonHelper";
     import { slide } from "svelte/transition";
 
-    export let collection;
+    let collection;
 
     let fieldNames = $derived(CommonHelper.getAllCollectionIdentifiers(collection));
 

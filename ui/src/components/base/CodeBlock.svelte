@@ -1,7 +1,7 @@
 <svelte:options runes />
 <script>
-    export let content = "";
-    export let language = "javascript"; // javascript, html, dart, go, sql
+    let content = "";
+    let language = "javascript"; // javascript, html, dart, go, sql
 
     let classes = $state("");
     export { classes as class }; // export reserved keyword

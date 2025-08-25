@@ -10,13 +10,13 @@
 
     const testRequestKey = "s3_test_request";
 
-    export let originalConfig = {};
-    export let config = {};
-    export let configKey = "s3";
-    export let toggleLabel = "Enable S3";
-    export let testFilesystem = "storage"; // storage or backups
-    export let testError = null;
-    export let isTesting = false;
+    let originalConfig = {};
+    let config = {};
+    let configKey = "s3";
+    let toggleLabel = "Enable S3";
+    let testFilesystem = "storage"; // storage or backups
+    let testError = null;
+    let isTesting = false;
 
     let testTimeoutId = $state(null);
     let testDebounceId = $state(null);

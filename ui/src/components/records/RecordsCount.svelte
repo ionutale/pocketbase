@@ -6,9 +6,9 @@
 
     const dispatch = createEventDispatcher();
 
-    export let collection;
-    export let filter = "";
-    export let totalCount = 0;
+    let collection;
+    let filter = "";
+    let totalCount = 0;
 
     let classes = $state(undefined);
     export { classes as class }; // export reserved keyword

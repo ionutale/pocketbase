@@ -3,9 +3,9 @@
     let classes = $state("");
     export { classes as class }; // export reserved keyword
 
-    export let name;
-    export let sort = "";
-    export let disable = false;
+    let name;
+    let sort = "";
+    let disable = false;
 
     function toggleSort() {
         if (disable) {

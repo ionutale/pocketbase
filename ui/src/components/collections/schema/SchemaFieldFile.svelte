@@ -10,8 +10,8 @@
     import baseMimeTypesList from "@/mimes.js";
     import CommonHelper from "@/utils/CommonHelper";
 
-    export let field;
-    export let key = "";
+    let field;
+    let key = "";
 
     const isSingleOptions = [
         { label: "Single", value: true },

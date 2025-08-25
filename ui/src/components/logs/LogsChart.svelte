@@ -17,9 +17,9 @@
     import "chartjs-adapter-luxon";
     import zoomPlugin from "chartjs-plugin-zoom";
 
-    export let filter = "";
-    export let zoom = {};
-    export let presets = "";
+    let filter = "";
+    let zoom = {};
+    let presets = "";
 
     let chartCanvas = $state(undefined);
     let chartInst = $state(undefined);

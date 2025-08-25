@@ -11,8 +11,8 @@
 
     const commonProxyHeaders = ["X-Forwarded-For", "Fly-Client-IP", "CF-Connecting-IP"];
 
-    export let formSettings;
-    export let healthData;
+    let formSettings;
+    let healthData;
 
     let initialSettingsHash = $state("");
 

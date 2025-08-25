@@ -2,7 +2,7 @@
 <script>
     import CommonHelper from "@/utils/CommonHelper";
 
-    export let value;
+    let value;
 
     let classes = $state(undefined);
     export { classes as class }; // export reserved keyword

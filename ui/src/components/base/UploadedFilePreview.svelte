@@ -1,8 +1,8 @@
 <script>
     import CommonHelper from "@/utils/CommonHelper";
 
-    export let file; // File() instance
-    export let size = 50; // preview thumb size (if file is image)
+    let file; // File() instance
+    let size = 50; // preview thumb size (if file is image)
 
     $effect(() => { if (typeof file !== "undefined") {
         loadPreviewUrl();

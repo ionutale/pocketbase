@@ -2,7 +2,7 @@
 <script>
     import CodeBlock from "@/components/base/CodeBlock.svelte";
 
-    export let collection;
+    let collection;
 
     let responseTab = $state(204);
     let responses = $state([]);

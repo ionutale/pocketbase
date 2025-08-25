@@ -16,8 +16,8 @@
     const uniqueId = "picker_" + CommonHelper.randomString(5);
     const batchSize = 50;
 
-    export let value;
-    export let field;
+    let value;
+    let field;
 
     let pickerPanel = $state(undefined);
     let upsertPanel = $state(undefined);

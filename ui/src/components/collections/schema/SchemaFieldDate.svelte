@@ -5,8 +5,8 @@
     import CommonHelper from "@/utils/CommonHelper";
     import Flatpickr from "svelte-flatpickr";
 
-    export let field;
-    export let key = "";
+    let field;
+    let key = "";
 
     let pickerMinValue = $state(field?.min);
     let pickerMaxValue = $state(field?.max);

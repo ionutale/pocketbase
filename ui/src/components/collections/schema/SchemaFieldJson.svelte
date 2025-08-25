@@ -4,8 +4,8 @@
     import SchemaField from "@/components/collections/schema/SchemaField.svelte";
     import { slide } from "svelte/transition";
 
-    export let field;
-    export let key = "";
+    let field;
+    let key = "";
 
     let showInfo = $state(false);
 </script>

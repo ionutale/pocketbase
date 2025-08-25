@@ -27,10 +27,10 @@
     const authHideHiddenToggle = ["password", "tokenKey", "id", "email"];
     const authHidePresentableToggle = ["password", "tokenKey"];
 
-    export let key = "";
-    export let field = CommonHelper.initSchemaField();
-    export let draggable = true;
-    export let collection = {};
+    let key = "";
+    let field = CommonHelper.initSchemaField();
+    let draggable = true;
+    let collection = {};
 
     let nameInput = $state(undefined);
     let showOptions = $state(false);

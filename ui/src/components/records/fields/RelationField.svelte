@@ -13,9 +13,9 @@
 
     const batchSize = 100;
 
-    export let field;
-    export let value;
-    export let picker;
+    let field;
+    let value;
+    let picker;
 
     let fieldRef = $state(undefined);
     let list = $state([]);

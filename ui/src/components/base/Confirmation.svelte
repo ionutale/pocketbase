@@ -7,10 +7,7 @@
     let isConfirmationBusy = false;
     let confirmed = false;
 
-    $: if ($confirmation?.text) {
-        confirmed = false;
-        confirmationPopup?.show();
-    }
+    $effect(() => { if ($confirmation?.text) { confirmed = false; confirmationPopup?.show(); } });
 </script>
 
 <OverlayPanel

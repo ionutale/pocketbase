@@ -11,7 +11,7 @@
     import { errors, setErrors, removeError } from "@/stores/errors";
     import { collections, loadCollections } from "@/stores/collections";
 
-    export let formSettings;
+    let formSettings;
 
     const audienceOptions = [
         { value: "", label: "All" },

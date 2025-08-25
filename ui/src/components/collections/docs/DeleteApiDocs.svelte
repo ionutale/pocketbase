@@ -5,7 +5,7 @@
     import CodeBlock from "@/components/base/CodeBlock.svelte";
     import SdkTabs from "@/components/base/SdkTabs.svelte";
 
-    export let collection;
+    let collection;
 
     let responseTab = $state(204);
     let responses = $state([]);

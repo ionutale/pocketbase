@@ -7,7 +7,7 @@
     import FormattedDate from "@/components/base/FormattedDate.svelte";
     import RecordFieldValue from "@/components/records/RecordFieldValue.svelte";
 
-    export let collection;
+    let collection;
 
     let recordPanel = $state(undefined);
     let record = $state({});

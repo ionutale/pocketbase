@@ -7,9 +7,9 @@
     let classes = $state("");
     export { classes as class }; // export reserved keyword
 
-    export let vThreshold = 0;
-    export let hThreshold = 0;
-    export let dispatchOnNoScroll = true;
+    let vThreshold = 0;
+    let hThreshold = 0;
+    let dispatchOnNoScroll = true;
 
     let wrapper = $state(null);
     let scrollClasses = $state("");

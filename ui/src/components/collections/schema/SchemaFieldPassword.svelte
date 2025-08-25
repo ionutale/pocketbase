@@ -3,8 +3,8 @@
     import SchemaField from "@/components/collections/schema/SchemaField.svelte";
     import CommonHelper from "@/utils/CommonHelper";
 
-    export let field;
-    export let key = "";
+    let field;
+    let key = "";
 
     $effect(() => { if (CommonHelper.isEmpty(field.id)) {
         loadDefaults();

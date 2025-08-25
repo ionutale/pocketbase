@@ -5,8 +5,8 @@
     import Field from "@/components/base/Field.svelte";
     import FieldLabel from "@/components/records/fields/FieldLabel.svelte";
 
-    export let field;
-    export let value = undefined;
+    let field;
+    let value = undefined;
 
     let editorComponent = $state(undefined);
 

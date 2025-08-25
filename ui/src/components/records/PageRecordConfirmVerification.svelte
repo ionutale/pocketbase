@@ -4,7 +4,7 @@
     import ApiClient from "@/utils/ApiClient";
     import PocketBase, { getTokenPayload, isTokenExpired } from "pocketbase";
 
-    export let params;
+    let params;
 
     let successConfirm = $state(false);
     let isConfirming = $state(false);

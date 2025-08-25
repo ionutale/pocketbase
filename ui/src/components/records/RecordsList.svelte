@@ -17,9 +17,9 @@
     const sortRegex = /^([\+\-])?(\w+)$/;
     const perPage = 40;
 
-    export let collection;
-    export let sort = "";
-    export let filter = "";
+    let collection;
+    let sort = "";
+    let filter = "";
 
     let scrollWrapper = $state(undefined);
     let records = $state([]);

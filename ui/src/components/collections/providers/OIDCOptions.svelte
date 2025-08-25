@@ -7,8 +7,8 @@
     import MultipleValueInput from "@/components/base/MultipleValueInput.svelte";
     import CommonHelper from "@/utils/CommonHelper";
 
-    export let key = "";
-    export let config = {};
+    let key = "";
+    let config = {};
 
     const userInfoOptions = [
         { label: "User info URL", value: true },

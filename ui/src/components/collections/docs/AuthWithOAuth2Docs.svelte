@@ -6,7 +6,7 @@
     import ApiClient from "@/utils/ApiClient";
     import CommonHelper from "@/utils/CommonHelper";
 
-    export let collection;
+    let collection;
 
     let responseTab = $state(200);
     let responses = $state([]);

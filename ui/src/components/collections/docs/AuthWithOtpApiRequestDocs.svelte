@@ -3,7 +3,7 @@
     import CodeBlock from "@/components/base/CodeBlock.svelte";
     import CommonHelper from "@/utils/CommonHelper";
 
-    export let collection;
+    let collection;
 
     let responseTab = $state(200);
     let responses = $state([]);

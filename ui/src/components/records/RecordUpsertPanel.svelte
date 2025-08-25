@@ -35,7 +35,7 @@
     const tabFormKey = "form";
     const tabProviderKey = "providers";
 
-    export let collection;
+    let collection;
 
     let recordPanel = $state(undefined);
     let impersonatePopup = $state(undefined);

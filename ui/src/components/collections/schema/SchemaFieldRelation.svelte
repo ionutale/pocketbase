@@ -7,8 +7,8 @@
     import SchemaField from "@/components/collections/schema/SchemaField.svelte";
     import { collections } from "@/stores/collections";
 
-    export let field;
-    export let key = "";
+    let field;
+    let key = "";
 
     const isSingleOptions = [
         { label: "Single", value: true },

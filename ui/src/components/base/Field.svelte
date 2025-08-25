@@ -9,8 +9,8 @@
     const uniqueId = "field_" + CommonHelper.randomString(7);
     const defaultError = "Invalid value";
 
-    export let name = "";
-    export let inlineError = false;
+    let name = "";
+    let inlineError = false;
 
     let classes = $state(undefined);
     export { classes as class }; // export reserved keyword

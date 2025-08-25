@@ -12,8 +12,8 @@
     const dispatch = createEventDispatcher();
     const formId = "impersonate_" + CommonHelper.randomString(5);
 
-    export let collection;
-    export let record;
+    let collection;
+    let record;
 
     let panel = $state(undefined);
     let duration = $state(0);

@@ -2,8 +2,8 @@
 <script>
     import AppleSecretPopup from "@/components/collections/providers/AppleSecretPopup.svelte";
 
-    export let key = "";
-    export let config = {};
+    let key = "";
+    let config = {};
 
     let generatorPopup = $state(undefined);
 </script>

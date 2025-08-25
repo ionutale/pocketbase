@@ -7,7 +7,7 @@
     import SdkTabs from "@/components/base/SdkTabs.svelte";
     import FieldsQueryParam from "@/components/collections/docs/FieldsQueryParam.svelte";
 
-    export let collection;
+    let collection;
 
     let responseTab = $state(200);
     let responses = $state([]);

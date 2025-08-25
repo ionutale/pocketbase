@@ -4,11 +4,11 @@
     import Toggler from "@/components/base/Toggler.svelte";
     import Draggable from "@/components/base/Draggable.svelte";
 
-    export let id = null;
-    export let items = [];
-    export let disabled = false;
-    export let emptyPlaceholder = "Add items";
-    export let newPlaceholder = "e.g. optionA";
+    let id = null;
+    let items = [];
+    let disabled = false;
+    let emptyPlaceholder = "Add items";
+    let newPlaceholder = "e.g. optionA";
 
     let newInput = $state(undefined);
     let newInputVal = $state("");

@@ -6,7 +6,7 @@
     import FullPage from "@/components/base/FullPage.svelte";
     import Field from "@/components/base/Field.svelte";
 
-    export let params;
+    let params;
 
     let newPassword = $state("");
     let newPasswordConfirm = $state("");

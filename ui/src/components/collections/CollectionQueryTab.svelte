@@ -5,7 +5,7 @@
     import CommonHelper from "@/utils/CommonHelper";
     import { onMount } from "svelte";
 
-    export let collection;
+    let collection;
 
     let codeEditorComponent = $state(undefined);
     let isCodeEditorComponentLoading = $state(false);

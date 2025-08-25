@@ -4,9 +4,9 @@
     import ApiClient from "@/utils/ApiClient";
     import CommonHelper from "@/utils/CommonHelper";
 
-    export let record = null;
-    export let filename = "";
-    export let size = ""; // sm/lg/xl
+    let record = null;
+    let filename = "";
+    let size = ""; // sm/lg/xl
 
     let previewPopup = $state(undefined);
     let thumbUrl = $state("");

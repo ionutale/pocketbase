@@ -9,14 +9,14 @@
     import Field from "@/components/base/Field.svelte";
     import tooltip from "@/actions/tooltip";
 
-    export let collection = null;
-    export let rule = null;
-    export let label = "Rule";
-    export let formKey = "rule";
-    export let required = false;
-    export let disabled = false;
-    export let superuserToggle = true;
-    export let placeholder = "Leave empty to grant everyone access...";
+    let collection = null;
+    let rule = null;
+    let label = "Rule";
+    let formKey = "rule";
+    let required = false;
+    let disabled = false;
+    let superuserToggle = true;
+    let placeholder = "Leave empty to grant everyone access...";
 
     let editorRef = $state(null);
     let tempValue = $state(null);

@@ -7,12 +7,12 @@
     const dispatch = createEventDispatcher();
     const uniqueId = "search_" + CommonHelper.randomString(7);
 
-    export let value = "";
-    export let placeholder = 'Search term or filter like created > "2022-01-01"...';
+    let value = "";
+    let placeholder = 'Search term or filter like created > "2022-01-01"...';
 
     // autocomplete filter component fields
-    export let autocompleteCollection = null;
-    export let extraAutocompleteKeys = [];
+    let autocompleteCollection = null;
+    let extraAutocompleteKeys = [];
 
     let filterComponent = $state(undefined);
     let isFilterComponentLoading = $state(false);

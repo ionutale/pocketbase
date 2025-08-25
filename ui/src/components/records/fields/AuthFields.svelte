@@ -8,9 +8,9 @@
     import CommonHelper from "@/utils/CommonHelper";
     import { slide } from "svelte/transition";
 
-    export let record;
-    export let collection;
-    export let isNew = !record?.id;
+    let record;
+    let collection;
+    let isNew = !record?.id;
 
     let isSuperusers = $derived(collection?.name == "_superusers");
 

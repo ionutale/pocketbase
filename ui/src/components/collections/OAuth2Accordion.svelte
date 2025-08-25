@@ -11,7 +11,7 @@
     import CommonHelper from "@/utils/CommonHelper";
     import { scale, slide } from "svelte/transition";
 
-    export let collection;
+    let collection;
 
     const excludedFieldNames = ["id", "email", "emailVisibility", "verified", "tokenKey", "password"];
     const allowedRegularTypes = ["text", "editor", "url", "email", "json"];

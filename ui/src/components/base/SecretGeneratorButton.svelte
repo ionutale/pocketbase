@@ -11,7 +11,7 @@
     let classes = $state("btn-sm btn-hint btn-transparent");
     export { classes as class };
 
-    export let length = 32;
+    let length = 32;
 
     let secret = $state("");
     let secretElem = $state(undefined);

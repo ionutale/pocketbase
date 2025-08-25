@@ -13,10 +13,10 @@
 
     const perPage = 50;
 
-    export let filter = "";
-    export let presets = "";
-    export let zoom = {};
-    export let sort = "-@rowid";
+    let filter = "";
+    let presets = "";
+    let zoom = {};
+    let sort = "-@rowid";
 
     let logs = $state([]);
     let currentPage = $state(1);

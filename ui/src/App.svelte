@@ -12,19 +12,20 @@
     import { superuser } from "@/stores/superuser";
     import ApiClient from "@/utils/ApiClient";
     import CommonHelper from "@/utils/CommonHelper";
-    import Router, { link, replace } from "svelte-spa-router";
-    import active from "svelte-spa-router/active";
+    import Router, { link, replace } from "@/lib/router/Router.svelte";
+    // active action stub (no-op for now)
+    function active() {}
     import routes from "./routes";
     import { onMount } from "svelte";
 
-    // state
-    let oldLocation = undefined;
+    // state (migrated to runes)
+    let oldLocation = $state(undefined);
 
-    let showAppSidebar = false;
+    let showAppSidebar = $state(false);
 
     // theme
     const THEME_KEY = "pb_ui_theme";
-    let isDark = false;
+    let isDark = $state(false);
 
     function applyTheme(dark) {
         isDark = !!dark;
@@ -57,11 +58,9 @@
         window.localStorage?.setItem(THEME_KEY, isDark ? "dark" : "light");
     }
 
-    let isTinyMCEPreloaded = false;
+    let isTinyMCEPreloaded = $state(false);
 
-    $: if ($superuser?.id) {
-        loadSettings();
-    }
+    $effect(() => { if ($superuser?.id) { loadSettings(); } });
 
     function handleRouteLoading(e) {
         if (e?.detail?.location === oldLocation) {

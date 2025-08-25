@@ -6,7 +6,7 @@
     import { errors, removeError } from "@/stores/errors";
     import IndexUpsertPanel from "@/components/collections/IndexUpsertPanel.svelte";
 
-    export let collection;
+    let collection;
 
     let upsertPanel = $state(undefined);
 

@@ -5,8 +5,8 @@
     import DynamicOptionsSelect from "@/components/base/DynamicOptionsSelect.svelte";
     import SchemaField from "@/components/collections/schema/SchemaField.svelte";
 
-    export let field;
-    export let key = "";
+    let field;
+    let key = "";
 
     const isSingleOptions = [
         { label: "Single", value: true },

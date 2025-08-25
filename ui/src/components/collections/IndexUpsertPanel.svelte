@@ -8,7 +8,7 @@
 
     const dispatch = createEventDispatcher();
 
-    export let collection;
+    let collection;
 
     let panel = $state(undefined);
     let original = $state("");

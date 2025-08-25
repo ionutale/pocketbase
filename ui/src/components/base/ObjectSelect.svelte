@@ -5,15 +5,15 @@
     import CommonHelper from "@/utils/CommonHelper";
 
     // original select props
-    export let items = [];
-    export let multiple = false;
-    export let selected = multiple ? [] : undefined;
-    export let labelComponent = BaseSelectOption; // custom component to use for each selected option label
-    export let optionComponent = BaseSelectOption; // custom component to use for each dropdown option item
+    let items = [];
+    let multiple = false;
+    let selected = multiple ? [] : undefined;
+    let labelComponent = BaseSelectOption; // custom component to use for each selected option label
+    let optionComponent = BaseSelectOption; // custom component to use for each dropdown option item
 
     // custom props
-    export let selectionKey = "value";
-    export let keyOfSelected = multiple ? [] : undefined;
+    let selectionKey = "value";
+    let keyOfSelected = multiple ? [] : undefined;
 
     let oldKeyOfSelectedHash = $state(JSON.stringify(keyOfSelected));
 

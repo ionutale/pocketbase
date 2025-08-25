@@ -69,15 +69,15 @@
 
     const dispatch = createEventDispatcher();
 
-    export let id = "";
-    export let value = "";
-    export let disabled = false;
-    export let placeholder = "";
-    export let baseCollection = null;
-    export let singleLine = false;
-    export let extraAutocompleteKeys = []; // eg. ["test1", "test2"]
-    export let disableRequestKeys = false;
-    export let disableCollectionJoinKeys = false;
+    let id = "";
+    let value = "";
+    let disabled = false;
+    let placeholder = "";
+    let baseCollection = null;
+    let singleLine = false;
+    let extraAutocompleteKeys = []; // eg. ["test1", "test2"]
+    let disableRequestKeys = false;
+    let disableCollectionJoinKeys = false;
 
     let editor = $state(undefined);
     let container = $state(undefined);

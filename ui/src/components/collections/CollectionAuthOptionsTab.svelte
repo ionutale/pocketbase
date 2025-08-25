@@ -9,7 +9,7 @@
     import PasswordAuthAccordion from "@/components/collections/PasswordAuthAccordion.svelte";
     import EmailTestPopup from "@/components/settings/EmailTestPopup.svelte";
 
-    export let collection;
+    let collection;
 
     let emailTemplatesList = $state([]);
     let emailTestPopup = $state(undefined);

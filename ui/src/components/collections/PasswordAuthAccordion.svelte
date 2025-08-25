@@ -8,7 +8,7 @@
     import { errors } from "@/stores/errors";
     import CommonHelper from "@/utils/CommonHelper";
 
-    export let collection;
+    let collection;
 
     let identityFieldsOptions = $state([]);
     let oldIndexes = $state("");

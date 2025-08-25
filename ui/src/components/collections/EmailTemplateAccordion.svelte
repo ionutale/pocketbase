@@ -12,10 +12,10 @@
     import CommonHelper from "@/utils/CommonHelper";
     import { scale } from "svelte/transition";
 
-    export let key;
-    export let title;
-    export let config = {};
-    export let placeholders = [];
+    let key;
+    let title;
+    let config = {};
+    let placeholders = [];
 
     let accordion = $state(undefined);
     let editorComponent = $state(cachedEditorComponent);

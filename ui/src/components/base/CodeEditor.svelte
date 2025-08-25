@@ -63,14 +63,14 @@
 
     const dispatch = createEventDispatcher();
 
-    export let id = "";
-    export let value = "";
-    export let minHeight = null;
-    export let maxHeight = null;
-    export let disabled = false;
-    export let placeholder = "";
-    export let language = "javascript";
-    export let singleLine = false;
+    let id = "";
+    let value = "";
+    let minHeight = null;
+    let maxHeight = null;
+    let disabled = false;
+    let placeholder = "";
+    let language = "javascript";
+    let singleLine = false;
 
     let editor = $state(undefined);
     let container = $state(undefined);

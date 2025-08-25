@@ -7,7 +7,7 @@
     import Accordion from "@/components/base/Accordion.svelte";
     import TokenField from "@/components/collections/TokenField.svelte";
 
-    export let collection;
+    let collection;
 
     let tokensList = $state([]);
 

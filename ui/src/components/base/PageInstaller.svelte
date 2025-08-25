@@ -9,7 +9,7 @@
     import Field from "@/components/base/Field.svelte";
     import FullPage from "@/components/base/FullPage.svelte";
 
-    export let params;
+    let params;
 
     let email = $state("");
     let password = $state("");

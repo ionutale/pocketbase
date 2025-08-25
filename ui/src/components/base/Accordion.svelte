@@ -11,10 +11,10 @@
     let classes = $state("");
     export { classes as class }; // export reserved keyword
 
-    export let draggable = false;
-    export let active = false;
-    export let interactive = true;
-    export let single = false; // ensures that only one accordion is expanded in its given parent container
+    let draggable = false;
+    let active = false;
+    let interactive = true;
+    let single = false; // ensures that only one accordion is expanded in its given parent container
 
     let isDragOver = $state(false);
 

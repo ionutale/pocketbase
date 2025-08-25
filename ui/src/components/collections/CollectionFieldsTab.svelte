@@ -21,7 +21,7 @@
     import { setErrors } from "@/stores/errors";
     import CommonHelper from "@/utils/CommonHelper";
 
-    export let collection;
+    let collection;
 
     let oldCollectionType = $state(undefined);
 

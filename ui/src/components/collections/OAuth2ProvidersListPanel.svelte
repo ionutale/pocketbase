@@ -9,7 +9,7 @@
 
     const dispatch = createEventDispatcher();
 
-    export let disabled = [];
+    let disabled = [];
 
     let panel = $state(undefined);
     let searchTerm = $state("");

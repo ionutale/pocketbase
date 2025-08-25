@@ -4,11 +4,11 @@
 
     const dispatch = createEventDispatcher();
 
-    export let index;
-    export let list = [];
-    export let group = "default";
-    export let disabled = false;
-    export let dragHandleClass = ""; // by default the entire element
+    let index;
+    let list = [];
+    let group = "default";
+    let disabled = false;
+    let dragHandleClass = ""; // by default the entire element
 
     let dragging = $state(false);
     let dragover = $state(false);

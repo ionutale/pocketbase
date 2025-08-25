@@ -2,9 +2,9 @@
 <script>
     import CommonHelper from "@/utils/CommonHelper";
 
-    export let collectionA = {};
-    export let collectionB = {};
-    export let deleteMissing = false;
+    let collectionA = {};
+    let collectionB = {};
+    let deleteMissing = false;
     let fieldsListA = $state([]);
     let fieldsListB = $state([]);
     let removedFields = $state([]);

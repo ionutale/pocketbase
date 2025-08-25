@@ -8,8 +8,8 @@
     import RecordFilePicker from "@/components/records/RecordFilePicker.svelte";
     import FieldLabel from "@/components/records/fields/FieldLabel.svelte";
 
-    export let field;
-    export let value = "";
+    let field;
+    let value = "";
 
     let picker = $state(undefined);
     let editor = $state(undefined);

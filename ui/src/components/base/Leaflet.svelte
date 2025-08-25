@@ -10,8 +10,8 @@
     import markerIconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
     import markerShadowUrl from "leaflet/dist/images/marker-shadow.png";
 
-    export let height = 225;
-    export let point = { lat: 0, lon: 0 };
+    let height = 225;
+    let point = { lat: 0, lon: 0 };
 
     let map = $state(undefined);
     let mapEl = $state(undefined);

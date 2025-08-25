@@ -4,7 +4,7 @@
 
     const dispatch = createEventDispatcher();
 
-    export let tolerance = 0;
+    let tolerance = 0;
 
     let elem = $state(undefined);
     let startX = $state(0);

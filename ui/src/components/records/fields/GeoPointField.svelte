@@ -7,8 +7,8 @@
 
     // Converted to const to indicate read-only external reference and silence unused export warning
     export const original = undefined;
-    export let field;
-    export let value = undefined;
+    let field;
+    let value = undefined;
 
     let mapComponent = $state(undefined);
     let isMapComponentLoading = $state(false);

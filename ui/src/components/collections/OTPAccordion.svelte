@@ -6,7 +6,7 @@
     import CommonHelper from "@/utils/CommonHelper";
     import { scale } from "svelte/transition";
 
-    export let collection;
+    let collection;
 
     let isSuperusers = $derived(collection?.system && collection?.name === "_superusers");
 

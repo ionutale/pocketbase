@@ -9,11 +9,11 @@
     import RecordFileThumb from "@/components/records/RecordFileThumb.svelte";
     import FieldLabel from "@/components/records/fields/FieldLabel.svelte";
 
-    export let record;
-    export let field;
-    export let value = "";
-    export let uploadedFiles = []; // Array<File> array
-    export let deletedFileNames = []; // Array<string> array
+    let record;
+    let field;
+    let value = "";
+    let uploadedFiles = []; // Array<File> array
+    let deletedFileNames = []; // Array<string> array
 
     let fileInput = $state(undefined);
     let filesListElem = $state(undefined);

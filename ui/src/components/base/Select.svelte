@@ -5,25 +5,25 @@
     import Toggler from "@/components/base/Toggler.svelte";
     import CommonHelper from "@/utils/CommonHelper";
 
-    export let id = "";
-    export let noOptionsText = "No options found";
-    export let selectPlaceholder = "- Select -";
-    export let searchPlaceholder = "Search...";
-    export let items = [];
-    export let multiple = false;
-    export let disabled = false;
-    export let readonly = false;
-    export let upside = false;
-    export let zeroFunc = () => (multiple ? [] : undefined);
-    export let selected = zeroFunc();
-    export let toggle = multiple; // toggle option on click
-    export let closable = true; // close the dropdown on option select/deselect
-    export let labelComponent = undefined; // custom component to use for each selected option label
-    export let labelComponentProps = {}; // props to pass to the custom option component
-    export let optionComponent = undefined; // custom component to use for each dropdown option item
-    export let optionComponentProps = {}; // props to pass to the custom option component
-    export let searchable = false; // whether to show the dropdown options search input
-    export let searchFunc = undefined; // custom search option filter: `function(item, searchTerm):boolean`
+    let id = "";
+    let noOptionsText = "No options found";
+    let selectPlaceholder = "- Select -";
+    let searchPlaceholder = "Search...";
+    let items = [];
+    let multiple = false;
+    let disabled = false;
+    let readonly = false;
+    let upside = false;
+    let zeroFunc = () => (multiple ? [] : undefined);
+    let selected = zeroFunc();
+    let toggle = multiple; // toggle option on click
+    let closable = true; // close the dropdown on option select/deselect
+    let labelComponent = undefined; // custom component to use for each selected option label
+    let labelComponentProps = {}; // props to pass to the custom option component
+    let optionComponent = undefined; // custom component to use for each dropdown option item
+    let optionComponentProps = {}; // props to pass to the custom option component
+    let searchable = false; // whether to show the dropdown options search input
+    let searchFunc = undefined; // custom search option filter: `function(item, searchTerm):boolean`
 
     const dispatch = createEventDispatcher();
 
