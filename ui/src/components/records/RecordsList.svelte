@@ -47,7 +47,7 @@
     let isSuperusers = $derived(collection?.type === "auth" && collection.name === "_superusers");
 
     // skip unused superusers fields
-    $: fields = (collection?.fields || []).filter(
+    let fields = $derived((collection?.fields || []).filter(
         (f) => !f.hidden && (!isSuperusers || !unusedSuperusersFields.includes(f.name)),
     );
 
@@ -71,7 +71,7 @@
         updateStoredHiddenColumns();
     }
 
-    $: collumnsToHide = fields
+    let collumnsToHide = $derived(fields
         .filter((f) => !f.primaryKey)
         .map((f) => {
             return { id: f.id, name: f.name };

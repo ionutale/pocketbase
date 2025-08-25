@@ -35,7 +35,7 @@
     let selectedSize = $state("");
 
     // find all collections with at least one non-protected file field
-    $: fileCollections = $collections.filter((c) => {
+    let fileCollections = $derived($collections.filter((c) => {
         return (
             c.type !== "view" &&
             !!CommonHelper.toArray(c.fields).find((f) => {
@@ -74,7 +74,7 @@
         loadList(true);
     }
 
-    $: isSelected = (record, name) => {
+    let isSelected = $derived((record, name) => {
         return selectedFile?.name == name && selectedFile?.record?.id == record.id;
     };
 

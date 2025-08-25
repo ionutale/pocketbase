@@ -21,7 +21,7 @@
         handleKeyOfSelectedChange(keyOfSelected);
     }
 
-    $: handleSelectedChange(selected);
+    $effect(() => { handleSelectedChange(selected); });
 
     function handleKeyOfSelectedChange(newKeyOfSelected) {
         newKeyOfSelected = CommonHelper.toArray(newKeyOfSelected, true);

@@ -19,7 +19,7 @@
 
     let hasPreview = $derived(["image", "audio", "video"].includes(type) || filename.endsWith(".pdf"));
 
-    $: thumbUrl = !isLoadingToken
+    let thumbUrl = $derived(!isLoadingToken
         ? ApiClient.files.getURL(record, filename, { thumb: "100x100", token: token })
         : "";
 

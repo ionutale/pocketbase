@@ -28,7 +28,7 @@
 
     let isEnabled = $derived(!CommonHelper.isEmpty(formSettings.trustedProxy.headers));
 
-    $: suggestedProxyHeaders = !healthData.possibleProxyHeader
+    let suggestedProxyHeaders = $derived(!healthData.possibleProxyHeader
         ? commonProxyHeaders
         : [healthData.possibleProxyHeader].concat(
               commonProxyHeaders.filter((h) => h != healthData.possibleProxyHeader),

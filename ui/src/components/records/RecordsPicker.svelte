@@ -36,7 +36,7 @@
 
     let collectionId = $derived(field?.collectionId);
     let isPolymorphic = $derived(Array.isArray(field?.collectionIds) && field.collectionIds.length > 0);
-    $: allowedCollections = isPolymorphic
+    let allowedCollections = $derived(isPolymorphic
         ? $collections.filter((c) => field.collectionIds.includes(c.id))
         : $collections.filter((c) => c.id == collectionId);
     // maintain activeCollectionId without self-referential reactive assignment pitfalls
@@ -315,7 +315,7 @@
         }
     }
 
-    $: isSelected = function (record) {
+    let isSelected = $derived(function (record) {
         return CommonHelper.findByKey(selected, "id", record.id);
     };
 

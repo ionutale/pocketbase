@@ -62,7 +62,7 @@
         onActiveChange(active);
     }
 
-    $: handleContentScroll(contentPanel, true);
+    $effect(() => { handleContentScroll(contentPanel, true); });
 
     $effect(() => { if (wrapper) {
         zIndexUpdate();

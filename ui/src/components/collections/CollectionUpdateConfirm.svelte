@@ -19,17 +19,17 @@
 
     let isNewCollectionAuth = $derived(newCollection?.type === "auth");
 
-    $: renamedFields =
+    let renamedFields = $derived(
         (!isNewCollectionView &&
             newCollection?.fields?.filter(
                 (field) => field.id && !field._toDelete && field._originalName != field.name,
             )) ||
         [];
 
-    $: deletedFields =
+    let deletedFields = $derived(
         (!isNewCollectionView && newCollection?.fields?.filter((field) => field.id && field._toDelete)) || [];
 
-    $: multipleToSingleFields =
+    let multipleToSingleFields = $derived(
         newCollection?.fields?.filter((field) => {
             const old = oldCollection?.fields?.find((f) => f.id == field.id);
             if (!old) {

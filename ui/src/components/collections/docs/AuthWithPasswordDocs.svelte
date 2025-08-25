@@ -15,10 +15,10 @@
 
     let identityFields = $derived(collection?.passwordAuth?.identityFields || []);
 
-    $: exampleIdentityLabel =
+    let exampleIdentityLabel = $derived(
         identityFields.length == 0 ? "NONE" : "YOUR_" + identityFields.join("_OR_").toUpperCase();
 
-    $: responses = [
+    let responses = $derived([
         {
             code: 200,
             body: JSON.stringify(

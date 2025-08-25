@@ -8,7 +8,7 @@
     let responseTab = $state(200);
     let responses = $state([]);
 
-    $: responses = [
+    let responses = $derived([
         {
             code: 200,
             body: JSON.stringify(

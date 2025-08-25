@@ -23,7 +23,7 @@
     let regularFieldOptions = $state([]);
     let regularAndFileFieldOptions = $state([]);
 
-    $: refreshFieldOptions(collection.fields);
+    $effect(() => { refreshFieldOptions(collection.fields); });
 
     $effect(() => { if (CommonHelper.isEmpty(collection.oauth2)) {
         collection.oauth2 = {

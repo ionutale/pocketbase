@@ -13,7 +13,7 @@
 
     let backendAbsUrl = $derived(CommonHelper.getApiExampleUrl(ApiClient.baseURL));
 
-    $: responses = [
+    let responses = $derived([
         {
             code: 200,
             body: JSON.stringify(

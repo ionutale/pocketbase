@@ -62,7 +62,7 @@
 
     let idField = $derived(collection?.fields?.find((f) => f.name === "id"));
 
-    $: hasFileChanges =
+    let hasFileChanges = $derived(
         CommonHelper.hasNonEmptyProps(uploadedFilesMap) || CommonHelper.hasNonEmptyProps(deletedFileNamesMap);
 
     let serializedData = $derived(JSON.stringify(record));
@@ -93,7 +93,7 @@
 
     let skipFieldNames = $derived(isAuthCollection ? authSkipFieldNames : baseSkipFieldNames);
 
-    $: regularFields =
+    let regularFields = $derived(
         collection?.fields?.filter((f) => !skipFieldNames.includes(f.name) && f.type != "autodate") || [];
 
     export function show(model) {

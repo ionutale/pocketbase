@@ -15,7 +15,7 @@
 
     let backendAbsUrl = $derived(CommonHelper.getApiExampleUrl(ApiClient.baseURL));
 
-    $: responses = [
+    let responses = $derived([
         {
             code: 200,
             body: isLoading ? "..." : JSON.stringify(authMethods, null, 2),

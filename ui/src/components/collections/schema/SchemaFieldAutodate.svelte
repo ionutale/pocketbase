@@ -20,7 +20,7 @@
 
     let selectedOption = $state(optionFromField());
 
-    $: updateField(selectedOption);
+    $effect(() => { updateField(selectedOption); });
 
     function optionFromField() {
         if (field.onCreate && field.onUpdate) {

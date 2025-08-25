@@ -37,7 +37,7 @@
 
     let valueAsArray = $derived(CommonHelper.toArray(value));
 
-    $: maxReached =
+    let maxReached = $derived(
         (valueAsArray.length || uploadedFiles.length) &&
         field.maxSelect <= valueAsArray.length + uploadedFiles.length - deletedFileNames.length;
 

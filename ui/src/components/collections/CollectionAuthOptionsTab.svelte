@@ -27,37 +27,37 @@
     }
 
     // predefined email template configs
-    $: resetPasswordTemplate = {
+    let resetPasswordTemplate = $derived({
         key: "resetPasswordTemplate",
         label: "Default Password reset email template",
         placeholders: ["APP_NAME", "APP_URL", "RECORD:*", "TOKEN"],
         config: collection.resetPasswordTemplate,
     };
-    $: verificationTemplate = {
+    let verificationTemplate = $derived({
         key: "verificationTemplate",
         label: "Default Verification email template",
         placeholders: ["APP_NAME", "APP_URL", "RECORD:*", "TOKEN"],
         config: collection.verificationTemplate,
     };
-    $: confirmEmailChangeTemplate = {
+    let confirmEmailChangeTemplate = $derived({
         key: "confirmEmailChangeTemplate",
         label: "Default Confirm email change email template",
         placeholders: ["APP_NAME", "APP_URL", "RECORD:*", "TOKEN"],
         config: collection.confirmEmailChangeTemplate,
     };
-    $: otpTemplate = {
+    let otpTemplate = $derived({
         key: "otp.emailTemplate",
         label: "Default OTP email template",
         placeholders: ["APP_NAME", "APP_URL", "RECORD:*", "OTP", "OTP_ID"],
         config: collection.otp.emailTemplate,
     };
-    $: authAlertTemplate = {
+    let authAlertTemplate = $derived({
         key: "authAlert.emailTemplate",
         label: "Default Login alert email template",
         placeholders: ["APP_NAME", "APP_URL", "RECORD:*"],
         config: collection.authAlert.emailTemplate,
     };
-    $: emailTemplatesList = isSuperusers
+    let emailTemplatesList = $derived(isSuperusers
         ? [resetPasswordTemplate, otpTemplate, authAlertTemplate]
         : [
               verificationTemplate,

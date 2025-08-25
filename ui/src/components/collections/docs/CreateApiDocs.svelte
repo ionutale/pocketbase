@@ -17,14 +17,14 @@
 
     let excludedTableFields = $derived(isAuth ? ["password", "verified", "email", "emailVisibility"] : []);
 
-    $: tableFields =
+    let tableFields = $derived(
         collection?.fields?.filter((f) => {
             return !f.hidden && f.type != "autodate" && !excludedTableFields.includes(f.name);
         }) || [];
 
     let backendAbsUrl = $derived(CommonHelper.getApiExampleUrl(ApiClient.baseURL));
 
-    $: responses = [
+    let responses = $derived([
         {
             code: 200,
             body: JSON.stringify(CommonHelper.dummyCollectionRecord(collection), null, 2),

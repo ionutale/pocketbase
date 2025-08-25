@@ -9,7 +9,7 @@
 
     let queryParamsIndex = $derived(url.indexOf("?"));
 
-    $: filename = url.substring(
+    let filename = $derived(url.substring(
         url.lastIndexOf("/") + 1,
         queryParamsIndex > 0 ? queryParamsIndex : undefined,
     );

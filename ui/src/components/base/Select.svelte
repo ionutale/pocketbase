@@ -42,7 +42,7 @@
 
     let filteredItems = $derived(filterItems(items, searchTerm));
 
-    $: isSelected = function (item) {
+    let isSelected = $derived(function (item) {
         const normalized = CommonHelper.toArray(selected);
 
         return CommonHelper.inArray(normalized, item);

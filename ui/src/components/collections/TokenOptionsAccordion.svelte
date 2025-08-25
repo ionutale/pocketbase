@@ -13,7 +13,7 @@
 
     let isSuperusers = $derived(collection?.system && collection?.name === "_superusers");
 
-    $: tokensList = isSuperusers
+    let tokensList = $derived(isSuperusers
         ? [
               { key: "authToken", label: "Auth" },
               { key: "passwordResetToken", label: "Password reset" },

@@ -17,7 +17,7 @@
         localStorage.setItem(SDK_PREFERENCE_KEY, activeTab);
     }
 
-    $: sdkExamples = [
+    let sdkExamples = $derived([
         {
             title: "JavaScript",
             language: "javascript",

@@ -11,7 +11,7 @@
     let isCodeEditorComponentLoading = $state(false);
     let fieldsErrors = $state([]);
 
-    $: checkFieldsErrors($errors);
+    $effect(() => { checkFieldsErrors($errors); });
 
     function checkFieldsErrors(errs) {
         fieldsErrors = [];

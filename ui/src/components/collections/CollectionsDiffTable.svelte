@@ -25,21 +25,21 @@
         setFieldsListB();
     }
 
-    $: removedFields = fieldsListA.filter((fieldA) => {
+    let removedFields = $derived(fieldsListA.filter((fieldA) => {
         return !fieldsListB.find((fieldB) => fieldA.id == fieldB.id);
     });
 
-    $: sharedFields = fieldsListB.filter((fieldB) => {
+    let sharedFields = $derived(fieldsListB.filter((fieldB) => {
         return fieldsListA.find((fieldA) => fieldA.id == fieldB.id);
     });
 
-    $: addedFields = fieldsListB.filter((fieldB) => {
+    let addedFields = $derived(fieldsListB.filter((fieldB) => {
         return !fieldsListA.find((fieldA) => fieldA.id == fieldB.id);
     });
 
     let hasAnyChange = $derived(CommonHelper.hasCollectionChanges(collectionA, collectionB, deleteMissing));
 
-    $: mainModelProps = CommonHelper.mergeUnique(
+    let mainModelProps = $derived(CommonHelper.mergeUnique(
         Object.keys(collectionA || {}),
         Object.keys(collectionB || {}),
     ).filter((key) => {

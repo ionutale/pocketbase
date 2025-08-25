@@ -25,7 +25,7 @@
 
     const defaultZoomLevel = 8;
 
-    $: search(searchTerm);
+    $effect(() => { search(searchTerm); });
 
     $effect(() => { if (point.lat && point.lon) {
         panInside();

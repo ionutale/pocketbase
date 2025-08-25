@@ -16,7 +16,7 @@
     let mounted = $state(false);
     let mountedTimeoutId = $state(null);
 
-    $: conf = Object.assign(CommonHelper.defaultEditorOptions(), {
+    let conf = $derived(Object.assign(CommonHelper.defaultEditorOptions(), {
         convert_urls: field.convertURLs,
         relative_urls: false,
     });

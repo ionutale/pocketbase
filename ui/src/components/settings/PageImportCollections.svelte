@@ -29,12 +29,12 @@
         loadNewCollections(schemas);
     }
 
-    $: isValid =
+    let isValid = $derived(
         !!schemas &&
         newCollections.length &&
         newCollections.length === newCollections.filter((item) => !!item.id && !!item.name).length;
 
-    $: collectionsToDelete = oldCollections.filter((collection) => {
+    let collectionsToDelete = $derived(oldCollections.filter((collection) => {
         return (
             isValid &&
             !mergeWithOldCollections &&
@@ -43,7 +43,7 @@
         );
     });
 
-    $: collectionsToAdd = newCollections.filter((collection) => {
+    let collectionsToAdd = $derived(newCollections.filter((collection) => {
         return isValid && !CommonHelper.findByKey(oldCollections, "id", collection.id);
     });
 
@@ -51,12 +51,12 @@
         loadCollectionsToUpdate();
     }
 
-    $: hasChanges =
+    let hasChanges = $derived(
         !!schemas && (collectionsToDelete.length || collectionsToAdd.length || collectionsToUpdate.length);
 
     let canImport = $derived(!isLoadingOldCollections && isValid && hasChanges);
 
-    $: idReplacableCollections = newCollections.filter((collection) => {
+    let idReplacableCollections = $derived(newCollections.filter((collection) => {
         let old =
             CommonHelper.findByKey(oldCollections, "name", collection.name) ||
             CommonHelper.findByKey(oldCollections, "id", collection.id);

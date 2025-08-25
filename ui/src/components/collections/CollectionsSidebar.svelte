@@ -29,7 +29,7 @@
         localStorage.setItem(pinnedStorageKey, JSON.stringify(pinnedIds));
     }
 
-    $: filtered = $collections.filter((c) => {
+    let filtered = $derived($collections.filter((c) => {
         return c.id == searchTerm || c.name?.replace(/\s+/g, "")?.toLowerCase()?.includes(normalizedSearch);
     });
 

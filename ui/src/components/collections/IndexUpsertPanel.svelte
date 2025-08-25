@@ -17,7 +17,7 @@
     let codeEditorComponent = $state(undefined);
     let isCodeEditorComponentLoading = $state(false);
 
-    $: presetColumns =
+    let presetColumns = $derived(
         collection?.fields?.filter((f) => !f.toDelete && f.name != "id")?.map((f) => f.name) || [];
 
     let indexParts = $derived(CommonHelper.parseIndex(index));

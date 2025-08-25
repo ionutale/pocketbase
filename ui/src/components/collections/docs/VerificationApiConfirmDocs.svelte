@@ -7,7 +7,7 @@
     let responseTab = $state(204);
     let responses = $state([]);
 
-    $: responses = [
+    let responses = $derived([
         {
             code: 204,
             body: "null",
