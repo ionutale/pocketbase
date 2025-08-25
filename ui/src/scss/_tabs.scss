@@ -1,3 +1,6 @@
+@use 'vars' as *;
+@use 'mixins' as *;
+@use 'base' as *; // for %block placeholder
 $tabHeaderAnimationSpeed: 0.2s;
 $tabContentAnimationSpeed: 0.2s;
 

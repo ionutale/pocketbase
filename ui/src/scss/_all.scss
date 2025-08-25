@@ -1,27 +1,27 @@
-// Aggregated forwards for legacy partials converted from @import usage.
-// Load mixins and variables first (with @use to ensure their members are evaluated before base).
-@forward 'mixins'; // expose mixins (un-namespaced) for legacy partials like _base.scss
-@forward 'vars';
-@forward 'fonts';
-@forward 'reset';
-@forward 'icons';
-@forward 'animations';
-@forward 'base';
-@forward 'grid';
-@forward 'tooltip';
-@forward 'dropdown';
-@forward 'overlay_panel';
-@forward 'alert';
-@forward 'form';
-@forward 'layout';
-@forward 'tabs';
-@forward 'accordion';
-@forward 'table';
-@forward 'searchbar';
-@forward 'bulkbar';
-@forward 'flatpickr';
-@forward 'docs_panel';
-@forward 'schema_field';
-@forward 'file_picker';
-@forward 'collections_export';
-@forward 'rate_limit';
+// Aggregated use chain preserving legacy global side-effects and placeholder ordering.
+// Using @use (without namespace via * as injection) to mimic old @import behavior.
+@use 'mixins' as *;
+@use 'vars' as *;
+@use 'fonts';
+@use 'reset';
+@use 'icons' as *;
+@use 'animations';
+@use 'base';
+@use 'grid';
+@use 'tooltip';
+@use 'dropdown';
+@use 'overlay_panel';
+@use 'alert';
+@use 'form';
+@use 'layout';
+@use 'tabs';
+@use 'accordion';
+@use 'table';
+@use 'searchbar';
+@use 'bulkbar';
+@use 'flatpickr';
+@use 'docs_panel';
+@use 'schema_field';
+@use 'file_picker';
+@use 'collections_export';
+@use 'rate_limit';

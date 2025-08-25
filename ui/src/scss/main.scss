@@ -1,26 +1,3 @@
-// Revert to legacy @import chain (full @use migration requires refactoring mixin/variable order).
-@import 'fonts';
-@import 'vars';
-@import 'mixins';
-@import 'reset';
-@import 'icons';
-@import 'animations';
-@import 'base';
-@import 'grid';
-@import 'tooltip';
-@import 'dropdown';
-@import 'overlay_panel';
-@import 'alert';
-@import 'form';
-@import 'layout';
-@import 'tabs';
-@import 'accordion';
-@import 'table';
-@import 'searchbar';
-@import 'bulkbar';
-@import 'flatpickr';
-@import 'docs_panel';
-@import 'schema_field';
-@import 'file_picker';
-@import 'collections_export';
-@import 'rate_limit';
+// Entry point using the modular Sass API (@use/@forward).
+// All partials are forwarded through _all.scss to preserve ordering.
+@use 'all';

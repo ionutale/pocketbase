@@ -1,4 +1,7 @@
 @use "sass:math";
+@use 'vars' as *;
+@use 'mixins' as *;
+@use 'base' as *; // for %block placeholder
 
 button {
     outline: 0;
