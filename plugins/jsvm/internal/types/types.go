@@ -157,8 +157,6 @@ declare var $app: PocketBase
  * ).render({"name": "John"})
  * ` + "```" + `
  *
- * _Note that this method is available only in pb_hooks context._
- *
  * @namespace
  * @group PocketBase
  */
