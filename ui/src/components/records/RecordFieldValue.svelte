@@ -94,7 +94,7 @@
     {@const relations = CommonHelper.toArray(rawValue)}
     {@const expanded = CommonHelper.toArray(record?.expand?.[field.name])}
     {@const relLimit = short ? 20 : 500}
-    <div class="inline-flex">
+    <div class="rel-values" class:inline-flex={short} class:vertical={!short}>
         {#if expanded.length}
             {#each expanded.slice(0, relLimit) as item, i (i + item)}
                 <span class="label">
@@ -136,4 +136,8 @@
         max-height: 100px;
         overflow: auto;
     }
+    /* Allow relation chips to wrap so multiple selections are visible in list cells */
+    .rel-values { gap: 4px; }
+    .rel-values.inline-flex { flex-wrap: wrap; }
+    .rel-values.vertical { display: flex; flex-direction: column; align-items: flex-start; }
 </style>

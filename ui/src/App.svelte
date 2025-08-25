@@ -15,10 +15,46 @@
     import Router, { link, replace } from "svelte-spa-router";
     import active from "svelte-spa-router/active";
     import routes from "./routes";
+    import { onMount } from "svelte";
 
     let oldLocation = undefined;
 
     let showAppSidebar = false;
+
+    // theme
+    const THEME_KEY = "pb_ui_theme";
+    let isDark = false;
+
+    function applyTheme(dark) {
+        isDark = !!dark;
+        try {
+            const root = document.documentElement;
+            if (isDark) {
+                root.classList.add("dark");
+            } else {
+                root.classList.remove("dark");
+            }
+        } catch (err) {
+            // ignore in non-browser environments
+        }
+    }
+
+    function loadTheme() {
+        // priority: localStorage -> prefers-color-scheme -> default light
+        const stored = window.localStorage?.getItem(THEME_KEY);
+        if (stored === "dark" || stored === "light") {
+            applyTheme(stored === "dark");
+            return;
+        }
+
+        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        applyTheme(prefersDark);
+    }
+
+    function toggleTheme() {
+        applyTheme(!isDark);
+        window.localStorage?.setItem(THEME_KEY, isDark ? "dark" : "light");
+    }
 
     let isTinyMCEPreloaded = false;
 
@@ -62,6 +98,11 @@
             }
         }
     }
+
+    onMount(() => {
+        // initialize UI theme
+        loadTheme();
+    });
 
     function logout() {
         ApiClient.logout();
@@ -153,6 +194,20 @@
                     </button>
                 </Toggler>
             </div>
+
+            <!-- theme toggle button -->
+            <button
+                class="btn btn-transparent btn-sm m-t-10"
+                aria-pressed={isDark}
+                title="Toggle dark theme"
+                on:click={toggleTheme}
+            >
+                {#if isDark}
+                    <i class="ri-sun-line" aria-hidden="true"></i>
+                {:else}
+                    <i class="ri-moon-line" aria-hidden="true"></i>
+                {/if}
+            </button>
         </aside>
     {/if}
 

@@ -597,6 +597,9 @@ func (r *runner) processActiveProps() (*search.ResolverResult, error) {
 			return nil, fmt.Errorf("failed to initialize relation field %q", prop)
 		}
 
+		// Note: for polymorphic relations we currently resolve using CollectionId
+		// as expand and SQL joins require a concrete collection. Future work could
+		// add syntax to specify a target collection explicitly in filters/expands.
 		relCollection, relErr := r.resolver.loadCollection(relField.CollectionId)
 		if relErr != nil {
 			return nil, fmt.Errorf("failed to load field %q collection", prop)

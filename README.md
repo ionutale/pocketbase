@@ -42,6 +42,21 @@ Once downloaded, extract the archive and run `./pocketbase serve` in the extract
 
 The prebuilt executables are based on the [`examples/base/main.go` file](https://github.com/pocketbase/pocketbase/blob/master/examples/base/main.go) and comes with the JS VM plugin enabled by default which allows to extend PocketBase with JavaScript (_for more details please refer to [Extend with JavaScript](https://pocketbase.io/docs/js-overview/)_).
 
+#### Expand all relations (default)
+
+By default the server will automatically expand all relation fields (recursively) in API responses.
+
+To explicitly disable this behavior when running the `serve` command, pass `--no-expand-all`:
+
+```sh
+./pocketbase serve --no-expand-all
+```
+
+Notes:
+- This expands declared direct relation fields iteratively without a fixed depth limit; cycles are guarded.
+- Access rules and field visibility still apply; unauthorized relations won\'t be expanded.
+- Use with caution on large graphs, as responses can become heavy.
+
 ### Use as a Go framework/toolkit
 
 PocketBase is distributed as a regular Go library package which allows you to build
@@ -130,6 +145,49 @@ Check also the [Testing guide](http://pocketbase.io/docs/testing) to learn how t
 
 ## Security
 
+## Releasing
+
+To create a new GitHub release that produces the prebuilt executables, tag the repository with a SemVer tag prefixed with `v` (for example `v0.1.0`). The repository contains a GitHub Action that runs GoReleaser and will use the tag value as the injected `Version` (see `.goreleaser.yaml`).
+
+Recommended steps:
+
+1. Run the test suite and any checks locally first:
+
+```sh
+go test ./...
+```
+
+2. Create an annotated tag and push it to your GitHub fork/remote:
+
+```sh
+# create an annotated tag
+git tag -a v0.1.0 -m "v0.1.0"
+
+# push the tag to the origin (or your fork remote)
+git push origin v0.1.0
+```
+
+3. After the tag is pushed, the `release` workflow (`.github/workflows/release.yaml`) will run and trigger GoReleaser. By default `.goreleaser.yaml` uses `release.draft: true`, so GoReleaser will create a draft release for you. You can publish it manually from the Releases page, or change `release.draft` to `false` in `.goreleaser.yaml` to auto-publish.
+
+Notes & tips:
+- The GoReleaser action observes tags beginning with `v`. The tag value is injected into the binary via the `-ldflags "-X github.com/pocketbase/pocketbase.Version={{ .Version }}"` setting in `.goreleaser.yaml`.
+- If you want a pre-release, use a tag like `v1.2.3-rc.1` and GoReleaser will preserve the pre-release semantics.
+- The action builds the admin UI (`ui` folder) to ensure deterministic artifacts; make sure any generated frontend assets are committed or that the action can build them.
+
+Local alternative (no tag):
+
+If you want to build locally with a specific version without creating a tag, set the `Version` via `-ldflags`:
+
+```sh
+go build -ldflags "-s -w -X github.com/pocketbase/pocketbase.Version=v0.1.0" -o pocketbase ./examples/base
+```
+
+After building, verify the version:
+
+```sh
+./pocketbase --version
+```
+
 If you discover a security vulnerability within PocketBase, please send an e-mail to **support at pocketbase.io**.
 
 All reports will be promptly addressed and you'll be credited in the fix release notes.
@@ -151,3 +209,5 @@ PocketBase has a [roadmap](https://github.com/orgs/pocketbase/projects/2) and I 
 
 Don't get upset if I close your PR, even if it is well executed and tested. This doesn't mean that it will never be merged.
 Later we can always refer to it and/or take pieces of your implementation when the time comes to work on the issue (don't worry you'll be credited in the release notes).
+
+

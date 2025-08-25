@@ -136,7 +136,7 @@ func (app *BaseApp) FindCollectionReferences(collection *Collection, excludeIds 
 	for _, c := range collections {
 		for _, rawField := range c.Fields {
 			f, ok := rawField.(*RelationField)
-			if ok && f.CollectionId == collection.Id {
+			if ok && slices.Contains(f.AllowedCollections(), collection.Id) {
 				result[c] = append(result[c], f)
 			}
 		}
@@ -178,7 +178,7 @@ func (app *BaseApp) FindCachedCollectionReferences(collection *Collection, exclu
 
 		for _, rawField := range c.Fields {
 			f, ok := rawField.(*RelationField)
-			if ok && f.CollectionId == collection.Id {
+			if ok && slices.Contains(f.AllowedCollections(), collection.Id) {
 				result[c] = append(result[c], f)
 			}
 		}

@@ -18,6 +18,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime"
+	"strconv"
 	"strings"
 	"time"
 
@@ -221,8 +222,30 @@ func (p *plugin) registerMigrations() error {
 			p.config.OnInit(vm)
 		}
 
-		_, err := vm.RunScript(defaultScriptPath, string(content))
+		// Run the script using the actual migration filename so any JS stack
+		// traces will reference the correct source file.
+		_, err := vm.RunScript(file, string(content))
 		if err != nil {
+			// try to enrich the error with the JS exception stack if available
+			if jsEx, ok := err.(*goja.Exception); ok {
+				var stack string
+				if obj := jsEx.Value().ToObject(vm); obj != nil {
+					if s := obj.Get("stack"); s != nil {
+						stack = s.String()
+					}
+				}
+				if stack == "" {
+					stack = jsEx.String()
+				}
+
+				// attempt to extract a relevant source snippet and append it
+				if snippet, snErr := extractSnippetFromStack(stack, file, p.config.MigrationsDir); snErr == nil && snippet != "" {
+					return fmt.Errorf("failed to run migration %s: %v\njs stack:\n%s\n\nsource:\n%s", file, err, stack, snippet)
+				}
+
+				return fmt.Errorf("failed to run migration %s: %v\njs stack:\n%s", file, err, stack)
+			}
+
 			return fmt.Errorf("failed to run migration %s: %w", file, err)
 		}
 	}
@@ -559,4 +582,81 @@ func filesContent(dirPath string, pattern string) (map[string][]byte, error) {
 	}
 
 	return result, nil
+}
+
+// extractSnippetFromStack parses a JS stack string to find the first stack frame
+// that references the given migration filename and returns a small source snippet
+// (3 lines before and after) from the file. If the filename is relative, it will
+// be resolved relative to migrationsDir. If anything fails, the returned error
+// will explain why.
+func extractSnippetFromStack(stack string, filename string, migrationsDir string) (string, error) {
+	// look for patterns like: at <fn> (path/to/file.js:12:34) or path/to/file.js:12:34
+	// we'll use a regexp to find file:line:col occurrences
+	re := regexp.MustCompile(`([\w\-./\\]+` + regexp.QuoteMeta(filename) + `):([0-9]+):([0-9]+)`)
+
+	matches := re.FindStringSubmatch(stack)
+	if len(matches) < 4 {
+		// fallback: try to find any file:line:col and then check if basename matches
+		reAny := regexp.MustCompile(`([\w\-./\\]+):([0-9]+):([0-9]+)`)
+		any := reAny.FindStringSubmatch(stack)
+		if len(any) < 4 {
+			return "", fmt.Errorf("no file:line:col frame found in stack")
+		}
+		matches = any
+		// ensure basename equals filename
+		if filepath.Base(matches[1]) != filename {
+			// attempt to locate filename in migrationsDir instead
+			// continue below which will attempt to open by filename
+		}
+	}
+
+	filePath := matches[1]
+	lineStr := matches[2]
+
+	// if the matched path is not absolute and not exists, try to resolve relative to migrationsDir
+	if !filepath.IsAbs(filePath) {
+		cand := filepath.Join(migrationsDir, filePath)
+		if _, err := os.Stat(cand); err == nil {
+			filePath = cand
+		} else {
+			// maybe matches[1] is just the filename (no dirs)
+			cand2 := filepath.Join(migrationsDir, filename)
+			if _, err := os.Stat(cand2); err == nil {
+				filePath = cand2
+			}
+		}
+	}
+
+	line, err := strconv.Atoi(lineStr)
+	if err != nil {
+		return "", err
+	}
+
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		return "", err
+	}
+
+	lines := strings.Split(string(data), "\n")
+	// lines are 1-indexed in stack traces
+	start := line - 4
+	if start < 0 {
+		start = 0
+	}
+	end := line + 2
+	if end > len(lines)-1 {
+		end = len(lines) - 1
+	}
+
+	var b strings.Builder
+	for i := start; i <= end; i++ {
+		num := i + 1
+		prefix := "   "
+		if num == line {
+			prefix = " >>"
+		}
+		b.WriteString(fmt.Sprintf("%s %4d: %s\n", prefix, num, lines[i]))
+	}
+
+	return b.String(), nil
 }

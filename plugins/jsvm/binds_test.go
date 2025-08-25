@@ -9,6 +9,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -304,6 +305,50 @@ func TestBaseBindsRecord(t *testing.T) {
 
 	if m2.Email() != "test@example.com" {
 		t.Fatalf("Expected record with email field set to %q, got \n%v", "test@example.com", m2)
+	}
+}
+
+func TestRecordUploadFileBinding(t *testing.T) {
+	app, _ := tests.NewTestApp()
+	defer app.Cleanup()
+
+	collection, err := app.FindCachedCollectionByNameOrId("users")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	vm := goja.New()
+	baseBinds(vm)
+	vm.Set("collection", collection)
+
+	// create a temp file to simulate a local file path
+	tmp, err := os.CreateTemp("", "pb_jsvm_test_*.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	tmp.WriteString("hello world")
+	tmp.Close()
+	defer os.Remove(tmp.Name())
+
+	vm.Set("testFile", tmp.Name())
+
+	v, err := vm.RunString(`(function(){ let r = new Record(collection); let err = r.uploadFile("avatar", testFile); if (err) throw err; return r; })()`)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rec, ok := v.Export().(*core.Record)
+	if !ok {
+		t.Fatalf("Expected core.Record, got %v", rec)
+	}
+
+	files := rec.GetUnsavedFiles("avatar")
+	if len(files) != 1 {
+		t.Fatalf("Expected 1 unsaved file, got %d", len(files))
+	}
+
+	if files[0].OriginalName != filepath.Base(tmp.Name()) {
+		t.Fatalf("Expected file OriginalName %q, got %q", filepath.Base(tmp.Name()), files[0].OriginalName)
 	}
 }
 

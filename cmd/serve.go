@@ -15,6 +15,7 @@ func NewServeCommand(app core.App, showStartBanner bool) *cobra.Command {
 	var allowedOrigins []string
 	var httpAddr string
 	var httpsAddr string
+	var expandAll bool
 
 	command := &cobra.Command{
 		Use:          "serve [domain(s)]",
@@ -42,6 +43,7 @@ func NewServeCommand(app core.App, showStartBanner bool) *cobra.Command {
 				ShowStartBanner:    showStartBanner,
 				AllowedOrigins:     allowedOrigins,
 				CertificateDomains: args,
+				ExpandAll:          expandAll,
 			})
 
 			if errors.Is(err, http.ErrServerClosed) {
@@ -71,6 +73,13 @@ func NewServeCommand(app core.App, showStartBanner bool) *cobra.Command {
 		"https",
 		"",
 		"TCP address to listen for the HTTPS server\n(if domain args are specified - default to 0.0.0.0:443, otherwise - default to empty string, aka. no TLS)\nThe incoming HTTP traffic also will be auto redirected to the HTTPS version",
+	)
+
+	command.PersistentFlags().BoolVar(
+		&expandAll,
+		"expand-all",
+		true,
+		"Automatically expand all relation fields recursively in API responses (use with caution)",
 	)
 
 	return command

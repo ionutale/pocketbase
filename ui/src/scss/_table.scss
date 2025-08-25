@@ -157,6 +157,9 @@ table {
     .col-type-number {
         white-space: nowrap;
     }
+    .col-type-relation {
+        height: auto; // allow multi-line relation values
+    }
 
     // field name specific columns
     td.col-field-username,

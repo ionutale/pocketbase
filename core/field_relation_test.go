@@ -345,6 +345,52 @@ func TestRelationFieldValidateValue(t *testing.T) {
 	}
 }
 
+func TestRelationFieldValidateValue_Polymorphic(t *testing.T) {
+	t.Parallel()
+
+	app, _ := tests.NewTestApp()
+	defer app.Cleanup()
+
+	demo3, _ := app.FindCollectionByNameOrId("demo3")
+	demo4, _ := app.FindCollectionByNameOrId("demo4")
+
+	rf := &core.RelationField{
+		Name:          "poly",
+		CollectionIds: []string{demo3.Id, demo4.Id},
+		MaxSelect:     5,
+	}
+
+	// host record (collection doesn't matter for validation)
+	host := core.NewRecord(core.NewBaseCollection("host"))
+
+	// ok: composite values referencing existing records from both collections
+	var d3 []*core.Record
+	if err := app.RecordQuery(demo3).Limit(1).All(&d3); err != nil || len(d3) == 0 {
+		t.Fatalf("failed to load demo3 record: %v", err)
+	}
+	var d4 []*core.Record
+	if err := app.RecordQuery(demo4).Limit(1).All(&d4); err != nil || len(d4) == 0 {
+		t.Fatalf("failed to load demo4 record: %v", err)
+	}
+
+	host.Set("poly", []string{demo3.Id + ":" + d3[0].Id, demo4.Id + ":" + d4[0].Id})
+	if err := rf.ValidateValue(context.Background(), app, host); err != nil {
+		t.Fatalf("expected ok, got %v", err)
+	}
+
+	// bad: plain id not allowed for multi-collection config
+	host.Set("poly", []string{d3[0].Id})
+	if err := rf.ValidateValue(context.Background(), app, host); err == nil {
+		t.Fatalf("expected error for plain id in polymorphic relation")
+	}
+
+	// bad: invalid collection part
+	host.Set("poly", []string{"badcol:" + d3[0].Id})
+	if err := rf.ValidateValue(context.Background(), app, host); err == nil {
+		t.Fatalf("expected error for invalid collection in composite value")
+	}
+}
+
 func TestRelationFieldValidateSettings(t *testing.T) {
 	testDefaultFieldIdValidation(t, core.FieldTypeRelation)
 	testDefaultFieldNameValidation(t, core.FieldTypeRelation)

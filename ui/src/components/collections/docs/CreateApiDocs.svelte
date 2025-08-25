@@ -264,6 +264,9 @@ await pb.collection('${collection?.name}').requestVerification('test@example.com
                         already uploaded file(s).
                     {:else if field.type === "relation"}
                         Relation record {field.maxSelect === 1 ? "id" : "ids"}.
+                        {#if Array.isArray(field.collectionIds) && field.collectionIds.length > 0}
+                            <span class="txt-hint">Format: <code>{`"<collectionId>:<id>"`}</code></span>
+                        {/if}
                     {/if}
                 </td>
             </tr>

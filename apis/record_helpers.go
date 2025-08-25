@@ -104,6 +104,13 @@ func recordAuthResponse(e *core.RequestEvent, authRecord *core.Record, token str
 				}
 			}
 
+			// if expand-all is enabled, expand everything
+			if hasExpandAllEnabled(e.App) {
+				if err := expandAllRecords(e.App, &requestInfo, []*core.Record{e.Record}); err != nil {
+					e.App.Logger().Warn("[recordAuthResponse] Failed to expand all", "error", err)
+				}
+			}
+
 			return nil
 		})
 		if err != nil {
@@ -279,6 +286,14 @@ func EnrichRecords(e *core.RequestEvent, records []*core.Record, defaultExpands 
 			e.App.Logger().Warn("failed to apply default enriching", "error", err)
 		}
 
+		// if expand-all is enabled, load all relations iteratively
+		if hasExpandAllEnabled(e.App) {
+			if err := expandAllRecords(e.App, info, records); err != nil {
+				// non critical
+				e.App.Logger().Warn("failed to expandAll", "error", err)
+			}
+		}
+
 		return nil
 	})
 }
@@ -358,6 +373,123 @@ func defaultEnrichRecords(app core.App, requestInfo *core.RequestInfo, records [
 	}
 
 	return nil
+}
+
+// hasExpandAllEnabled checks the runtime toggle stored by Serve.
+func hasExpandAllEnabled(app core.App) bool {
+	v, ok := app.Store().GetOk("apis.expandAll")
+	if !ok {
+		return false
+	}
+	enabled, _ := v.(bool)
+	return enabled
+}
+
+// expandAllRecords expands all direct and nested relation fields iteratively without a fixed depth cap.
+// It respects access rules via expandFetch and avoids infinite loops by tracking visited expand paths.
+func expandAllRecords(app core.App, requestInfo *core.RequestInfo, records []*core.Record) error {
+	if len(records) == 0 {
+		return nil
+	}
+
+	// group queue: collectionId -> records (same collection)
+	type recGroup struct {
+		collId string
+		items  []*core.Record
+	}
+
+	// visited record ids per collection to avoid cycles
+	visited := make(map[string]map[string]struct{})
+	addVisited := func(collId, id string) bool {
+		if visited[collId] == nil {
+			visited[collId] = map[string]struct{}{}
+		}
+		if _, ok := visited[collId][id]; ok {
+			return false
+		}
+		visited[collId][id] = struct{}{}
+		return true
+	}
+
+	// seed visited with initial records
+	for _, r := range records {
+		addVisited(r.Collection().Id, r.Id)
+	}
+
+	queue := []recGroup{{collId: records[0].Collection().Id, items: records}}
+	fetch := expandFetch(app, requestInfo)
+
+	for len(queue) > 0 {
+		// pop front
+		g := queue[0]
+		queue = queue[1:]
+		if len(g.items) == 0 {
+			continue
+		}
+
+		// expand all direct rel fields for this collection
+		relNames := collectDirectRelationNames(g.items[0])
+		if len(relNames) == 0 {
+			continue
+		}
+		_ = app.ExpandRecords(g.items, relNames, fetch)
+
+		// collect next groups from expanded values
+		nextGroups := map[string][]*core.Record{}
+		for _, r := range g.items {
+			exp := r.Expand()
+			for _, rel := range relNames {
+				v := exp[rel]
+				switch vv := v.(type) {
+				case *core.Record:
+					if vv != nil && addVisited(vv.Collection().Id, vv.Id) {
+						cid := vv.Collection().Id
+						nextGroups[cid] = append(nextGroups[cid], vv)
+					}
+				case []*core.Record:
+					for _, cr := range vv {
+						if cr != nil && addVisited(cr.Collection().Id, cr.Id) {
+							cid := cr.Collection().Id
+							nextGroups[cid] = append(nextGroups[cid], cr)
+						}
+					}
+				}
+			}
+		}
+
+		for cid, items := range nextGroups {
+			// dedupe within group by id
+			seen := map[string]struct{}{}
+			uniq := make([]*core.Record, 0, len(items))
+			for _, it := range items {
+				if _, ok := seen[it.Id]; ok {
+					continue
+				}
+				seen[it.Id] = struct{}{}
+				uniq = append(uniq, it)
+			}
+			if len(uniq) > 0 {
+				queue = append(queue, recGroup{collId: cid, items: uniq})
+			}
+		}
+	}
+
+	return nil
+}
+
+// collectDirectRelationNames returns the direct relation field names of the record's collection.
+func collectDirectRelationNames(rec *core.Record) []string {
+	coll := rec.Collection()
+	if coll == nil {
+		return nil
+	}
+	var names []string
+	for _, f := range coll.Fields {
+		if rf, ok := f.(*core.RelationField); ok {
+			names = append(names, rf.Name)
+		}
+	}
+	return names
 }
 
 // expandFetch is the records fetch function that is used to expand related records.

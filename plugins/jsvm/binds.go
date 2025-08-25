@@ -448,6 +448,19 @@ func baseBinds(vm *goja.Runtime) {
 		instanceValue := vm.ToValue(instance).(*goja.Object)
 		instanceValue.SetPrototype(call.This.Prototype())
 
+		// uploadFile(fieldName, localPath)
+		// Creates a *filesystem.File from the provided local path and sets it on the record
+		if proto := call.This.Prototype(); proto != nil {
+			proto.Set("uploadFile", func(fieldName string, localPath string) error {
+				f, err := filesystem.NewFileFromPath(localPath)
+				if err != nil {
+					return err
+				}
+				instance.Set(fieldName, f)
+				return nil
+			})
+		}
+
 		return instanceValue
 	})
 

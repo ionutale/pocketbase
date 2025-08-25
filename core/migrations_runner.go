@@ -2,6 +2,7 @@ package core
 
 import (
 	"fmt"
+	"runtime/debug"
 	"strings"
 	"time"
 
@@ -151,7 +152,7 @@ func (r *MigrationsRunner) Up() ([]string, error) {
 				// ignore empty Up action
 				if m.Up != nil {
 					if err := m.Up(txApp); err != nil {
-						return fmt.Errorf("failed to apply migration %s: %w", m.File, err)
+						return formatMigrationError("apply", m.File, err)
 					}
 				}
 
@@ -204,7 +205,7 @@ func (r *MigrationsRunner) Down(toRevertCount int) ([]string, error) {
 					// ignore empty Down action
 					if m.Down != nil {
 						if err := m.Down(txApp); err != nil {
-							return fmt.Errorf("failed to revert migration %s: %w", m.File, err)
+							return formatMigrationError("revert", m.File, err)
 						}
 					}
 
@@ -287,6 +288,14 @@ func (r *MigrationsRunner) saveRevertedMigration(txApp App, file string) error {
 	_, err := txApp.DB().Delete(r.tableName, dbx.HashExp{"file": file}).Execute()
 
 	return err
+}
+
+// formatMigrationError wraps migration errors with contextual info and stack trace
+func formatMigrationError(op string, file string, err error) error {
+	// include a short operation message and the underlying error
+	msg := fmt.Sprintf("failed to %s migration %s: %v", op, file, err)
+	// append the current goroutine stack for debugging
+	return fmt.Errorf("%s\nstack:\n%s", msg, debug.Stack())
 }
 
 func (r *MigrationsRunner) lastAppliedMigrations(limit int) ([]string, error) {

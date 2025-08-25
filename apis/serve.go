@@ -43,6 +43,13 @@ type ServeConfig struct {
 
 	// AllowedOrigins is an optional list of CORS origins (default to "*").
 	AllowedOrigins []string
+
+	// ExpandAll enables expanding all relation fields recursively for API responses.
+	//
+	// When enabled, List/View and Record auth responses will automatically expand
+	// all direct relation fields and their nested relations iteratively without
+	// a fixed depth limit (cycles are guarded by visited checks).
+	ExpandAll bool
 }
 
 // Serve starts a new app web server.
@@ -70,6 +77,13 @@ func Serve(app core.App, config ServeConfig) error {
 	pbRouter, err := NewRouter(app)
 	if err != nil {
 		return err
+	}
+
+	// persist the expand-all toggle for use inside API enrich helpers
+	if config.ExpandAll {
+		app.Store().Set("apis.expandAll", true)
+	} else {
+		app.Store().Remove("apis.expandAll")
 	}
 
 	pbRouter.Bind(CORS(CORSConfig{
@@ -264,7 +278,7 @@ func Serve(app core.App, config ServeConfig) error {
 
 	if listener == nil {
 		//nolint:staticcheck
-		return errors.New("The OnServe listener was not initialized. Did you forget to call the ServeEvent.Next() method?")
+		return errors.New("onServe listener not initialized; did you forget to call ServeEvent.Next")
 	}
 
 	if config.ShowStartBanner {
