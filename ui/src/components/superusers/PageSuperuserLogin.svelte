@@ -1,6 +1,5 @@
-<svelte:options runes />
 <script>
-    import { link, replace, querystring } from "svelte-spa-router";
+    import { link, replace, querystring } from "@/lib/router";
     import ApiClient from "@/utils/ApiClient";
     import CommonHelper from "@/utils/CommonHelper";
     import FullPage from "@/components/base/FullPage.svelte";
@@ -10,44 +9,32 @@
 
     const queryParams = new URLSearchParams($querystring);
 
-    let identity = $state(queryParams.get("demoEmail") || "");
-    let password = $state(queryParams.get("demoPassword") || "");
+    let identity = queryParams.get("demoEmail") || "";
+    let password = queryParams.get("demoPassword") || "";
 
-    let authMethods = $state({});
-    let currentStep = $state(1);
-    let totalSteps = $state(1);
+    let authMethods = {};
+    let currentStep = 1;
+    let totalSteps = 1;
 
-    let passwordAuthSubmitting = $state(false);
-    let otpRequestSubmitting = $state(false);
-    let otpAuthSubmitting = $state(false);
-    let isLoading = $state(false);
+    let passwordAuthSubmitting = false;
+    let otpRequestSubmitting = false;
+    let otpAuthSubmitting = false;
+    let isLoading = false;
 
-    let mfaId = $state("");
-    let otpId = $state("");
-    let lastOTPId = $state("");
-    let otpEmail = $state("");
-    let otpPassword = $state("");
+    let mfaId = "";
+    let otpId = "";
+    let lastOTPId = "";
+    let otpEmail = "";
+    let otpPassword = "";
 
-    $effect(() => {
+    $: {
         totalSteps = 1;
         currentStep = 1;
-
-        if (authMethods?.mfa?.enabled) {
-            totalSteps++;
-        }
-
-        if (authMethods?.otp?.enabled) {
-            totalSteps++;
-        }
-
-        if (mfaId != "") {
-            currentStep++;
-        }
-
-        if (otpId != "") {
-            currentStep++;
-        }
-    });
+        if (authMethods?.mfa?.enabled) totalSteps++;
+        if (authMethods?.otp?.enabled) totalSteps++;
+        if (mfaId != "") currentStep++;
+        if (otpId != "") currentStep++;
+    }
 
     loadAuthMethods();
 

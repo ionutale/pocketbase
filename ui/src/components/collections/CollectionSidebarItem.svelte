@@ -2,7 +2,7 @@
     import tooltip from "@/actions/tooltip";
     import { activeCollection } from "@/stores/collections";
     import CommonHelper from "@/utils/CommonHelper";
-    import { link } from "svelte-spa-router";
+    import { link } from "@/lib/router";
 
     export let collection;
     export let pinnedIds;

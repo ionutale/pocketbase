@@ -1,6 +1,5 @@
-<svelte:options runes />
 <script>
-    import { link, replace } from "svelte-spa-router";
+    import { link, replace } from "@/lib/router";
     import ApiClient from "@/utils/ApiClient";
     import CommonHelper from "@/utils/CommonHelper";
     import { addSuccessToast } from "@/stores/toasts";
@@ -9,11 +8,11 @@
 
     let params;
 
-    let newPassword = $state("");
-    let newPasswordConfirm = $state("");
-    let isLoading = $state(false);
+    let newPassword = "";
+    let newPasswordConfirm = "";
+    let isLoading = false;
 
-    let email = $derived(CommonHelper.getJWTPayload(params?.token).email || "");
+    let email = CommonHelper.getJWTPayload(params?.token).email || "";
 
     async function submit() {
         if (isLoading) {

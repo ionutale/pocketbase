@@ -1,8 +1,7 @@
 <script>
     import PageSidebar from "@/components/base/PageSidebar.svelte";
     import { hideControls } from "@/stores/app";
-    import { link } from "svelte-spa-router";
-    import active from "svelte-spa-router/active";
+    import { link, active } from "@/lib/router";
 </script>
 
 <PageSidebar class="settings-sidebar">

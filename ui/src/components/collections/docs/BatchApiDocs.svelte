@@ -1,6 +1,5 @@
-<svelte:options runes />
 <script>
-    import { link } from "svelte-spa-router";
+    import { link } from "@/lib/router";
     import ApiClient from "@/utils/ApiClient";
     import CommonHelper from "@/utils/CommonHelper";
     import CodeBlock from "@/components/base/CodeBlock.svelte";
@@ -8,14 +7,18 @@
 
     let collection;
 
-    let responseTab = $state(200);
-    let responses = $state([]);
+    let responseTab = 200;
+    let responses = [];
 
-    let backendAbsUrl = $derived(CommonHelper.getApiExampleUrl(ApiClient.baseURL));
+    let backendAbsUrl = CommonHelper.getApiExampleUrl(ApiClient.baseURL);
 
-    let dummyRecord = $derived(CommonHelper.dummyCollectionRecord(collection));
+    let dummyRecord = CommonHelper.dummyCollectionRecord(collection);
 
-    $effect(() => { if (collection?.id) {
+    // recompute responses when collection changes
+    $: if (collection?.id) {
+        responses = [];
+        if (!collection?.id) return;
+        if (collection?.id) {
         responses.push({
             code: 200,
             body: JSON.stringify(
@@ -73,6 +76,7 @@
                 }
             `,
         });
+        }
     }
 </script>
 

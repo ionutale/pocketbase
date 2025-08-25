@@ -1,5 +1,5 @@
 <script>
-    import { replace } from "svelte-spa-router";
+    import { replace } from "@/lib/router";
     import ApiClient from "@/utils/ApiClient";
 
     handler();

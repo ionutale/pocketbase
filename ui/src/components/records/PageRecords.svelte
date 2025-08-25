@@ -1,7 +1,6 @@
-<svelte:options runes />
 <script>
     import { tick } from "svelte";
-    import { querystring } from "svelte-spa-router";
+    import { querystring } from "@/lib/router";
     import CommonHelper from "@/utils/CommonHelper";
     import tooltip from "@/actions/tooltip";
     import PageWrapper from "@/components/base/PageWrapper.svelte";

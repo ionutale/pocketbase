@@ -1,7 +1,6 @@
-<svelte:options runes />
 <script>
     import { tick } from "svelte";
-    import { replace } from "svelte-spa-router";
+    import { replace } from "@/lib/router";
     import { getTokenPayload } from "pocketbase";
     import ApiClient from "@/utils/ApiClient";
     import { addInfoToast, addErrorToast } from "@/stores/toasts";
@@ -11,16 +10,16 @@
 
     let params;
 
-    let email = $state("");
-    let password = $state("");
-    let passwordConfirm = $state("");
-    let isLoading = $state(false);
-    let isUploading = $state(false);
+    let email = "";
+    let password = "";
+    let passwordConfirm = "";
+    let isLoading = false;
+    let isUploading = false;
 
-    let emailInput = $state(undefined);
-    let backupFileInput = $state(undefined);
+    let emailInput;
+    let backupFileInput;
 
-    let isBusy = $derived(isLoading || isUploading);
+    $: isBusy = isLoading || isUploading;
 
     checkToken();
 

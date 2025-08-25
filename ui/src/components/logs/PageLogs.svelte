@@ -1,6 +1,5 @@
-<svelte:options runes />
 <script>
-    import { querystring } from "svelte-spa-router";
+    import { querystring } from "@/lib/router";
     import { pageTitle } from "@/stores/app";
     import CommonHelper from "@/utils/CommonHelper";
     import tooltip from "@/actions/tooltip";
@@ -22,38 +21,37 @@
 
     const initialQueryParams = new URLSearchParams($querystring);
 
-    let logViewPanel = $state(undefined);
-    let logsSettingsPanel = $state(undefined);
-    let refreshKey = $state(1);
-    let filter = $state(initialQueryParams.get("filter") || "");
-    let zoom = $state({});
+    let logViewPanel;
+    let logsSettingsPanel;
+    let refreshKey = 1;
+    let filter = initialQueryParams.get("filter") || "";
+    let zoom = {};
     let withSuperuserLogs =
         (initialQueryParams.get(ADMIN_REQUESTS_QUERY_KEY) ||
             window.localStorage?.getItem(ADMIN_REQUESTS_STORAGE_KEY)) << 0;
-    let initialWithSuperuserLogs = $state(withSuperuserLogs);
+    let initialWithSuperuserLogs = withSuperuserLogs;
 
-    $effect(() => { if (initialQueryParams.get(LOG_QUERY_KEY) && logViewPanel) {
+    $: if (initialQueryParams.get(LOG_QUERY_KEY) && logViewPanel) {
         logViewPanel.show(initialQueryParams.get(LOG_QUERY_KEY));
     }
 
-    let presets = $derived(!withSuperuserLogs ? 'data.auth!="_superusers"' : "");
+    $: presets = !withSuperuserLogs ? 'data.auth!="_superusers"' : "";
 
-    $effect(() => { if (initialWithSuperuserLogs != withSuperuserLogs) {
+    $: if (initialWithSuperuserLogs != withSuperuserLogs) {
         initialWithSuperuserLogs = withSuperuserLogs;
         window.localStorage?.setItem(ADMIN_REQUESTS_STORAGE_KEY, withSuperuserLogs << 0);
         updateQueryParams();
     }
 
-    $effect(() => { if (typeof filter !== "undefined") {
+    $: if (typeof filter !== "undefined") {
         updateQueryParams();
-    }
 
     function refresh() {
         refreshKey++;
     }
 
     function updateQueryParams(extra = {}) {
-        let queryParams = $state({});
+    let queryParams = {};
         queryParams.filter = filter || null;
         queryParams[ADMIN_REQUESTS_QUERY_KEY] = withSuperuserLogs << 0 || null;
         CommonHelper.replaceHashQueryParams(Object.assign(queryParams, extra));
