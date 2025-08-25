@@ -4,7 +4,7 @@
 </script>
 
 {#if item.icon}
-    <i class="icon {item.icon}" />
+    <i class="icon {item.icon}"></i>
 {/if}
 
 <span class="txt">{item.label || item.name || item.title || item.id || item.value}</span>

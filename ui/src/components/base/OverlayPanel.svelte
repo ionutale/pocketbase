@@ -222,7 +222,7 @@
                 class="overlay"
                 on:click|preventDefault={() => (overlayClose ? hide() : true)}
                 transition:fade={{ duration: transitionSpeed, opacity: 0 }}
-            />
+            ></div>
 
             <div
                 class="overlay-panel {classes} {contentScrollClass}"
