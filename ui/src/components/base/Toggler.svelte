@@ -2,36 +2,44 @@
     import { createEventDispatcher, onMount } from "svelte";
     import { fly } from "svelte/transition";
 
-    export let trigger = undefined;
-    export let active = false;
-    export let escClose = true;
-    export let autoScroll = true;
-    export let closableClass = "closable";
-    let classes = "";
-    export { classes as class }; // export reserved keyword
+    // Using Svelte 5 props rune
+    let { 
+        trigger = undefined,
+        active = $bindable(false),
+        escClose = true,
+        autoScroll = true,
+        closableClass = "closable",
+        class: classes = ""
+    } = $props();
 
-    let container;
-    let containerChild;
-    let activeTrigger;
-    let scrollTimeoutId;
-    let hideTimeoutId;
-    let isOutsideMouseDown = false;
+    // Using runes for local state
+    let container = $state();
+    let containerChild = $state();
+    let activeTrigger = $state();
+    let scrollTimeoutId = $state();
+    let hideTimeoutId = $state();
+    let isOutsideMouseDown = $state(false);
 
     const dispatch = createEventDispatcher();
 
-    $: if (container) {
-        bindTrigger(trigger);
-    }
+    // Using $effect instead of reactive statements
+    $effect(() => {
+        if (container) {
+            bindTrigger(trigger);
+        }
+    });
 
-    $: if (active) {
-        activeTrigger?.classList?.add("active");
-        activeTrigger?.setAttribute("aria-expanded", true);
-        dispatch("show");
-    } else {
-        activeTrigger?.classList?.remove("active");
-        activeTrigger?.setAttribute("aria-expanded", false);
-        dispatch("hide");
-    }
+    $effect(() => {
+        if (active) {
+            activeTrigger?.classList?.add("active");
+            activeTrigger?.setAttribute("aria-expanded", true);
+            dispatch("show");
+        } else {
+            activeTrigger?.classList?.remove("active");
+            activeTrigger?.setAttribute("aria-expanded", false);
+            dispatch("hide");
+        }
+    });
 
     export function hideWithDelay(delay = 0) {
         if (!active) {
