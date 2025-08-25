@@ -78,11 +78,12 @@
             <div class="form-field-addon">
                 <button
                     type="button"
+                    aria-label="Clear collection search"
                     class="btn btn-xs btn-transparent btn-circle btn-clear"
                     class:hidden={!hasSearch}
                     on:click={() => (searchTerm = "")}
                 >
-                    <i class="ri-close-line" />
+                    <i class="ri-close-line"></i>
                 </button>
             </div>
             <input
@@ -133,7 +134,7 @@
             >
                 <span class="txt">System</span>
                 {#if !normalizedSearch.length}
-                    <i class="ri-arrow-{showSystemSection ? 'up' : 'down'}-s-line" aria-hidden="true" />
+                    <i class="ri-arrow-{showSystemSection ? 'up' : 'down'}-s-line" aria-hidden="true"></i>
                 {/if}
             </button>
             {#if showSystemSection || normalizedSearch.length}
@@ -151,7 +152,7 @@
     {#if !$hideControls}
         <footer class="sidebar-footer">
             <button type="button" class="btn btn-block btn-outline" on:click={() => collectionPanel?.show()}>
-                <i class="ri-add-line" />
+                <i class="ri-add-line"></i>
                 <span class="txt">New collection</span>
             </button>
         </footer>

@@ -127,7 +127,7 @@
 
     {#if isLoading}
         <div class="block txt-center">
-            <span class="loader" />
+            <span class="loader"></span>
         </div>
     {:else if log?.id}
         <table class="table-border">
