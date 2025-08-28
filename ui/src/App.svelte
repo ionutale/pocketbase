@@ -56,13 +56,11 @@
         window.localStorage?.setItem(THEME_KEY, isDark ? "dark" : "light");
     }
 
-    let isTinyMCEPreloaded = $state(false);
+    let isTinyMCEPreloaded = false;
 
-    $effect(() => {
-        if ($superuser?.id) {
-            loadSettings();
-        }
-    });
+    $: if ($superuser?.id) {
+        loadSettings();
+    }
 
     function handleRouteLoading(e) {
         if (e?.detail?.location === oldLocation) {
