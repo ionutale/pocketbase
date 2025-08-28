@@ -1,6 +1,6 @@
-/**** Tailwind + DaisyUI config ****/
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import { type Config } from 'tailwindcss'
+
+const config: Config = {
   content: [
     './index.html',
     './src/**/*.{svelte,js,ts}',
@@ -8,7 +8,10 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [require('@tailwindcss/forms'), require('daisyui')],
+  plugins: [
+    require('@tailwindcss/forms'), 
+    require('daisyui')
+  ],
   daisyui: {
     themes: [
       'light',
@@ -17,4 +20,6 @@ module.exports = {
     ],
     darkTheme: 'dark',
   },
-};
+}
+
+export default config

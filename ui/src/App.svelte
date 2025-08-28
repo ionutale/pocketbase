@@ -20,11 +20,11 @@
 
     let oldLocation = undefined;
 
-    let showAppSidebar = $state(false);
+    let showAppSidebar = false;
 
     // theme
     const THEME_KEY = "pb_ui_theme";
-    let isDark = $state(false);
+    let isDark = false;
 
     function applyTheme(dark) {
         isDark = !!dark;

@@ -15,10 +15,9 @@ export default defineConfig({
     plugins: [
         svelte({
             preprocess: [vitePreprocess()],
-            // Enable Svelte 5 runes while keeping compat for existing Svelte 4 code
+            // Temporarily disable runes for compatibility with svelte-spa-router
             compilerOptions: {
-                runes: true,
-                compat: true,
+                runes: false,
             },
             onwarn: (warning, handler) => {
                 if (warning.code && String(warning.code).startsWith('a11y-')) {
