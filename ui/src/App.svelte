@@ -1,5 +1,6 @@
 <script>
-    import "./scss/main.scss";
+    import "./styles/tailwind.css"; // Tailwind + DaisyUI
+    import "./scss/main.scss"; // existing styles
 
     import tooltip from "@/actions/tooltip";
     import Confirmation from "@/components/base/Confirmation.svelte";
@@ -19,21 +20,20 @@
 
     let oldLocation = undefined;
 
-    let showAppSidebar = false;
+    let showAppSidebar = $state(false);
 
     // theme
     const THEME_KEY = "pb_ui_theme";
-    let isDark = false;
+    let isDark = $state(false);
 
     function applyTheme(dark) {
         isDark = !!dark;
         try {
             const root = document.documentElement;
-            if (isDark) {
-                root.classList.add("dark");
-            } else {
-                root.classList.remove("dark");
-            }
+            // DaisyUI prefers data-theme
+            root.setAttribute("data-theme", isDark ? "dark" : "light");
+            // Keep the legacy .dark class for existing styles
+            root.classList.toggle("dark", isDark);
         } catch (err) {
             // ignore in non-browser environments
         }
@@ -56,11 +56,13 @@
         window.localStorage?.setItem(THEME_KEY, isDark ? "dark" : "light");
     }
 
-    let isTinyMCEPreloaded = false;
+    let isTinyMCEPreloaded = $state(false);
 
-    $: if ($superuser?.id) {
-        loadSettings();
-    }
+    $effect(() => {
+        if ($superuser?.id) {
+            loadSettings();
+        }
+    });
 
     function handleRouteLoading(e) {
         if (e?.detail?.location === oldLocation) {
@@ -142,7 +144,7 @@
                     use:active={{ path: "/collections/?.*", className: "current-route" }}
                     use:tooltip={{ text: "Collections", position: "right" }}
                 >
-                    <i class="ri-database-2-line" />
+                    <i class="ri-database-2-line"></i>
                 </a>
                 <a
                     href="/logs"
@@ -152,7 +154,7 @@
                     use:active={{ path: "/logs/?.*", className: "current-route" }}
                     use:tooltip={{ text: "Logs", position: "right" }}
                 >
-                    <i class="ri-line-chart-line" />
+                    <i class="ri-line-chart-line"></i>
                 </a>
                 <a
                     href="/settings"
@@ -162,7 +164,7 @@
                     use:active={{ path: "/settings/?.*", className: "current-route" }}
                     use:tooltip={{ text: "Settings", position: "right" }}
                 >
-                    <i class="ri-tools-line" />
+                    <i class="ri-tools-line"></i>
                 </a>
             </nav>
 
@@ -185,11 +187,11 @@
                         role="menuitem"
                         use:link
                     >
-                        <i class="ri-shield-user-line" aria-hidden="true" />
+                        <i class="ri-shield-user-line" aria-hidden="true"></i>
                         <span class="txt">Manage superusers</span>
                     </a>
-                    <button type="button" class="dropdown-item closable" role="menuitem" on:click={logout}>
-                        <i class="ri-logout-circle-line" aria-hidden="true" />
+                    <button type="button" class="dropdown-item closable" role="menuitem" onclick={logout}>
+                        <i class="ri-logout-circle-line" aria-hidden="true"></i>
                         <span class="txt">Logout</span>
                     </button>
                 </Toggler>
@@ -200,7 +202,7 @@
                 class="btn btn-transparent btn-sm m-t-10"
                 aria-pressed={isDark}
                 title="Toggle dark theme"
-                on:click={toggleTheme}
+                onclick={toggleTheme}
             >
                 {#if isDark}
                     <i class="ri-sun-line" aria-hidden="true"></i>

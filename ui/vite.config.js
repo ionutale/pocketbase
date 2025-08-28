@@ -15,8 +15,13 @@ export default defineConfig({
     plugins: [
         svelte({
             preprocess: [vitePreprocess()],
+            // Enable Svelte 5 runes while keeping compat for existing Svelte 4 code
+            compilerOptions: {
+                runes: true,
+                compat: true,
+            },
             onwarn: (warning, handler) => {
-                if (warning.code.startsWith('a11y-')) {
+                if (warning.code && String(warning.code).startsWith('a11y-')) {
                     return; // silence a11y warnings
                 }
                 handler(warning);

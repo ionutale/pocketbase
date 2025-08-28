@@ -1,3 +1,17 @@
+UI upgrades
+
+- Switched to pnpm.
+- Added TailwindCSS + DaisyUI.
+- Upgraded Svelte to v5 with runes compatibility enabled.
+
+Develop
+
+```sh
+corepack enable
+corepack prepare pnpm@9.12.0 --activate
+pnpm install
+pnpm dev
+```
 PocketBase Superuser dashboard UI
 ======================================================================
 
