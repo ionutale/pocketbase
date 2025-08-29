@@ -293,8 +293,9 @@ func Serve(app core.App, config ServeConfig) error {
 		)
 
 		regular := color.New()
-		regular.Printf("├─ REST API:  %s\n", color.CyanString("%s/api/", baseURL))
-		regular.Printf("└─ Dashboard: %s\n", color.CyanString("%s/_/", baseURL))
+		regular.Printf("├─ REST API:   %s\n", color.CyanString("%s/api/", baseURL))
+		regular.Printf("├─ OpenAPI UI: %s\n", color.CyanString("%s/openapi/html", baseURL))
+		regular.Printf("└─ Dashboard:  %s\n", color.CyanString("%s/_/", baseURL))
 	}
 
 	var serveErr error

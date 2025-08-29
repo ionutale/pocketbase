@@ -59,20 +59,22 @@ Notes:
 
 ### OpenAPI (Swagger)
 
-PocketBase now exposes a basic OpenAPI 3.0 spec generated from the registered routes:
+PocketBase exposes a basic OpenAPI 3.0 spec generated from the registered routes:
 
-- Endpoint: `GET /api/openapi.json`
-- Purpose: discover available endpoints programmatically or load them in tools like Swagger UI or Redoc.
-- Scope: the spec lists paths and methods. Schemas/parameters are minimal, meant as a starting point.
+- JSON: `GET /openapi/json`
+- YAML: `GET /openapi/yaml`
+- HTML viewer (Swagger UI): `GET /openapi/html`
 
-Quick ways to view it:
+Notes:
+- Purpose: discover available endpoints programmatically or load into tools (Swagger UI, Redoc, etc.).
+- Scope: the spec lists paths and methods. Schemas/parameters are minimal, intended as a starting point.
 
-- Open in Swagger UI (replace host/port if different):
-    - https://petstore.swagger.io/?url=http://localhost:8090/api/openapi.json
-- Or fetch directly:
+Examples:
 
 ```sh
-curl http://localhost:8090/api/openapi.json | jq
+curl http://localhost:8090/openapi/json | jq
+curl http://localhost:8090/openapi/yaml
+open http://localhost:8090/openapi/html
 ```
 
 ### Use as a Go framework/toolkit

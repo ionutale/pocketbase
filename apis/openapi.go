@@ -8,22 +8,66 @@ import (
 
 	"github.com/pocketbase/pocketbase/core"
 	"github.com/pocketbase/pocketbase/tools/router"
+	yaml "gopkg.in/yaml.v3"
 )
 
 // bindOpenAPIApi registers an endpoint that serves a basic OpenAPI 3.0 spec
 // generated from the router's registered routes.
 func bindOpenAPIApi(app core.App, rg *router.RouterGroup[*core.RequestEvent], r *router.Router[*core.RequestEvent]) {
-	subGroup := rg.Group("")
-	subGroup.GET("/openapi.json", func(e *core.RequestEvent) error {
-		spec := generateOpenAPISpec(app, r)
-		// allow browser viewing
-		e.Response.Header().Set("Content-Type", "application/json")
-		// pretty-print for readability
-		enc := json.NewEncoder(e.Response)
-		enc.SetIndent("", "  ")
-		e.Response.WriteHeader(http.StatusOK)
-		return enc.Encode(spec)
-	})
+		// JSON
+		rg.GET("/openapi/json", func(e *core.RequestEvent) error {
+				spec := generateOpenAPISpec(app, r)
+				e.Response.Header().Set("Content-Type", "application/json")
+				enc := json.NewEncoder(e.Response)
+				enc.SetIndent("", "  ")
+				e.Response.WriteHeader(http.StatusOK)
+				return enc.Encode(spec)
+		})
+
+		// YAML
+		rg.GET("/openapi/yaml", func(e *core.RequestEvent) error {
+				spec := generateOpenAPISpec(app, r)
+				data, err := yaml.Marshal(spec)
+				if err != nil {
+					return e.InternalServerError("failed to render OpenAPI YAML", err)
+				}
+				e.Response.Header().Set("Content-Type", "application/yaml")
+				e.Response.WriteHeader(http.StatusOK)
+				_, _ = e.Response.Write(data)
+				return nil
+		})
+
+		// HTML (Swagger UI from CDN)
+		rg.GET("/openapi/html", func(e *core.RequestEvent) error {
+				html := `<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>OpenAPI Explorer</title>
+		<link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
+		<style>body { margin: 0; } #swagger-ui { height: 100vh; }</style>
+	</head>
+	<body>
+		<div id="swagger-ui"></div>
+		<script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+		<script>
+			window.addEventListener('load', () => {
+				window.ui = SwaggerUIBundle({
+					url: '/openapi/json',
+					dom_id: '#swagger-ui',
+					presets: [SwaggerUIBundle.presets.apis],
+					layout: 'BaseLayout'
+				});
+			});
+		</script>
+	</body>
+</html>`
+				e.Response.Header().Set("Content-Type", "text/html; charset=utf-8")
+				e.Response.WriteHeader(http.StatusOK)
+				_, _ = e.Response.Write([]byte(html))
+				return nil
+		})
 }
 
 // openAPISpec is a minimal structure for OpenAPI 3.0 compliant JSON.

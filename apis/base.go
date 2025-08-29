@@ -46,7 +46,8 @@ func NewRouter(app core.App) (*router.Router[*core.RequestEvent], error) {
 	bindBatchApi(app, apiGroup)
 	bindRealtimeApi(app, apiGroup)
 	bindHealthApi(app, apiGroup)
-	bindOpenAPIApi(app, apiGroup, pbRouter)
+	// OpenAPI endpoints are mounted at root: /openapi/{json,yaml,html}
+	bindOpenAPIApi(app, pbRouter.RouterGroup, pbRouter)
 
 	return pbRouter, nil
 }
