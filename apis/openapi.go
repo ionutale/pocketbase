@@ -133,11 +133,17 @@ func generateOpenAPISpec(app core.App, r *router.Router[*core.RequestEvent]) ope
 	if strings.TrimSpace(title) == "" {
 		title = "PocketBase API"
 	}
+
+	// prefer injected version from the app store when available
+	version := "0.0.0"
+	if v, ok := app.Store().Get("pb.version").(string); ok && strings.TrimSpace(v) != "" {
+		version = v
+	}
 	spec := openAPISpec{
 		OpenAPI: "3.0.3",
 		Info: map[string]any{
 			"title":   title,
-			"version": "0.0.0",
+			"version": version,
 		},
 		Paths: paths,
 		Servers: []map[string]string{

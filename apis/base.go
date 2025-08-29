@@ -35,6 +35,15 @@ func NewRouter(app core.App) (*router.Router[*core.RequestEvent], error) {
 	pbRouter.Bind(BodyLimit(DefaultMaxBodySize))
 
 	apiGroup := pbRouter.Group("/api")
+	// version endpoint
+	apiGroup.GET("/version", func(e *core.RequestEvent) error {
+		resp := map[string]any{
+			"version":     e.App.Store().Get("pb.version"),
+			"buildCommit": e.App.Store().Get("pb.buildCommit"),
+			"buildTime":   e.App.Store().Get("pb.buildTime"),
+		}
+		return e.JSON(http.StatusOK, resp)
+	})
 	bindSettingsApi(app, apiGroup)
 	bindCollectionApi(app, apiGroup)
 	bindRecordCrudApi(app, apiGroup)

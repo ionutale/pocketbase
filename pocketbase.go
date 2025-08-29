@@ -25,6 +25,14 @@ var _ core.App = (*PocketBase)(nil)
 // Version of PocketBase
 var Version = "(untracked)"
 
+// BuildCommit holds the VCS commit SHA injected at build time via -ldflags.
+// Example: -ldflags "-X github.com/pocketbase/pocketbase.BuildCommit=$(git rev-parse --short HEAD)"
+var BuildCommit = ""
+
+// BuildTime holds the build timestamp injected at build time via -ldflags.
+// Example: -ldflags "-X github.com/pocketbase/pocketbase.BuildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+var BuildTime = ""
+
 // PocketBase defines a PocketBase app launcher.
 //
 // It implements [core.App] via embedding and all of the app interface methods
@@ -135,6 +143,12 @@ func NewWithConfig(config Config) *PocketBase {
 		AuxMaxIdleConns:  config.AuxMaxIdleConns,
 		DBConnect:        config.DBConnect,
 	})
+
+	// store build metadata for APIs and other consumers
+	// (fallbacks are handled in consumers when these are empty)
+	pb.Store().Set("pb.version", Version)
+	pb.Store().Set("pb.buildCommit", BuildCommit)
+	pb.Store().Set("pb.buildTime", BuildTime)
 
 	// hide the default help command (allow only `--help` flag)
 	pb.RootCmd.SetHelpCommand(&cobra.Command{Hidden: true})

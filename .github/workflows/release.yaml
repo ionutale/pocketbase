@@ -22,6 +22,28 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Compute version metadata
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          else
+            # fall back to latest tag if present, otherwise 0.0.0-next
+            VERSION="$(git describe --tags --abbrev=0 2>/dev/null || echo '0.0.0')-next"
+          fi
+          SHORT_SHA="$(git rev-parse --short HEAD)"
+          BUILD_TIME="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+          echo "build_time=${BUILD_TIME}" >> "$GITHUB_OUTPUT"
+
+      - name: Set LDFLAGS env
+        shell: bash
+        run: |
+          echo "LDFLAGS=-s -w \"-X github.com/pocketbase/pocketbase.Version=${{ steps.meta.outputs.version }}\" \"-X github.com/pocketbase/pocketbase.BuildCommit=${{ steps.meta.outputs.short_sha }}\" \"-X github.com/pocketbase/pocketbase.BuildTime=${{ steps.meta.outputs.build_time }}\"" >> "$GITHUB_ENV"
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -61,7 +83,7 @@ jobs:
       #   run: go run ./plugins/jsvm/internal/types/types.go
 
       - name: Run tests
-        run: go test ./...
+        run: go test ./... -ldflags "${LDFLAGS}"
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
