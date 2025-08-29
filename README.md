@@ -57,6 +57,24 @@ Notes:
 - Access rules and field visibility still apply; unauthorized relations won\'t be expanded.
 - Use with caution on large graphs, as responses can become heavy.
 
+### OpenAPI (Swagger)
+
+PocketBase now exposes a basic OpenAPI 3.0 spec generated from the registered routes:
+
+- Endpoint: `GET /api/openapi.json`
+- Purpose: discover available endpoints programmatically or load them in tools like Swagger UI or Redoc.
+- Scope: the spec lists paths and methods. Schemas/parameters are minimal, meant as a starting point.
+
+Quick ways to view it:
+
+- Open in Swagger UI (replace host/port if different):
+    - https://petstore.swagger.io/?url=http://localhost:8090/api/openapi.json
+- Or fetch directly:
+
+```sh
+curl http://localhost:8090/api/openapi.json | jq
+```
+
 ### Use as a Go framework/toolkit
 
 PocketBase is distributed as a regular Go library package which allows you to build
