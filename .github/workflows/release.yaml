@@ -42,7 +42,7 @@ jobs:
       - name: Set LDFLAGS env
         shell: bash
         run: |
-          echo "LDFLAGS=-s -w \"-X github.com/pocketbase/pocketbase.Version=${{ steps.meta.outputs.version }}\" \"-X github.com/pocketbase/pocketbase.BuildCommit=${{ steps.meta.outputs.short_sha }}\" \"-X github.com/pocketbase/pocketbase.BuildTime=${{ steps.meta.outputs.build_time }}\"" >> "$GITHUB_ENV"
+          echo "LDFLAGS=-s -w -X github.com/pocketbase/pocketbase.Version=${{ steps.meta.outputs.version }} -X github.com/pocketbase/pocketbase.BuildCommit=${{ steps.meta.outputs.short_sha }} -X github.com/pocketbase/pocketbase.BuildTime=${{ steps.meta.outputs.build_time }}" >> "$GITHUB_ENV"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -83,7 +83,7 @@ jobs:
       #   run: go run ./plugins/jsvm/internal/types/types.go
 
       - name: Run tests
-        run: go test ./... -ldflags "${LDFLAGS}"
+        run: go test -ldflags "${LDFLAGS}" ./...
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
