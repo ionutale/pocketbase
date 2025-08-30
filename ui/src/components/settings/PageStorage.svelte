@@ -97,7 +97,7 @@
             </div>
 
             {#if isLoading}
-                <div class="loader" />
+                <div class="loader"></div>
             {:else}
                 <S3Fields
                     toggleLabel="Use S3 storage"
@@ -110,7 +110,7 @@
                         <div transition:slide={{ duration: 150 }}>
                             <div class="alert alert-warning m-0">
                                 <div class="icon">
-                                    <i class="ri-error-warning-line" />
+                                    <i class="ri-error-warning-line"></i>
                                 </div>
                                 <div class="content">
                                     If you have existing uploaded files, you'll have to migrate them manually
@@ -146,28 +146,28 @@
                                     </a>, etc.
                                 </div>
                             </div>
-                            <div class="clearfix m-t-base" />
+                            <div class="clearfix m-t-base"></div>
                         </div>
                     {/if}
                 </S3Fields>
 
                 <div class="flex">
-                    <div class="flex-fill" />
+                    <div class="flex-fill"></div>
 
                     {#if formSettings.s3?.enabled && !hasChanges && !isSaving}
                         {#if isTesting}
-                            <span class="loader loader-sm" />
+                            <span class="loader loader-sm"></span>
                         {:else if testError}
                             <div
                                 class="label label-sm label-warning entrance-right"
                                 use:tooltip={testError.data?.message}
                             >
-                                <i class="ri-error-warning-line txt-warning" />
+                                <i class="ri-error-warning-line txt-warning"></i>
                                 <span class="txt">Failed to establish S3 connection</span>
                             </div>
                         {:else}
                             <div class="label label-sm label-success entrance-right">
-                                <i class="ri-checkbox-circle-line txt-success" />
+                                <i class="ri-checkbox-circle-line txt-success"></i>
                                 <span class="txt">S3 connected successfully</span>
                             </div>
                         {/if}

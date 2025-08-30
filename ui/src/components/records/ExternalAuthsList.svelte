@@ -73,7 +73,7 @@
 
 {#if isLoading}
     <div class="block txt-center">
-        <span class="loader" />
+        <span class="loader"></span>
     </div>
 {:else if record?.id && externalAuths.length}
     <div class="list">
@@ -92,7 +92,7 @@
                     class="btn btn-transparent link-hint btn-circle btn-sm m-l-auto"
                     on:click={() => unlinkExternalAuth(auth)}
                 >
-                    <i class="ri-close-line" />
+                    <i class="ri-close-line"></i>
                 </button>
             </div>
         {/each}

@@ -103,7 +103,7 @@
                 use:tooltip={{ text: "Remove provider", position: "right" }}
                 on:click={remove}
             >
-                <i class="ri-delete-bin-7-line" aria-hidden="true" />
+                <i class="ri-delete-bin-7-line" aria-hidden="true"></i>
             </button>
             <div class="flex-fill"></div>
         {/if}

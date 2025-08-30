@@ -23,7 +23,7 @@
             use:tooltip={{ position: "left", text: "Set new value" }}
             on:click|preventDefault={unlock}
         >
-            <i class="ri-key-line" />
+            <i class="ri-key-line"></i>
         </button>
     </div>
 

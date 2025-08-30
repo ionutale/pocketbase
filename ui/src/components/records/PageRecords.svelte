@@ -142,7 +142,7 @@
 {#if $isCollectionsLoading && !$collections.length}
     <PageWrapper center>
         <div class="placeholder-section m-b-base">
-            <span class="loader loader-lg" />
+            <span class="loader loader-lg"></span>
             <h1>Loading collections...</h1>
         </div>
     </PageWrapper>
@@ -150,7 +150,7 @@
     <PageWrapper center>
         <div class="placeholder-section m-b-base">
             <div class="icon">
-                <i class="ri-database-2-line" />
+                <i class="ri-database-2-line"></i>
             </div>
             {#if $hideControls}
                 <h1 class="m-b-10">You don't have any collections yet.</h1>
@@ -161,7 +161,7 @@
                     class="btn btn-expanded-lg btn-lg"
                     on:click={() => collectionUpsertPanel?.show()}
                 >
-                    <i class="ri-add-line" />
+                    <i class="ri-add-line"></i>
                     <span class="txt">Create new collection</span>
                 </button>
             {/if}
@@ -186,7 +186,7 @@
                         use:tooltip={{ text: "Edit collection", position: "right" }}
                         on:click={() => collectionUpsertPanel?.show($activeCollection)}
                     >
-                        <i class="ri-settings-4-line" />
+                        <i class="ri-settings-4-line"></i>
                     </button>
                 {/if}
 
@@ -204,13 +204,13 @@
                     class="btn btn-outline"
                     on:click={() => collectionDocsPanel?.show($activeCollection)}
                 >
-                    <i class="ri-code-s-slash-line" />
+                    <i class="ri-code-s-slash-line"></i>
                     <span class="txt">API Preview</span>
                 </button>
 
                 {#if $activeCollection.type !== "view"}
                     <button type="button" class="btn btn-expanded" on:click={() => recordUpsertPanel?.show()}>
-                        <i class="ri-add-line" />
+                        <i class="ri-add-line"></i>
                         <span class="txt">New record</span>
                     </button>
                 {/if}
@@ -223,7 +223,7 @@
             on:submit={(e) => (filter = e.detail)}
         />
 
-        <div class="clearfix m-b-sm" />
+        <div class="clearfix m-b-sm"></div>
 
         <RecordsList
             bind:this={recordsList}

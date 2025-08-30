@@ -141,7 +141,7 @@
     <div class="schema-field-header">
         {#if interactive && draggable}
             <div class="drag-handle-wrapper" draggable={true} aria-label="Sort">
-                <span class="drag-handle" />
+                <span class="drag-handle"></span>
             </div>
         {/if}
         <Field
@@ -166,7 +166,7 @@
                 use:tooltip={field.type + (field.system ? " (system)" : "")}
                 on:click={() => nameInput?.focus()}
             >
-                <i class={CommonHelper.getFieldTypeIcon(field.type)} />
+                <i class={CommonHelper.getFieldTypeIcon(field.type)}></i>
             </div>
 
             <input
@@ -189,7 +189,7 @@
         </Field>
 
         <slot {interactive} {hasErrors}>
-            <span class="separator" />
+            <span class="separator"></span>
         </slot>
 
         {#if field._toDelete}
@@ -200,7 +200,7 @@
                 use:tooltip={"Restore"}
                 on:click={restore}
             >
-                <i class="ri-restart-line" />
+                <i class="ri-restart-line"></i>
             </button>
         {:else if interactive}
             <button
@@ -214,7 +214,7 @@
                 on:click={toggle}
                 aria-expanded={showOptions}
             >
-                <i class="ri-settings-3-line" />
+                <i class="ri-settings-3-line"></i>
             </button>
         {/if}
     </div>
@@ -299,7 +299,7 @@
                                 title="More field options"
                                 class="btn btn-circle btn-sm btn-transparent"
                             >
-                                <i class="ri-more-line" aria-hidden="true" />
+                                <i class="ri-more-line" aria-hidden="true"></i>
                                 <Toggler
                                     class="dropdown dropdown-sm dropdown-upside dropdown-right dropdown-nowrap no-min-width"
                                 >

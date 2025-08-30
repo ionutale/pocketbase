@@ -58,7 +58,7 @@
             }}
         />
     {:else}
-        <div class="tinymce-wrapper" />
+        <div class="tinymce-wrapper"></div>
     {/if}
 </Field>
 

@@ -50,7 +50,7 @@
             <span class="txt">Tokens options (invalidate, duration)</span>
         </div>
 
-        <div class="flex-fill" />
+        <div class="flex-fill"></div>
 
         {#if hasErrors}
             <i

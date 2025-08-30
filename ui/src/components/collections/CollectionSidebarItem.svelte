@@ -27,7 +27,7 @@
     class:active={$activeCollection?.id === collection.id}
     use:link
 >
-    <i class={CommonHelper.getCollectionTypeIcon(collection.type)} aria-hidden="true" />
+    <i class={CommonHelper.getCollectionTypeIcon(collection.type)} aria-hidden="true"></i>
 
     <span class="txt">{collection.name}</span>
 
@@ -49,9 +49,9 @@
         on:click|preventDefault|stopPropagation={() => toggleCollectionPin(collection)}
     >
         {#if isPinned}
-            <i class="ri-unpin-line" />
+            <i class="ri-unpin-line"></i>
         {:else}
-            <i class="ri-pushpin-line m-l-auto" />
+            <i class="ri-pushpin-line m-l-auto"></i>
         {/if}
     </span>
 </a>

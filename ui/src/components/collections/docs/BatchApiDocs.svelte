@@ -82,7 +82,7 @@
 
 <div class="alert alert-warning">
     <div class="icon">
-        <i class="ri-error-warning-line" />
+        <i class="ri-error-warning-line"></i>
     </div>
     <div class="content">
         <p>

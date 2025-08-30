@@ -93,7 +93,7 @@
 
     <div class="alert alert-info">
         <div class="icon">
-            <i class="ri-information-line" />
+            <i class="ri-information-line"></i>
         </div>
         <div class="content">
             <p>

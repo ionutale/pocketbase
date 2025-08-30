@@ -55,7 +55,7 @@
 <OverlayPanel bind:this={panel} class="preview preview-{type}" btnClose={false} popup on:show on:hide>
     <svelte:fragment slot="header">
         <button type="button" class="overlay-close" on:click|preventDefault={hide}>
-            <i class="ri-close-line" />
+            <i class="ri-close-line"></i>
         </button>
     </svelte:fragment>
 
@@ -76,9 +76,9 @@
             on:click={openInNewTab}
         >
             {filename}
-            <i class="ri-external-link-line" />
+            <i class="ri-external-link-line"></i>
         </button>
-        <div class="flex-fill" />
+        <div class="flex-fill"></div>
         <button type="button" class="btn btn-transparent" on:click={hide}>Close</button>
     </svelte:fragment>
 </OverlayPanel>

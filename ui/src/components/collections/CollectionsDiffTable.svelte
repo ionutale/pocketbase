@@ -100,7 +100,7 @@
             {/if}
             {#if collectionA.name !== collectionB.name}
                 <strong class="txt-strikethrough txt-hint">{collectionA.name}</strong>
-                <i class="ri-arrow-right-line txt-sm" />
+                <i class="ri-arrow-right-line txt-sm"></i>
             {/if}
             <strong class="txt">{collectionB.name}</strong>
         </div>

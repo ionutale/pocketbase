@@ -18,20 +18,20 @@
         >
             <div class="icon">
                 {#if toast.type === "info"}
-                    <i class="ri-information-line" />
+                    <i class="ri-information-line"></i>
                 {:else if toast.type === "success"}
-                    <i class="ri-checkbox-circle-line" />
+                    <i class="ri-checkbox-circle-line"></i>
                 {:else if toast.type === "warning"}
-                    <i class="ri-error-warning-line" />
+                    <i class="ri-error-warning-line"></i>
                 {:else}
-                    <i class="ri-alert-line" />
+                    <i class="ri-alert-line"></i>
                 {/if}
             </div>
 
             <div class="content">{toast.message}</div>
 
             <button type="button" class="close" on:click|preventDefault={() => removeToast(toast)}>
-                <i class="ri-close-line" />
+                <i class="ri-close-line"></i>
             </button>
         </div>
     {/each}

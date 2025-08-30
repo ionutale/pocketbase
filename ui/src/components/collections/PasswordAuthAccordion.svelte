@@ -59,7 +59,7 @@
             <span class="txt">Identity/Password</span>
         </div>
 
-        <div class="flex-fill" />
+        <div class="flex-fill"></div>
 
         {#if collection.passwordAuth.enabled}
             <span class="label label-success">Enabled</span>

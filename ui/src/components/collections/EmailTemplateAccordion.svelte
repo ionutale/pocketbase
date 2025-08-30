@@ -64,11 +64,11 @@
 <Accordion bind:this={accordion} on:expand on:collapse on:toggle {...$$restProps}>
     <svelte:fragment slot="header">
         <div class="inline-flex">
-            <i class="ri-draft-line" />
+            <i class="ri-draft-line"></i>
             <span class="txt">{title}</span>
         </div>
 
-        <div class="flex-fill" />
+        <div class="flex-fill"></div>
 
         {#if hasErrors}
             <i

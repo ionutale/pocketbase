@@ -20,7 +20,7 @@
             <span class="txt">Batch API</span>
         </div>
 
-        <div class="flex-fill" />
+        <div class="flex-fill"></div>
 
         {#if isEnabled}
             <span class="label label-success">Enabled</span>

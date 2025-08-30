@@ -70,7 +70,7 @@
 
 <SchemaField bind:field {key} on:rename on:remove on:duplicate {...$$restProps}>
     <svelte:fragment let:interactive>
-        <div class="separator" />
+        <div class="separator"></div>
 
         <Field
             class="form-field form-field-single-multiple-select {!interactive ? 'readonly' : ''}"
@@ -85,7 +85,7 @@
             />
         </Field>
 
-        <div class="separator" />
+        <div class="separator"></div>
     </svelte:fragment>
 
     <svelte:fragment slot="options">
@@ -117,7 +117,7 @@
                     <div class="help-block">
                         <div tabindex="0" role="button" class="inline-flex flex-gap-0">
                             <span class="txt link-primary">Choose presets</span>
-                            <i class="ri-arrow-drop-down-fill" aria-hidden="true" />
+                            <i class="ri-arrow-drop-down-fill" aria-hidden="true"></i>
                             <Toggler class="dropdown dropdown-sm dropdown-nowrap dropdown-left">
                                 <button
                                     type="button"
@@ -207,7 +207,7 @@
                         <span class="txt">Use comma as separator.</span>
                         <button type="button" class="inline-flex flex-gap-0">
                             <span class="txt link-primary">Supported formats</span>
-                            <i class="ri-arrow-drop-down-fill" aria-hidden="true" />
+                            <i class="ri-arrow-drop-down-fill" aria-hidden="true"></i>
                             <Toggler class="dropdown dropdown-sm dropdown-center dropdown-nowrap p-r-10">
                                 <ul class="m-0">
                                     <li>

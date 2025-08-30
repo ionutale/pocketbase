@@ -19,7 +19,7 @@
             <span class="txt"> Multi-factor authentication (MFA) </span>
         </div>
 
-        <div class="flex-fill" />
+        <div class="flex-fill"></div>
 
         {#if collection.mfa.enabled}
             <span class="label label-success">Enabled</span>

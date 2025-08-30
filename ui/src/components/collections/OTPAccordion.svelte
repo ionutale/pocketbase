@@ -28,7 +28,7 @@
             <span class="txt">One-time password (OTP)</span>
         </div>
 
-        <div class="flex-fill" />
+        <div class="flex-fill"></div>
 
         {#if collection.otp.enabled}
             <span class="label label-success">Enabled</span>

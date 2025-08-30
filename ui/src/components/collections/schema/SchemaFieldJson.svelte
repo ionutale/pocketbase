@@ -34,9 +34,9 @@
         >
             <strong class="txt">String value normalizations</strong>
             {#if showInfo}
-                <i class="ri-arrow-up-s-line txt-sm" />
+                <i class="ri-arrow-up-s-line txt-sm"></i>
             {:else}
-                <i class="ri-arrow-down-s-line txt-sm" />
+                <i class="ri-arrow-down-s-line txt-sm"></i>
             {/if}
         </button>
         {#if showInfo}

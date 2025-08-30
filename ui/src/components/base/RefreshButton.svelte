@@ -39,7 +39,7 @@
     use:tooltip={tooltipData}
     on:click={refresh}
 >
-    <i class="ri-refresh-line" />
+    <i class="ri-refresh-line"></i>
 </button>
 
 <style>

@@ -369,14 +369,14 @@
         </h4>
 
         {#if !!collection.id && (!collection.system || !isView)}
-            <div class="flex-fill" />
+            <div class="flex-fill"></div>
             <div
                 tabindex="0"
                 role="button"
                 aria-label="More collection options"
                 class="btn btn-sm btn-circle btn-transparent flex-gap-0"
             >
-                <i class="ri-more-line" aria-hidden="true" />
+                <i class="ri-more-line" aria-hidden="true"></i>
                 <Toggler class="dropdown dropdown-right m-t-5">
                     {#if !collection.system}
                         <button
@@ -385,7 +385,7 @@
                             role="menuitem"
                             on:click={() => duplicateConfirm()}
                         >
-                            <i class="ri-file-copy-line" aria-hidden="true" />
+                            <i class="ri-file-copy-line" aria-hidden="true"></i>
                             <span class="txt">Duplicate</span>
                         </button>
                         <hr />
@@ -408,7 +408,7 @@
                             role="menuitem"
                             on:click|preventDefault|stopPropagation={() => deleteConfirm()}
                         >
-                            <i class="ri-delete-bin-7-line" aria-hidden="true" />
+                            <i class="ri-delete-bin-7-line" aria-hidden="true"></i>
                             <span class="txt">Delete</span>
                         </button>
                     {/if}
@@ -451,10 +451,10 @@
                         class:btn-disabled={!!collection.id}
                     >
                         <!-- empty span for alignment -->
-                        <span aria-hidden="true" />
+                        <span aria-hidden="true"></span>
                         <span class="txt">Type: {collectionTypes[collection.type] || "N/A"}</span>
                         {#if !collection.id}
-                            <i class="ri-arrow-down-s-fill" aria-hidden="true" />
+                            <i class="ri-arrow-down-s-fill" aria-hidden="true"></i>
                             <Toggler class="dropdown dropdown-right dropdown-nowrap m-t-5">
                                 {#each Object.entries(collectionTypes) as [type, label]}
                                     <button

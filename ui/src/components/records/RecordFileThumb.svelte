@@ -40,7 +40,7 @@
 </script>
 
 {#if isLoadingToken}
-    <div class="thumb {size ? `thumb-${size}` : ''}" />
+    <div class="thumb {size ? `thumb-${size}` : ''}"></div>
 {:else}
     <button
         type="button"
@@ -75,9 +75,9 @@
                 on:error={onError}
             />
         {:else if type === "video" || type === "audio"}
-            <i class="ri-video-line" />
+            <i class="ri-video-line"></i>
         {:else}
-            <i class="ri-file-3-line" />
+            <i class="ri-file-3-line"></i>
         {/if}
     </button>
 {/if}

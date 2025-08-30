@@ -131,7 +131,7 @@
             <span class="txt">Rate limiting</span>
         </div>
 
-        <div class="flex-fill" />
+        <div class="flex-fill"></div>
 
         {#if hasErrors}
             <i

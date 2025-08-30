@@ -263,7 +263,7 @@
     <div class="wrapper">
         <div class="panel">
             {#if isLoadingOldCollections}
-                <div class="loader" />
+                <div class="loader"></div>
             {:else}
                 <input
                     bind:this={fileInput}
@@ -336,7 +336,7 @@
                 {#if isValid && newCollections.length && !hasChanges}
                     <div class="alert alert-info">
                         <div class="icon">
-                            <i class="ri-information-line" />
+                            <i class="ri-information-line"></i>
                         </div>
                         <div class="content">
                             <string>Your collections configuration is already up-to-date!</string>
@@ -371,7 +371,7 @@
                                             <strong class="txt-strikethrough txt-hint">
                                                 {pair.old.name}
                                             </strong>
-                                            <i class="ri-arrow-right-line txt-sm" />
+                                            <i class="ri-arrow-right-line txt-sm"></i>
                                         {/if}
                                         <strong>{pair.new.name}</strong>
                                         {#if pair.new.id}
@@ -401,7 +401,7 @@
                 {#if idReplacableCollections.length}
                     <div class="alert alert-warning m-t-base">
                         <div class="icon">
-                            <i class="ri-error-warning-line" />
+                            <i class="ri-error-warning-line"></i>
                         </div>
                         <div class="content">
                             <string>
@@ -426,7 +426,7 @@
                             <span class="txt">Clear</span>
                         </button>
                     {/if}
-                    <div class="flex-fill" />
+                    <div class="flex-fill"></div>
                     <button
                         type="button"
                         class="btn btn-expanded btn-warning m-l-auto"

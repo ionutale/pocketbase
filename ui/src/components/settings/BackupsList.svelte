@@ -123,13 +123,13 @@
         {#if isLoading}
             {#each Array(backups.length || 1) as i}
                 <div class="list-item list-item-loader">
-                    <span class="skeleton-loader" />
+                    <span class="skeleton-loader"></span>
                 </div>
             {/each}
         {:else}
             {#each backups as backup (backup.key)}
                 <div class="list-item" transition:slide={{ duration: 150 }}>
-                    <i class="ri-folder-zip-line" />
+                    <i class="ri-folder-zip-line"></i>
                     <div class="content">
                         <span class="name backup-name" title={backup.key}>{backup.key}</span>
                         <span class="size txt-hint txt-nowrap">
@@ -146,7 +146,7 @@
                             use:tooltip={"Download"}
                             on:click|preventDefault={() => download(backup.key)}
                         >
-                            <i class="ri-download-line" />
+                            <i class="ri-download-line"></i>
                         </button>
                         <button
                             type="button"
@@ -156,7 +156,7 @@
                             use:tooltip={"Restore"}
                             on:click|preventDefault={() => restorePanel.show(backup.key)}
                         >
-                            <i class="ri-restart-line" />
+                            <i class="ri-restart-line"></i>
                         </button>
                         <button
                             type="button"
@@ -167,7 +167,7 @@
                             use:tooltip={"Delete"}
                             on:click|preventDefault={() => deleteConfirm(backup.key)}
                         >
-                            <i class="ri-delete-bin-7-line" />
+                            <i class="ri-delete-bin-7-line"></i>
                         </button>
                     </div>
                 </div>
@@ -187,10 +187,10 @@
             on:click={() => createPanel?.show()}
         >
             {#if canBackup}
-                <i class="ri-play-circle-line" />
+                <i class="ri-play-circle-line"></i>
                 <span class="txt">Initialize new backup</span>
             {:else}
-                <span class="loader loader-sm" />
+                <span class="loader loader-sm"></span>
                 <span class="txt">Backup/restore operation is in process</span>
             {/if}
         </button>

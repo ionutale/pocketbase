@@ -238,7 +238,7 @@
                         use:tooltip={"Clear"}
                         on:click|preventDefault|stopPropagation={() => deselectItem(item)}
                     >
-                        <i class="ri-close-line" />
+                        <i class="ri-close-line"></i>
                     </span>
                 {/if}
             </div>
@@ -261,7 +261,7 @@
                 <div class="form-field form-field-sm options-search">
                     <label class="input-group">
                         <div class="addon p-r-0">
-                            <i class="ri-search-line" />
+                            <i class="ri-search-line"></i>
                         </div>
                         <!-- svelte-ignore a11y-autofocus -->
                         <input
@@ -278,7 +278,7 @@
                                     class="btn btn-sm btn-circle btn-transparent clear"
                                     on:click|preventDefault|stopPropagation={resetSearch}
                                 >
-                                    <i class="ri-close-line" />
+                                    <i class="ri-close-line"></i>
                                 </button>
                             </div>
                         {/if}

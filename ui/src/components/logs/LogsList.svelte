@@ -224,7 +224,7 @@
             <tr>
                 <th class="bulk-select-col min-width">
                     {#if isLoading}
-                        <span class="loader loader-sm" />
+                        <span class="loader loader-sm"></span>
                     {:else}
                         <div class="form-field">
                             <input
@@ -241,21 +241,21 @@
 
                 <SortHeader disable class="col-field-level min-width" name="level" bind:sort>
                     <div class="col-header-content">
-                        <i class="ri-bookmark-line" />
+                        <i class="ri-bookmark-line"></i>
                         <span class="txt">level</span>
                     </div>
                 </SortHeader>
 
                 <SortHeader disable class="col-type-text col-field-message" name="data" bind:sort>
                     <div class="col-header-content">
-                        <i class="ri-file-list-2-line" />
+                        <i class="ri-file-list-2-line"></i>
                         <span class="txt">message</span>
                     </div>
                 </SortHeader>
 
                 <SortHeader disable class="col-type-date col-field-created" name="created" bind:sort>
                     <div class="col-header-content">
-                        <i class={CommonHelper.getFieldTypeIcon("date")} />
+                        <i class={CommonHelper.getFieldTypeIcon("date")}></i>
                         <span class="txt">created</span>
                     </div>
                 </SortHeader>
@@ -324,14 +324,14 @@
                     </td>
 
                     <td class="col-type-action min-width">
-                        <i class="ri-arrow-right-line" />
+                        <i class="ri-arrow-right-line"></i>
                     </td>
                 </tr>
             {:else}
                 {#if isLoading}
                     <tr>
                         <td colspan="99" class="p-xs">
-                            <span class="skeleton-loader m-0" />
+                            <span class="skeleton-loader m-0"></span>
                         </td>
                     </tr>
                 {:else}
@@ -382,7 +382,7 @@
         >
             <span class="txt">Reset</span>
         </button>
-        <div class="flex-fill" />
+        <div class="flex-fill"></div>
         <button type="button" class="btn btn-sm" on:click={downloadSelected}>
             <span class="txt">Download as JSON</span>
         </button>

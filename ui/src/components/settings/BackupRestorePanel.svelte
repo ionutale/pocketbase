@@ -77,7 +77,7 @@
 
     <div class="alert alert-danger">
         <div class="icon">
-            <i class="ri-alert-line" />
+            <i class="ri-alert-line"></i>
         </div>
         <div class="content">
             <p class="txt-bold">Please proceed with caution and use it only with trusted backups!</p>

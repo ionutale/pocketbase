@@ -92,7 +92,7 @@
 
     {#if isLoading}
         <div class="block txt-center">
-            <div class="loader" />
+            <div class="loader"></div>
         </div>
     {:else}
         <form id={formId} class="grid" autocomplete="off" on:submit|preventDefault={save}>

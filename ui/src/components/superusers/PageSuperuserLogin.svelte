@@ -162,7 +162,7 @@
 
     {#if isLoading}
         <div class="block txt-center">
-            <span class="loader" />
+            <span class="loader"></span>
         </div>
     {:else if authMethods.password.enabled && !mfaId}
         <!-- auth with password -->
@@ -202,7 +202,7 @@
                 class:btn-loading={passwordAuthSubmitting}
             >
                 <span class="txt">{totalSteps > 1 ? "Next" : "Login"}</span>
-                <i class="ri-arrow-right-line" />
+                <i class="ri-arrow-right-line"></i>
             </button>
         </form>
     {:else if authMethods.otp.enabled}
@@ -220,7 +220,7 @@
                     class:btn-disabled={otpRequestSubmitting}
                     class:btn-loading={otpRequestSubmitting}
                 >
-                    <i class="ri-mail-send-line" />
+                    <i class="ri-mail-send-line"></i>
                     <span class="txt">Send OTP</span>
                 </button>
             </form>
@@ -264,7 +264,7 @@
                     class:btn-loading={otpAuthSubmitting}
                 >
                     <span class="txt">Login</span>
-                    <i class="ri-arrow-right-line" />
+                    <i class="ri-arrow-right-line"></i>
                 </button>
             </form>
 

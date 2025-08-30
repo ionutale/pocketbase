@@ -108,7 +108,7 @@
             </div>
 
             {#if isLoading}
-                <div class="loader" />
+                <div class="loader"></div>
             {:else}
                 <div class="grid m-b-base">
                     <div class="col-lg-6">
@@ -206,10 +206,10 @@
                         >
                             {#if showMoreOptions}
                                 <span class="txt">Hide more options</span>
-                                <i class="ri-arrow-up-s-line" />
+                                <i class="ri-arrow-up-s-line"></i>
                             {:else}
                                 <span class="txt">Show more options</span>
-                                <i class="ri-arrow-down-s-line" />
+                                <i class="ri-arrow-down-s-line"></i>
                             {/if}
                         </button>
 
@@ -255,14 +255,14 @@
                                         />
                                     </Field>
                                 </div>
-                                <div class="col-lg-12" />
+                                <div class="col-lg-12"></div>
                             </div>
                         {/if}
                     </div>
                 {/if}
 
                 <div class="flex">
-                    <div class="flex-fill" />
+                    <div class="flex-fill"></div>
 
                     {#if hasChanges}
                         <button
@@ -288,7 +288,7 @@
                             class="btn btn-expanded btn-outline"
                             on:click={() => testPopup?.show()}
                         >
-                            <i class="ri-mail-check-line" />
+                            <i class="ri-mail-check-line"></i>
                             <span class="txt">Send test email</span>
                         </button>
                     {/if}

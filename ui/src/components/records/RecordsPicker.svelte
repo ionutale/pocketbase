@@ -419,9 +419,9 @@
                 }}
             >
                 {#if selected}
-                    <i class="ri-checkbox-circle-fill txt-success" />
+                    <i class="ri-checkbox-circle-fill txt-success"></i>
                 {:else}
-                    <i class="ri-checkbox-blank-circle-line txt-disabled" />
+                    <i class="ri-checkbox-blank-circle-line txt-disabled"></i>
                 {/if}
                 <div class="content">
                     {#if isReloadingRecord[record.id]}
@@ -439,7 +439,7 @@
                             on:keydown|stopPropagation
                             on:click|stopPropagation={() => upsertPanel?.show(record.id)}
                         >
-                            <i class="ri-pencil-line" />
+                            <i class="ri-pencil-line"></i>
                         </button>
                     </div>
                 {/if}
@@ -460,7 +460,7 @@
         {#if isLoading}
             <div class="list-item">
                 <div class="block txt-center">
-                    <span class="loader loader-sm active" />
+                    <span class="loader loader-sm active"></span>
                 </div>
             </div>
         {/if}
@@ -488,7 +488,7 @@
                             class="btn btn-circle btn-transparent btn-hint btn-xs"
                             on:click={() => deselect(record)}
                         >
-                            <i class="ri-close-line" />
+                            <i class="ri-close-line"></i>
                         </button>
                     </span>
                 </Draggable>

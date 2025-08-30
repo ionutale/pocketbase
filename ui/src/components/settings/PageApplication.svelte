@@ -181,7 +181,7 @@
     <div class="wrapper">
         <form class="panel" autocomplete="off" on:submit|preventDefault={save}>
             {#if isLoading}
-                <div class="loader" />
+                <div class="loader"></div>
             {:else}
                 <div class="grid">
                     <div class="col-lg-6">
@@ -231,7 +231,7 @@
                 </div>
 
                 <div class="flex m-t-base">
-                    <div class="flex-fill" />
+                    <div class="flex-fill"></div>
 
                     {#if hasChanges}
                         <button

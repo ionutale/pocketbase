@@ -222,7 +222,7 @@
                                 use:tooltip={"Remove"}
                                 on:click={() => remove(record)}
                             >
-                                <i class="ri-close-line" />
+                                <i class="ri-close-line"></i>
                             </button>
                         </div>
                     </div>
@@ -231,7 +231,7 @@
                 {#if isLoading}
                     {#each CommonHelper.toArray(value).slice(0, 10) as _}
                         <div class="list-item">
-                            <div class="skeleton-loader" />
+                            <div class="skeleton-loader"></div>
                         </div>
                     {/each}
                 {/if}
@@ -244,8 +244,8 @@
                 class="btn btn-transparent btn-sm btn-block"
                 on:click={() => picker?.show()}
             >
-                <i class="ri-magic-line" />
-                <!-- <i class="ri-layout-line" /> -->
+                <i class="ri-magic-line"></i>
+                <!-- <i class="ri-layout-line"></i> -->
                 <span class="txt">Open picker</span>
             </button>
         </div>

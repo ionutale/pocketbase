@@ -202,7 +202,7 @@
     </div>
 
     {#if isLoading}
-        <div class="chart-loader loader" transition:scale={{ duration: 150 }} />
+        <div class="chart-loader loader" transition:scale={{ duration: 150 }}></div>
     {/if}
 
     <canvas bind:this={chartCanvas} class="chart-canvas" on:dblclick={resetZoom} />
