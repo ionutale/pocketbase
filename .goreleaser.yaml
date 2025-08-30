@@ -2,14 +2,12 @@ version: 2
 
 project_name: pocketbase
 
-dist: .builds
-
 before:
   hooks:
     - go mod tidy
 
 builds:
-  - id: build_noncgo
+  - id: pocketbase_noncgo
     main: ./examples/base
     binary: pocketbase
     env:
@@ -19,26 +17,31 @@ builds:
       - -X github.com/pocketbase/pocketbase.Version={{ .Version }}
       - -X github.com/pocketbase/pocketbase.BuildCommit={{ .ShortCommit }}
       - -X github.com/pocketbase/pocketbase.BuildTime={{ .Date }}
-    goos: [linux, windows, darwin]
-    goarch: [amd64, arm64, arm]
-  goarm: ["7"]
-
-release:
-  draft: true
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+      - arm
+    goarm:
+      - "7"
 
 archives:
-  - id: archive_noncgo
-    builds: [build_noncgo]
+  - id: pocketbase_noncgo_archive
+    builds:
+      - pocketbase_noncgo
     format: zip
     files:
       - LICENSE.md
       - CHANGELOG.md
 
 checksum:
-  name_template: 'checksums.txt'
+  name_template: checksums.txt
 
 snapshot:
-  version_template: '{{ incpatch .Version }}-next'
+  version_template: "{{ incpatch .Version }}-next"
 
 changelog:
   sort: asc
