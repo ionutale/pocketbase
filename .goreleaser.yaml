@@ -26,9 +26,12 @@ builds:
 
 archives:
   - id: pocketbase_noncgo_archive
-    builds:
+    ids:
       - pocketbase_noncgo
-    format: zip
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
     files:
       - LICENSE.md
       - CHANGELOG.md
