@@ -23,6 +23,8 @@
 > Please keep in mind that PocketBase is still under active development
 > and therefore full backward compatibility is not guaranteed before reaching v1.0.0.
 
+> Developers: looking for repo-specific build/run details? See the local guide: [agents.md](./agents.md).
+
 ## API SDK clients
 
 The easiest way to interact with the PocketBase Web APIs is to use one of the official SDK clients:
