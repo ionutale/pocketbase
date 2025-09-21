@@ -64,7 +64,7 @@ Common CORS change (default is `*`):
 ## Building From Source
 
 Prerequisites:
-- Go 1.23+
+- Go 1.25+
 - Node 18+ only if you plan to modify/build the Admin UI (Svelte + Vite)
 
 Two common build flows:
