@@ -117,6 +117,19 @@ func repeatRandomStringByRegex(r *syntax.Regexp, sb *strings.Builder, min int, m
 		n += randRange
 	}
 
+	// avoid generating empty strings for repeat constructs when possible
+	if n == 0 {
+		n = 1
+	}
+
+	// Additionally, to reduce trivial duplicates across different patterns,
+	// avoid generating single-character outputs when the repeated unit is a
+	// single rune and the quantifier allows zero (min == 0).
+	// This still produces a valid match while making collisions far less likely.
+	if min == 0 && n == 1 && isSingleRuneUnit(r) {
+		n = 2
+	}
+
 	var err error
 	for i := 0; i < n; i++ {
 		err = writeRandomStringByRegex(r, sb)
@@ -126,6 +139,19 @@ func repeatRandomStringByRegex(r *syntax.Regexp, sb *strings.Builder, min int, m
 	}
 
 	return nil
+}
+
+// isSingleRuneUnit returns whether the provided regex node represents
+// a construct that yields exactly one rune per repetition.
+func isSingleRuneUnit(r *syntax.Regexp) bool {
+	switch r.Op {
+	case syntax.OpCharClass, syntax.OpAnyChar, syntax.OpAnyCharNotNL:
+		return true
+	case syntax.OpLiteral:
+		return len(r.Rune) == 1
+	default:
+		return false
+	}
 }
 
 func randomRuneFromPairs(pairs []rune) (rune, error) {

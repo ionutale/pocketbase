@@ -7,6 +7,8 @@ on:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # needed to push/move the lightweight "latest" tag
     env:
       flags: ""
     steps:
@@ -20,6 +22,44 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Compute version metadata
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          else
+            # fall back to latest tag if present, otherwise 0.0.0-next
+            VERSION="$(git describe --tags --abbrev=0 2>/dev/null || echo '0.0.0')-next"
+          fi
+          SHORT_SHA="$(git rev-parse --short HEAD)"
+          BUILD_TIME="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+          echo "build_time=${BUILD_TIME}" >> "$GITHUB_OUTPUT"
+
+      - name: Set LDFLAGS env
+        shell: bash
+        run: |
+          echo "LDFLAGS=-s -w -X github.com/pocketbase/pocketbase.Version=${{ steps.meta.outputs.version }} -X github.com/pocketbase/pocketbase.BuildCommit=${{ steps.meta.outputs.short_sha }} -X github.com/pocketbase/pocketbase.BuildTime=${{ steps.meta.outputs.build_time }}" >> "$GITHUB_ENV"
+
+      # Create a GitHub Release whenever a version tag (v*) is pushed.
+      # GoReleaser will then attach assets to this release (or create one if missing).
+      - name: Create GitHub Release (tagged builds)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: v${{ steps.meta.outputs.version }}
+          draft: false
+          prerelease: ${{ contains(steps.meta.outputs.version, '-rc') || contains(steps.meta.outputs.version, '-beta') || contains(steps.meta.outputs.version, '-alpha') || contains(steps.meta.outputs.version, '-next') }}
+          body: |
+            Release ${{ steps.meta.outputs.version }}
+            Commit ${{ steps.meta.outputs.short_sha }} built at ${{ steps.meta.outputs.build_time }}.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -29,6 +69,21 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: '>=1.24.7'
+
+      # Update (force-move) the floating "latest" tag to the current version tag commit.
+      # This runs only when the workflow is triggered by a version tag (refs/tags/v*).
+      - name: Update latest tag
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          VERSION_TAG="${GITHUB_REF#refs/tags/}"
+          echo "Moving 'latest' tag to ${VERSION_TAG}";
+          # Delete remote latest if exists (ignore failure), then recreate & push
+          git tag -f latest "$VERSION_TAG"
+          git push origin :refs/tags/latest || true
+          git push origin refs/tags/latest
 
       # This step usually is not needed because the /ui/dist is pregenerated locally
       # but its here to ensure that each release embeds the latest admin ui artifacts.
@@ -44,7 +99,7 @@ jobs:
       #   run: go run ./plugins/jsvm/internal/types/types.go
 
       - name: Run tests
-        run: go test ./...
+        run: go test -ldflags "${LDFLAGS}" ./...
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6

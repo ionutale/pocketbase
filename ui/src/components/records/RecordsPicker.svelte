@@ -28,16 +28,37 @@
     let isLoadingList = false;
     let isLoadingSelected = false;
     let isReloadingRecord = {};
+    // active collection (single or polymorphic current selection)
+    let activeCollectionId;
 
     $: maxSelect = field?.maxSelect || null;
 
     $: collectionId = field?.collectionId;
+    $: isPolymorphic = Array.isArray(field?.collectionIds) && field.collectionIds.length > 0;
+    $: allowedCollections = isPolymorphic
+        ? $collections.filter((c) => field.collectionIds.includes(c.id))
+        : $collections.filter((c) => c.id == collectionId);
+    // maintain activeCollectionId without self-referential reactive assignment pitfalls
+    $: {
+        if (isPolymorphic) {
+            if (!activeCollectionId && allowedCollections?.length) {
+                activeCollectionId = allowedCollections[0].id;
+            }
+        } else {
+            // single collection mode always follows field.collectionId
+            if (activeCollectionId !== collectionId) {
+                activeCollectionId = collectionId;
+            }
+        }
+    }
 
-    $: collection = $collections.find((c) => c.id == collectionId) || null;
+    $: collection = $collections.find((c) => c.id == activeCollectionId) || null;
 
     $: if (typeof filter !== "undefined" && pickerPanel?.isActive()) {
         loadList(true); // reset list on filter change
     }
+
+    // NOTE: Collection changes are handled explicitly in the select on:change handler to avoid reload loops.
 
     $: isView = collection?.type === "view";
 
@@ -51,6 +72,10 @@
         filter = "";
         list = [];
         selected = [];
+        // ensure an active collection is set for polymorphic relations before loading
+        if (isPolymorphic && !activeCollectionId && allowedCollections?.length) {
+            activeCollectionId = allowedCollections[0].id;
+        }
         loadSelected();
         loadList(true);
 
@@ -75,9 +100,9 @@
     }
 
     async function loadSelected() {
-        const selectedIds = CommonHelper.toArray(value);
+        const selectedRaw = CommonHelper.toArray(value);
 
-        if (!collectionId || !selectedIds.length) {
+        if (!selectedRaw.length) {
             return;
         }
 
@@ -85,57 +110,135 @@
 
         let loadedItems = [];
 
-        // batch load all selected records to avoid parser stack overflow errors
-        const filterIds = selectedIds.slice();
-        const loadPromises = [];
-        while (filterIds.length > 0) {
-            const filters = [];
-            for (const id of filterIds.splice(0, batchSize)) {
-                filters.push(`id="${id}"`);
-            }
-
-            loadPromises.push(
-                ApiClient.collection(collectionId).getFullList({
-                    batch: batchSize,
-                    filter: filters.join("||"),
-                    fields: "*:excerpt(200)",
-                    expand: getExpand(),
-                    requestKey: null,
-                }),
-            );
-        }
-
-        try {
-            await Promise.all(loadPromises).then((values) => {
-                loadedItems = loadedItems.concat(...values);
-            });
-
-            // preserve selected order
-            selected = [];
-            for (const id of selectedIds) {
-                const item = CommonHelper.findByKey(loadedItems, "id", id);
-                if (item) {
-                    selected.push(item);
+        if (isPolymorphic) {
+            // group by collection from composite values <collectionId>:<id>
+            const byCol = {};
+            for (const v of selectedRaw) {
+                const str = "" + v;
+                const idx = str.indexOf(":");
+                if (idx > 0 && idx < str.length - 1) {
+                    const cId = str.slice(0, idx);
+                    const rId = str.slice(idx + 1);
+                    byCol[cId] = byCol[cId] || [];
+                    byCol[cId].push(rId);
                 }
             }
 
-            if (!filter.trim()) {
-                // add the selected models to the list (if not already)
-                list = CommonHelper.filterDuplicatesByKey(selected.concat(list));
+            const loadPromises = [];
+            for (const cId in byCol) {
+                const filterIds = byCol[cId].slice();
+                while (filterIds.length > 0) {
+                    const filters = [];
+                    for (const id of filterIds.splice(0, batchSize)) {
+                        filters.push(`id="${id}"`);
+                    }
+                    loadPromises.push(
+                        ApiClient.collection(cId).getFullList({
+                            batch: batchSize,
+                            filter: filters.join("||"),
+                            fields: "*:excerpt(200)",
+                            expand: getExpand(),
+                            requestKey: null,
+                        }),
+                    );
+                }
             }
 
-            isLoadingSelected = false;
-        } catch (err) {
-            if (!err.isAbort) {
-                ApiClient.error(err);
+            try {
+                await Promise.all(loadPromises).then((values) => {
+                    loadedItems = loadedItems.concat(...values);
+                });
+
+                // annotate items with collectionId for encoding
+                for (const item of loadedItems) {
+                    if (!item.collectionId) item.collectionId = collection?.id || activeCollectionId;
+                }
+
+                // preserve order according to composite input
+                selected = [];
+                for (const raw of selectedRaw) {
+                    const idx = ("" + raw).indexOf(":");
+                    const id = idx > 0 ? ("" + raw).slice(idx + 1) : ("" + raw);
+                    const item = CommonHelper.findByKey(loadedItems, "id", id);
+                    if (item) {
+                        selected.push(item);
+                    }
+                }
+
+                if (!filter.trim()) {
+                    list = CommonHelper.filterDuplicatesByKey(selected.concat(list));
+                }
+
                 isLoadingSelected = false;
+            } catch (err) {
+                if (!err.isAbort) {
+                    ApiClient.error(err);
+                    isLoadingSelected = false;
+                }
+            }
+        } else {
+            if (!collectionId) {
+                isLoadingSelected = false;
+                return;
+            }
+
+            // batch load all selected records to avoid parser stack overflow errors
+            const filterIds = selectedRaw.slice();
+            const loadPromises = [];
+            while (filterIds.length > 0) {
+                const filters = [];
+                for (const id of filterIds.splice(0, batchSize)) {
+                    filters.push(`id="${id}"`);
+                }
+
+                loadPromises.push(
+                    ApiClient.collection(collectionId).getFullList({
+                        batch: batchSize,
+                        filter: filters.join("||"),
+                        fields: "*:excerpt(200)",
+                        expand: getExpand(),
+                        requestKey: null,
+                    }),
+                );
+            }
+
+            try {
+                await Promise.all(loadPromises).then((values) => {
+                    loadedItems = loadedItems.concat(...values);
+                });
+
+                // preserve selected order
+                selected = [];
+                for (const id of selectedRaw) {
+                    const item = CommonHelper.findByKey(loadedItems, "id", id);
+                    if (item) {
+                        selected.push(item);
+                    }
+                }
+
+                if (!filter.trim()) {
+                    // add the selected models to the list (if not already)
+                    list = CommonHelper.filterDuplicatesByKey(selected.concat(list));
+                }
+
+                isLoadingSelected = false;
+            } catch (err) {
+                if (!err.isAbort) {
+                    ApiClient.error(err);
+                    isLoadingSelected = false;
+                }
             }
         }
     }
 
     async function loadList(reset = false) {
-        if (!collectionId) {
-            return;
+        // use activeCollectionId (polymorphic) or single collectionId fallback
+        if (!activeCollectionId && !collectionId) {
+            return; // nothing to load yet
+        }
+
+        if (isLoadingList && !reset) {
+            return; // prevent stacking calls while a non-reset load is in progress
         }
 
         isLoadingList = true;
@@ -159,7 +262,8 @@
                 sort = "-@rowid"; // all collections with exception to the view has this field
             }
 
-            const result = await ApiClient.collection(collectionId).getList(page, batchSize, {
+            const colId = activeCollectionId || collectionId;
+            const result = await ApiClient.collection(colId).getList(page, batchSize, {
                 filter: CommonHelper.normalizeSearchFilter(filter, fallbackSearchFields),
                 sort: sort,
                 fields: "*:excerpt(200)",
@@ -189,7 +293,8 @@
         isReloadingRecord[record.id] = true;
 
         try {
-            const reloaded = await ApiClient.collection(collectionId).getOne(record.id, {
+            const colId = activeCollectionId || collectionId;
+            const reloaded = await ApiClient.collection(colId).getOne(record.id, {
                 fields: "*:excerpt(200)",
                 expand: getExpand(),
                 requestKey: uniqueId + "reload" + record.id,
@@ -236,12 +341,7 @@
     }
 
     function save() {
-        if (maxSelect != 1) {
-            value = selected.map((r) => r.id);
-        } else {
-            value = selected?.[0]?.id || "";
-        }
-
+    // Keep emitting full records in the event detail; parent computes value.
         dispatch("save", selected);
         hide();
     }
@@ -255,6 +355,25 @@
     </svelte:fragment>
 
     <div class="flex m-b-base flex-gap-10">
+        {#if isPolymorphic}
+            <div class="form-field">
+                <label for={uniqueId + "_collection"}>Collection</label>
+                <select
+                    id={uniqueId + "_collection"}
+                    class="input"
+                    bind:value={activeCollectionId}
+                    on:change={() => {
+                        list = [];
+                        currentPage = 1;
+                        loadList(true);
+                    }}
+                >
+                    {#each allowedCollections as c}
+                        <option value={c.id}>{c.name}</option>
+                    {/each}
+                </select>
+            </div>
+        {/if}
         <Searchbar
             value={filter}
             autocompleteCollection={collection}

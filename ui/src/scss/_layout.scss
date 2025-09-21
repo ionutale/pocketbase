@@ -71,6 +71,25 @@
         margin-top: 34px;
         margin-bottom: var(--baseSpacing);
     }
+
+    /* theme toggle button placement */
+    > .btn[title="Toggle dark theme"] {
+        margin-top: 8px;
+        color: var(--txtHintColor);
+        border: 0;
+        background: transparent;
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--lgRadius);
+        transition: background var(--baseAnimationSpeed), color var(--baseAnimationSpeed);
+        &:hover {
+            background: var(--baseAlt1Color);
+            color: var(--txtPrimaryColor);
+        }
+    }
 }
 
 // layout container

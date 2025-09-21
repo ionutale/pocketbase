@@ -42,9 +42,13 @@
 
     $: selectedColection = $collections.find((c) => c.id == field.collectionId) || null;
 
+    // polymorphic toggle: when field.collectionIds has values, treat as polymorphic
+    $: isPolymorphic = Array.isArray(field.collectionIds) && field.collectionIds.length > 0;
+
     function loadDefaults() {
         field.maxSelect = 1;
         field.collectionId = null;
+        field.collectionIds = [];
         field.cascadeDelete = false;
         isSingle = true;
         oldIsSingle = isSingle;
@@ -54,7 +58,8 @@
 <SchemaField bind:field {key} on:rename on:remove on:duplicate {...$$restProps}>
     <svelte:fragment let:interactive>
         <div class="separator" />
-
+    {#if isSingle}
+        
         <Field
             class="form-field required {!interactive ? 'readonly' : ''}"
             inlineError
@@ -86,7 +91,34 @@
         </Field>
 
         <div class="separator" />
-
+        {:else}
+        <!-- Polymorphic collections selector -->
+        <Field class="form-field" name="fields.{key}.collectionIds" let:uniqueId>
+            <label for={uniqueId}>
+                <span class="txt">Allowed collections (optional, multi)</span>
+                <!-- prettier-ignore -->
+                <i
+                    class="ri-information-line link-hint"
+                    use:tooltip={{
+                        text: "If set, the relation can point to records from multiple collections. Values are stored as '<collectionId>:<id>'.",
+                        position: "top",
+                    }}
+                />
+            </label>
+            <ObjectSelect
+                id={uniqueId}
+                multiple
+                searchable={selectCollections.length > 5}
+                selectPlaceholder={"Select allowed collections"}
+                noOptionsText="No collections found"
+                selectionKey="id"
+                items={selectCollections}
+                readonly={!interactive || field.id}
+                bind:keyOfSelected={field.collectionIds}
+            />
+        </Field>
+        <div class="separator" />
+        {/if}
         <Field
             class="form-field form-field-single-multiple-select {!interactive ? 'readonly' : ''}"
             inlineError

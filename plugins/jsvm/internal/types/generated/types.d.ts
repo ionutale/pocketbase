@@ -12739,6 +12739,12 @@ namespace core {
    */
   set(key: string, value: any): void
  }
+interface Record {
+ /**
+  * uploadFile creates a filesystem.File from a local path and sets it on the record field.
+  */
+ uploadFile(fieldName: string, localPath: string): void
+}
  interface Record {
   getRaw(key: string): any
  }

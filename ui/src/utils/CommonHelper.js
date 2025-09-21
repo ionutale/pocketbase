@@ -1131,9 +1131,11 @@ export default class CommonHelper {
                     val = [val];
                 }
             } else if (field.type == "relation") {
-                val = 'RELATION_RECORD_ID';
+                const isPoly = Array.isArray(field?.collectionIds) && field.collectionIds.length > 0;
+                const example = isPoly ? 'collectionId:RELATION_RECORD_ID' : 'RELATION_RECORD_ID';
+                val = example;
                 if (field?.maxSelect != 1) {
-                    val = [val];
+                    val = [example];
                 }
             } else if (field.type == "geoPoint") {
                 val = {"lon": 0, "lat": 0};

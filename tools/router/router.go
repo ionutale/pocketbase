@@ -79,6 +79,55 @@ func (r *Router[T]) BuildMux() (http.Handler, error) {
 	return mux, nil
 }
 
+// RouteInfo describes a single registered route with its HTTP method and full path pattern.
+type RouteInfo struct {
+	Method   string // e.g. GET, POST, "" (any)
+	FullPath string // concatenated parents' prefixes + group's prefix + route path
+}
+
+// ListRoutes returns a flattened list of routes registered in the router.
+//
+// Note: The returned list reflects only the explicit routes added to the router.
+// The implicitly added catch-all not found route (added by BuildMux when missing)
+// is intentionally omitted here.
+func (r *Router[T]) ListRoutes() []RouteInfo {
+	var out []RouteInfo
+	r.collectRoutes(r.RouterGroup, nil, &out)
+	return out
+}
+
+func (r *Router[T]) collectRoutes(group *RouterGroup[T], parents []*RouterGroup[T], out *[]RouteInfo) {
+	for _, child := range group.children {
+		switch v := child.(type) {
+		case *RouterGroup[T]:
+			r.collectRoutes(v, append(parents, group), out)
+		case *Route[T]:
+			var pattern string
+			if v.Method != "" {
+				pattern = v.Method + " "
+			}
+			// add parent groups prefixes
+			for _, p := range parents {
+				pattern += p.Prefix
+			}
+			// add current group prefix
+			pattern += group.Prefix
+			// add current route path
+			pattern += v.Path
+			// split pattern into method and path
+			method := v.Method
+			fullPath := pattern
+			if method != "" {
+				// pattern is like "METHOD /path"; extract path
+				if sp := len(method) + 1; sp < len(pattern) {
+					fullPath = pattern[sp:]
+				}
+			}
+			*out = append(*out, RouteInfo{Method: method, FullPath: fullPath})
+		}
+	}
+}
+
 func (r *Router[T]) loadMux(mux *http.ServeMux, group *RouterGroup[T], parents []*RouterGroup[T]) error {
 	for _, child := range group.children {
 		switch v := child.(type) {

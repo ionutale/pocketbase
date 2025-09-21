@@ -339,6 +339,8 @@ final record = await pb.collection('${collection?.name}').update('RECORD_ID', bo
                 The expanded relations will be appended to the record under the
                 <code>expand</code> property (eg. <code>{`"expand": {"relField1": {...}, ...}`}</code>). Only
                 the relations that the user has permissions to <strong>view</strong> will be expanded.
+                <br />
+                <span class="txt-hint">If a relation is configured to allow multiple collections, values use the format <code>{`"<collectionId>:<id>"`}</code>.</span>
             </td>
         </tr>
         <FieldsQueryParam />

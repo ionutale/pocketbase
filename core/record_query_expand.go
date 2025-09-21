@@ -70,6 +70,7 @@ func (app *BaseApp) expandRecords(records []*Record, expandPath string, fetchFun
 
 	var relField *RelationField
 	var relCollection *Collection
+	var explicitTarget bool
 
 	parts := strings.SplitN(expandPath, ".", 2)
 	var matches []string
@@ -149,29 +150,113 @@ func (app *BaseApp) expandRecords(records []*Record, expandPath string, fetchFun
 		relCollection = indirectRel
 	} else {
 		// direct relation
-		relField, _ = mainCollection.Fields.GetByName(parts[0]).(*RelationField)
-		if relField == nil {
-			return fmt.Errorf("couldn't find relation field %q in collection %q", parts[0], mainCollection.Name)
+		// detect optional target selector: fieldName@<collectionNameOrId>
+		seg := parts[0]
+		fieldName := seg
+		var targetCollection *Collection
+		if at := strings.IndexByte(seg, '@'); at > 0 && at < len(seg)-1 {
+			fieldName = seg[:at]
+			targetCollection, _ = getCollectionByModelOrIdentifier(app, seg[at+1:])
+			if targetCollection == nil {
+				return fmt.Errorf("couldn't find related collection %q", seg[at+1:])
+			}
 		}
 
-		relCollection, _ = getCollectionByModelOrIdentifier(app, relField.CollectionId)
-		if relCollection == nil {
-			return fmt.Errorf("couldn't find related collection %q", relField.CollectionId)
+		relField, _ = mainCollection.Fields.GetByName(fieldName).(*RelationField)
+		if relField == nil {
+			return fmt.Errorf("couldn't find relation field %q in collection %q", fieldName, mainCollection.Name)
 		}
+
+		if targetCollection != nil {
+			// ensure target is allowed
+			allowed := relField.AllowedCollections()
+			var ok bool
+			for _, a := range allowed {
+				if a == targetCollection.Id {
+					ok = true
+					break
+				}
+			}
+			if !ok {
+				return fmt.Errorf("invalid expand target %q for relation %q", targetCollection.Name, relField.Name)
+			}
+			relCollection = targetCollection
+			explicitTarget = true
+		} else {
+			// default single collection (non-polymorphic fallback)
+			relCollection, _ = getCollectionByModelOrIdentifier(app, relField.CollectionId)
+			// relCollection may be nil for polymorphic relations without base collection; will handle later per-group
+		}
+
+		// replace the parts[0] with the bare fieldName to ensure expand key remains the field name only
+		parts[0] = fieldName
 	}
 
 	// ---------------------------------------------------------------
 
-	// extract the id of the relations to expand
-	relIds := make([]string, 0, len(records))
+	// extract and group the ids of the relations to expand
+	grouped := map[string][]string{}
 	for _, record := range records {
-		relIds = append(relIds, record.GetStringSlice(relField.Name)...)
+		for _, raw := range record.GetStringSlice(relField.Name) {
+			v := "" + raw
+			if idx := strings.IndexByte(v, ':'); idx > 0 && idx < len(v)-1 {
+				cId := v[:idx]
+				rId := v[idx+1:]
+				// if an explicit target was set, keep only that group
+				if explicitTarget && relCollection != nil && cId != relCollection.Id {
+					continue
+				}
+				grouped[cId] = append(grouped[cId], rId)
+			} else {
+				// plain id -> assign to known single collection
+				var cId string
+				if relCollection != nil {
+					cId = relCollection.Id
+				} else if relField.CollectionId != "" {
+					cId = relField.CollectionId
+				} else {
+					// cannot resolve plain id without a default collection; skip
+					continue
+				}
+				grouped[cId] = append(grouped[cId], v)
+			}
+		}
 	}
 
-	// fetch rels
-	rels, relsErr := fetchFunc(relCollection, relIds)
-	if relsErr != nil {
-		return relsErr
+	// fetch rels per group (handles both single and polymorphic cases)
+	rels := []*Record{}
+	if len(grouped) == 0 {
+		// No concrete ids collected. For non-polymorphic or explicitly scoped
+		// relations invoke the fetchFunc with an empty id slice to preserve
+		// the historical behavior and allow error propagation (used in tests).
+		var c *Collection
+		if relCollection != nil {
+			c = relCollection
+		} else if relField.CollectionId != "" {
+			var err error
+			c, err = app.FindCachedCollectionByNameOrId(relField.CollectionId)
+			if err != nil {
+				return err
+			}
+		}
+		if c != nil {
+			if _, err := fetchFunc(c, []string{}); err != nil {
+				return err
+			}
+		}
+	} else {
+		for cId, ids := range grouped {
+			// find collection by id
+			c, err := app.FindCachedCollectionByNameOrId(cId)
+			if err != nil {
+				return err
+			}
+			items, err := fetchFunc(c, list.ToUniqueStringSlice(ids))
+			if err != nil {
+				return err
+			}
+			rels = append(rels, items...)
+		}
 	}
 
 	// expand nested fields
@@ -182,10 +267,14 @@ func (app *BaseApp) expandRecords(records []*Record, expandPath string, fetchFun
 		}
 	}
 
-	// reindex with the rel id
-	indexedRels := make(map[string]*Record, len(rels))
+	// reindex with both id and composite key to support polymorphic values
+	indexedRels := make(map[string]*Record, len(rels)*2)
 	for _, rel := range rels {
 		indexedRels[rel.Id] = rel
+		// attempt to infer collection id from rel.Model.Collection()
+		if rel.Collection() != nil {
+			indexedRels[rel.Collection().Id+":"+rel.Id] = rel
+		}
 	}
 
 	for _, model := range records {
@@ -198,9 +287,19 @@ func (app *BaseApp) expandRecords(records []*Record, expandPath string, fetchFun
 		relIds := model.GetStringSlice(relField.Name)
 
 		validRels := make([]*Record, 0, len(relIds))
-		for _, id := range relIds {
-			if rel, ok := indexedRels[id]; ok {
+		for _, raw := range relIds {
+			v := "" + raw
+			// 1) try exact match (works for plain ids and composite keys when present)
+			if rel, ok := indexedRels[v]; ok {
 				validRels = append(validRels, rel)
+				continue
+			}
+			// 2) if composite, fallback to matching by plain id part
+			if idx := strings.IndexByte(v, ':'); idx > 0 && idx < len(v)-1 {
+				idOnly := v[idx+1:]
+				if rel, ok := indexedRels[idOnly]; ok {
+					validRels = append(validRels, rel)
+				}
 			}
 		}
 
