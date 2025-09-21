@@ -13,6 +13,7 @@ If you’re looking for the upstream docs, see https://pocketbase.io/docs. This 
 - Data, Files, and Layout
 - REST API and OpenAPI
 - Realtime (SSE)
+- MCP (Model Context Protocol)
 - Backups (create, upload, restore)
 - HTTPS and Reverse Proxies
 - Configuration and Middleware
@@ -265,6 +266,43 @@ SDKs:
 
 
 ## Realtime (SSE)
+
+## MCP (Model Context Protocol)
+
+PocketBase now exposes a minimal MCP server over the Streamable HTTP transport.
+
+- Endpoint: `GET/POST /api/mcp/stream`
+- Transport: Streamable HTTP (per the MCP spec)
+- Initial tool: `pb.version` — returns version/build metadata
+
+Quick test with the official Go SDK (client):
+
+```go
+package main
+
+import (
+  "context"
+  "log"
+  "github.com/modelcontextprotocol/go-sdk/mcp"
+)
+
+func main() {
+  ctx := context.Background()
+  client := mcp.NewClient(&mcp.Implementation{Name: "tester", Version: "v0.0.1"}, nil)
+  sess, err := client.Connect(ctx, &mcp.StreamableClientTransport{Endpoint: "http://127.0.0.1:8090/api/mcp/stream"}, nil)
+  if err != nil { log.Fatal(err) }
+  defer sess.Close()
+
+  res, err := sess.CallTool(ctx, &mcp.CallToolParams{Name: "pb.version"})
+  if err != nil { log.Fatal(err) }
+  log.Printf("pb.version -> %#v", res)
+}
+```
+
+Notes:
+- Auth: the sample endpoint is open by default, comparable to `/api/version`. Use router middlewares and rules to limit access if needed.
+- Extending tools/resources: implement additional tools or resources in `apis/mcp.go` using the MCP SDK helpers.
+- Compatibility: the server uses the official `github.com/modelcontextprotocol/go-sdk` and its Streamable HTTP handler.
 
 Endpoint: `GET /api/realtime` (Server-Sent Events)
 

@@ -55,6 +55,8 @@ func NewRouter(app core.App) (*router.Router[*core.RequestEvent], error) {
 	bindBatchApi(app, apiGroup)
 	bindRealtimeApi(app, apiGroup)
 	bindHealthApi(app, apiGroup)
+	// MCP streamable HTTP transport endpoint
+	bindMCPApi(app, apiGroup)
 	// OpenAPI endpoints are mounted at root: /openapi/{json,yaml,html}
 	bindOpenAPIApi(app, pbRouter.RouterGroup, pbRouter)
 
