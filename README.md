@@ -79,6 +79,51 @@ curl http://localhost:8090/openapi/yaml
 open http://localhost:8090/openapi/html
 ```
 
+### MCP (Model Context Protocol)
+
+PocketBase can expose an MCP server over HTTP streaming for AI copilots and IDEs.
+
+- Endpoint: `GET/POST /api/mcp/stream`
+- Security: requires a superuser `Authorization` token
+    - Or provide superuser credentials via `Basic` auth (email:password) on the MCP route
+    - Alternatively, headers `X-PB-Identity` and `X-PB-Password` are supported
+- Enable at startup with `--mcp` (disabled by default)
+
+Enable and try locally:
+
+```sh
+./pocketbase serve --mcp
+
+# In another terminal, obtain a superuser token (login via admin UI or API), then:
+curl -N \
+    -H "Authorization: <SUPERUSER_TOKEN>" \
+    http://127.0.0.1:8090/api/mcp/stream
+```
+
+Available tools (initial set):
+- `pb.version`: server version/build metadata
+- `pb.collections.list`: list collections (id, name, type)
+- `pb.records.get`: fetch a record by collection and id (optional `expand`)
+- `pb.query.sql`: run read-only `SELECT` queries
+- `pb.backups.list`: list backup files
+- `pb.backups.create`: create a new backup
+
+VS Code configuration (example):
+
+1) Install an MCP-compatible client/extension (e.g., an MCP bridge or toolkit).
+2) Configure a server with:
+     - URL: `http://127.0.0.1:8090/api/mcp/stream`
+        - Auth options:
+            - Headers: `Authorization: <SUPERUSER_TOKEN>`
+            - Or Basic auth: set username to the superuser email and password to the superuser password
+            - Or headers: `X-PB-Identity: <email>`, `X-PB-Password: <password>`
+3) Reload VS Code and check the MCP client logs for tool discovery.
+
+Notes:
+- The MCP route is superuser-only; use tokens from the `_superusers` collection.
+- If MFA is enabled for the superuser, password-only Basic/header auth is rejected; use a Bearer token.
+- Keep `--mcp` disabled in environments where MCP is not needed.
+
 ### Use as a Go framework/toolkit
 
 PocketBase is distributed as a regular Go library package which allows you to build

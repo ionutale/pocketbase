@@ -50,6 +50,9 @@ type ServeConfig struct {
 	// all direct relation fields and their nested relations iteratively without
 	// a fixed depth limit (cycles are guarded by visited checks).
 	ExpandAll bool
+
+	// MCPEnabled indicates whether to enable the MCP endpoint.
+	MCPEnabled bool
 }
 
 // Serve starts a new app web server.
@@ -74,16 +77,22 @@ func Serve(app core.App, config ServeConfig) error {
 		return err
 	}
 
-	pbRouter, err := NewRouter(app)
-	if err != nil {
-		return err
-	}
-
-	// persist the expand-all toggle for use inside API enrich helpers
+	// persist toggles before creating the router so conditional bindings apply
 	if config.ExpandAll {
 		app.Store().Set("apis.expandAll", true)
 	} else {
 		app.Store().Remove("apis.expandAll")
+	}
+
+	if config.MCPEnabled {
+		app.Store().Set("apis.mcpEnabled", true)
+	} else {
+		app.Store().Remove("apis.mcpEnabled")
+	}
+
+	pbRouter, err := NewRouter(app)
+	if err != nil {
+		return err
 	}
 
 	pbRouter.Bind(CORS(CORSConfig{

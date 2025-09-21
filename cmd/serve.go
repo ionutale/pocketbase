@@ -16,6 +16,7 @@ func NewServeCommand(app core.App, showStartBanner bool) *cobra.Command {
 	var httpAddr string
 	var httpsAddr string
 	var expandAll bool
+	var mcpEnabled bool
 
 	command := &cobra.Command{
 		Use:          "serve [domain(s)]",
@@ -44,6 +45,7 @@ func NewServeCommand(app core.App, showStartBanner bool) *cobra.Command {
 				AllowedOrigins:     allowedOrigins,
 				CertificateDomains: args,
 				ExpandAll:          expandAll,
+				MCPEnabled:         mcpEnabled,
 			})
 
 			if errors.Is(err, http.ErrServerClosed) {
@@ -80,6 +82,13 @@ func NewServeCommand(app core.App, showStartBanner bool) *cobra.Command {
 		"expand-all",
 		true,
 		"Automatically expand all relation fields recursively in API responses (use with caution)",
+	)
+
+	command.PersistentFlags().BoolVar(
+		&mcpEnabled,
+		"mcp",
+		false,
+		"Enable the Model Context Protocol endpoint at /api/mcp/stream (superusers only)",
 	)
 
 	return command
