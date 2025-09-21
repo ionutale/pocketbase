@@ -121,19 +121,22 @@ func newMCPServer(app core.App) *mcp.Server {
 		Name string `json:"name"`
 		Type string `json:"type"`
 	}
+	type collectionsListResult struct {
+		Items []collectionsListOut `json:"items"`
+	}
 	mcp.AddTool(srv, &mcp.Tool{
 		Name:        "pb.collections.list",
 		Description: "List all PocketBase collections (id, name, type).",
-	}, func(ctx context.Context, _ *mcp.CallToolRequest, _ struct{}) (*mcp.CallToolResult, []collectionsListOut, error) {
+	}, func(ctx context.Context, _ *mcp.CallToolRequest, _ struct{}) (*mcp.CallToolResult, collectionsListResult, error) {
 		cols, err := app.FindAllCollections()
 		if err != nil {
-			return nil, nil, err
+			return nil, collectionsListResult{}, err
 		}
 		out := make([]collectionsListOut, 0, len(cols))
 		for _, c := range cols {
 			out = append(out, collectionsListOut{Id: c.Id, Name: c.Name, Type: c.Type})
 		}
-		return nil, out, nil
+		return nil, collectionsListResult{Items: out}, nil
 	})
 
 	// Record get
@@ -182,17 +185,19 @@ func newMCPServer(app core.App) *mcp.Server {
 	type sqlQueryIn struct {
 		SQL string `json:"sql"`
 	}
-	type sqlQueryOut = []map[string]any
+	type sqlQueryOut struct {
+		Rows []map[string]any `json:"rows"`
+	}
 	mcp.AddTool(srv, &mcp.Tool{
 		Name:        "pb.query.sql",
 		Description: "Execute a read-only SELECT query against the main DB and return rows.",
 	}, func(ctx context.Context, _ *mcp.CallToolRequest, in sqlQueryIn) (*mcp.CallToolResult, sqlQueryOut, error) {
 		if in.SQL == "" {
-			return nil, nil, router.NewBadRequestError("Missing SQL.", nil)
+			return nil, sqlQueryOut{}, router.NewBadRequestError("Missing SQL.", nil)
 		}
 		// Basic safety: allow only SELECT to avoid writes via MCP.
 		if len(in.SQL) < 6 || !isSelectQuery(in.SQL) {
-			return nil, nil, router.NewBadRequestError("Only SELECT statements are allowed.", nil)
+			return nil, sqlQueryOut{}, router.NewBadRequestError("Only SELECT statements are allowed.", nil)
 		}
 		type row = map[string]any
 		rows := []row{}
@@ -200,9 +205,9 @@ func newMCPServer(app core.App) *mcp.Server {
 		// but since dbx isn't imported here, we rely on the generic Map scan support.
 		q := app.ConcurrentDB().NewQuery(in.SQL)
 		if err := q.All(&rows); err != nil {
-			return nil, nil, err
+			return nil, sqlQueryOut{}, err
 		}
-		return nil, rows, nil
+		return nil, sqlQueryOut{Rows: rows}, nil
 	})
 
 	// Backups list
@@ -211,19 +216,22 @@ func newMCPServer(app core.App) *mcp.Server {
 		Size     int64  `json:"size"`
 		Modified string `json:"modified"`
 	}
+	type backupsListResult struct {
+		Items []backupsListOut `json:"items"`
+	}
 	mcp.AddTool(srv, &mcp.Tool{
 		Name:        "pb.backups.list",
 		Description: "List available backup files.",
-	}, func(ctx context.Context, _ *mcp.CallToolRequest, _ struct{}) (*mcp.CallToolResult, []backupsListOut, error) {
+	}, func(ctx context.Context, _ *mcp.CallToolRequest, _ struct{}) (*mcp.CallToolResult, backupsListResult, error) {
 		fsys, err := app.NewBackupsFilesystem()
 		if err != nil {
-			return nil, nil, err
+			return nil, backupsListResult{}, err
 		}
 		defer fsys.Close()
 		fsys.SetContext(ctx)
 		items, err := fsys.List("")
 		if err != nil {
-			return nil, nil, err
+			return nil, backupsListResult{}, err
 		}
 		out := make([]backupsListOut, len(items))
 		for i, it := range items {
@@ -233,7 +241,7 @@ func newMCPServer(app core.App) *mcp.Server {
 			}
 			out[i] = backupsListOut{Key: it.Key, Size: it.Size, Modified: mod}
 		}
-		return nil, out, nil
+		return nil, backupsListResult{Items: out}, nil
 	})
 
 	// Backup create
