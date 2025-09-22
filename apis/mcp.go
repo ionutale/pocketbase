@@ -265,6 +265,85 @@ func newMCPServer(app core.App) *mcp.Server {
 		return nil, backupCreateOut{Status: "ok", Name: in.Name}, nil
 	})
 
+	// Collections apply (declarative) with dry-run support
+	type collectionsApplyIn struct {
+		Collections   []map[string]any `json:"collections"`
+		DeleteMissing bool             `json:"deleteMissing"`
+		DryRun        bool             `json:"dryRun"`
+	}
+
+	type collectionsApplyChange struct {
+		Action string         `json:"action"` // create|update|delete
+		Name   string         `json:"name"`
+		Id     string         `json:"id"`
+		Type   string         `json:"type"`
+		Diff   map[string]any `json:"diff,omitempty"`
+	}
+
+	type collectionsApplyOut struct {
+		Applied  bool                     `json:"applied"`
+		Changes  []collectionsApplyChange `json:"changes"`
+		Warnings []string                 `json:"warnings,omitempty"`
+	}
+
+	mcp.AddTool(srv, &mcp.Tool{
+		Name:        "pb.collections.apply",
+		Description: "Apply collections configuration (supports dryRun). Uses ImportCollections under the hood.",
+	}, func(ctx context.Context, _ *mcp.CallToolRequest, in collectionsApplyIn) (*mcp.CallToolResult, collectionsApplyOut, error) {
+		if len(in.Collections) == 0 {
+			return nil, collectionsApplyOut{}, router.NewBadRequestError("Missing collections array.", nil)
+		}
+
+		// Build a minimal plan by comparing names to existing collections.
+		existing, err := app.FindAllCollections()
+		if err != nil {
+			return nil, collectionsApplyOut{}, err
+		}
+		existingByName := map[string]*core.Collection{}
+		for _, c := range existing {
+			existingByName[strings.ToLower(c.Name)] = c
+		}
+		seen := map[string]struct{}{}
+		changes := []collectionsApplyChange{}
+		for _, raw := range in.Collections {
+			nameAny, ok := raw["name"]
+			if !ok {
+				return nil, collectionsApplyOut{}, router.NewBadRequestError("Each collection must have a name.", nil)
+			}
+			name := asString(nameAny)
+			if name == "" {
+				return nil, collectionsApplyOut{}, router.NewBadRequestError("Collection name cannot be empty.", nil)
+			}
+			lc := strings.ToLower(name)
+			seen[lc] = struct{}{}
+			if ex, ok := existingByName[lc]; ok {
+				changes = append(changes, collectionsApplyChange{Action: "update", Name: ex.Name, Id: ex.Id, Type: ex.Type})
+			} else {
+				// try to extract type
+				typ := asString(raw["type"])
+				changes = append(changes, collectionsApplyChange{Action: "create", Name: name, Type: typ})
+			}
+		}
+		if in.DeleteMissing {
+			for _, ex := range existing {
+				if _, ok := seen[strings.ToLower(ex.Name)]; !ok && !ex.System {
+					changes = append(changes, collectionsApplyChange{Action: "delete", Name: ex.Name, Id: ex.Id, Type: ex.Type})
+				}
+			}
+		}
+
+		if in.DryRun {
+			return nil, collectionsApplyOut{Applied: false, Changes: changes}, nil
+		}
+
+		// Apply using ImportCollections for proper validation and atomicity.
+		// This will also handle table/index changes via internal hooks.
+		if err := app.ImportCollections(in.Collections, in.DeleteMissing); err != nil {
+			return nil, collectionsApplyOut{}, err
+		}
+		return nil, collectionsApplyOut{Applied: true, Changes: changes}, nil
+	})
+
 	return srv
 }
 
