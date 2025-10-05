@@ -32,11 +32,11 @@
         <div class="col-lg-6">
             <Field class="form-field" name="ai.gemini.model" let:uniqueId>
                 <label for={uniqueId}>
-                    <span class="txt">Model</span>
+                    <span class="txt">Default model (fallback)</span>
                     <i
                         class="ri-information-line link-hint"
                         use:tooltip={{
-                            text: 'Imagen model id, e.g. "imagen-3.0-generate-002".',
+                            text: 'Used as a fallback when a modality-specific model is not set.',
                             position: "right",
                         }}
                     />
@@ -46,6 +46,42 @@
                     type="text"
                     placeholder="imagen-3.0-generate-002"
                     bind:value={formSettings.ai.gemini.model}
+                />
+            </Field>
+        </div>
+
+        <div class="col-lg-6">
+            <Field class="form-field" name="ai.gemini.imageModel" let:uniqueId>
+                <label for={uniqueId}>Image model</label>
+                <input
+                    id={uniqueId}
+                    type="text"
+                    placeholder="imagen-3.0-generate-002"
+                    bind:value={formSettings.ai.gemini.imageModel}
+                />
+            </Field>
+        </div>
+
+        <div class="col-lg-6">
+            <Field class="form-field" name="ai.gemini.videoModel" let:uniqueId>
+                <label for={uniqueId}>Video model</label>
+                <input
+                    id={uniqueId}
+                    type="text"
+                    placeholder="e.g. imagen-3.0-video-..."
+                    bind:value={formSettings.ai.gemini.videoModel}
+                />
+            </Field>
+        </div>
+
+        <div class="col-lg-6">
+            <Field class="form-field" name="ai.gemini.textModel" let:uniqueId>
+                <label for={uniqueId}>Text model</label>
+                <input
+                    id={uniqueId}
+                    type="text"
+                    placeholder="e.g. gemini-1.5-pro"
+                    bind:value={formSettings.ai.gemini.textModel}
                 />
             </Field>
         </div>

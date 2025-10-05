@@ -43,7 +43,11 @@ func aiGeminiGenerateImage(e *core.RequestEvent) error {
 		return e.BadRequestError("Gemini API key is not configured (set in Settings or GEMINI_API_KEY).", nil)
 	}
 
-	model := strings.TrimSpace(s.AI.Gemini.Model)
+	// prefer modality-specific image model if present
+	model := strings.TrimSpace(s.AI.Gemini.ImageModel)
+	if model == "" {
+		model = strings.TrimSpace(s.AI.Gemini.Model)
+	}
 	if model == "" {
 		model = strings.TrimSpace(os.Getenv("GEMINI_IMAGE_MODEL"))
 	}

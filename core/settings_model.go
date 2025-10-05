@@ -182,7 +182,9 @@ func newDefaultSettings() *Settings {
 			AI: AIConfig{
 				Gemini: GeminiConfig{
 					// Defaults align with the proxy endpoint expectations
-					Model:   "imagen-3.0-generate-002",
+					Model:      "imagen-3.0-generate-002",
+					ImageModel: "imagen-3.0-generate-002",
+					// leave video and text empty by default until endpoints exist
 					APIBase: "https://generativelanguage.googleapis.com",
 				},
 			},
@@ -373,10 +375,24 @@ type GeminiConfig struct {
 	// If empty, the server will fallback to GEMINI_API_KEY env var.
 	APIKey string `form:"apiKey" json:"apiKey,omitempty"`
 
-	// Model is the Gemini Imagen model id, eg. "imagen-3.0-generate-002".
-	// If empty, the server will fallback to GEMINI_IMAGE_MODEL env var
-	// or use a sane default.
+	// Model is a generic default model id used as fallback if a
+	// modality specific model is not configured.
+	// For backward compatibility this often points to the image model.
 	Model string `form:"model" json:"model"`
+
+	// ImageModel is the Gemini Imagen model id, eg. "imagen-3.0-generate-002".
+	// If empty, the server will fallback to Model or GEMINI_IMAGE_MODEL env var.
+	ImageModel string `form:"imageModel" json:"imageModel"`
+
+	// VideoModel is the Gemini video generation model id, if available for your account.
+	// Not used by this codebase yet but can be configured for future endpoints.
+	// If empty, the server should fallback to Model or GEMINI_VIDEO_MODEL env var.
+	VideoModel string `form:"videoModel" json:"videoModel"`
+
+	// TextModel is the Gemini text generation model id used for LLM text endpoints.
+	// Not used by this codebase yet but can be configured for future endpoints.
+	// If empty, the server should fallback to Model or GEMINI_TEXT_MODEL env var.
+	TextModel string `form:"textModel" json:"textModel"`
 
 	// APIBase allows overriding the Gemini API base URL.
 	// If empty, defaults to https://generativelanguage.googleapis.com
