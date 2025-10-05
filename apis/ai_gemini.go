@@ -33,17 +33,28 @@ func bindAIGeminiApi(app core.App, rg *router.RouterGroup[*core.RequestEvent]) {
 // Response: the raw Gemini response is returned, plus a convenience field `images` when possible:
 // { "images": [{"mimeType":"image/png","b64":"..."}], "raw": <original> }
 func aiGeminiGenerateImage(e *core.RequestEvent) error {
-	apiKey := strings.TrimSpace(os.Getenv("GEMINI_API_KEY"))
+	// Load from settings first, then env, then defaults
+	s := e.App.Settings()
+	apiKey := strings.TrimSpace(s.AI.Gemini.APIKey)
 	if apiKey == "" {
-		return e.BadRequestError("GEMINI_API_KEY is not configured on the server.", nil)
+		apiKey = strings.TrimSpace(os.Getenv("GEMINI_API_KEY"))
+	}
+	if apiKey == "" {
+		return e.BadRequestError("Gemini API key is not configured (set in Settings or GEMINI_API_KEY).", nil)
 	}
 
-	model := strings.TrimSpace(os.Getenv("GEMINI_IMAGE_MODEL"))
+	model := strings.TrimSpace(s.AI.Gemini.Model)
+	if model == "" {
+		model = strings.TrimSpace(os.Getenv("GEMINI_IMAGE_MODEL"))
+	}
 	if model == "" {
 		model = "imagen-3.0-generate-002"
 	}
 
-	base := strings.TrimSpace(os.Getenv("GEMINI_API_BASE"))
+	base := strings.TrimSpace(s.AI.Gemini.APIBase)
+	if base == "" {
+		base = strings.TrimSpace(os.Getenv("GEMINI_API_BASE"))
+	}
 	if base == "" {
 		base = "https://generativelanguage.googleapis.com"
 	}

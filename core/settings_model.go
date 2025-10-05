@@ -128,6 +128,7 @@ type settings struct {
 	TrustedProxy TrustedProxyConfig `form:"trustedProxy" json:"trustedProxy"`
 	Batch        BatchConfig        `form:"batch" json:"batch"`
 	Logs         LogsConfig         `form:"logs" json:"logs"`
+	AI           AIConfig           `form:"ai" json:"ai"`
 }
 
 // Settings defines the PocketBase app settings.
@@ -176,6 +177,13 @@ func newDefaultSettings() *Settings {
 					{Label: "*:create", MaxRequests: 20, Duration: 5},
 					{Label: "/api/batch", MaxRequests: 3, Duration: 1},
 					{Label: "/api/", MaxRequests: 300, Duration: 10},
+				},
+			},
+			AI: AIConfig{
+				Gemini: GeminiConfig{
+					// Defaults align with the proxy endpoint expectations
+					Model:   "imagen-3.0-generate-002",
+					APIBase: "https://generativelanguage.googleapis.com",
 				},
 			},
 		},
@@ -287,6 +295,7 @@ func (s *Settings) PostValidate(ctx context.Context, app App) error {
 		validation.Field(&s.Batch),
 		validation.Field(&s.RateLimits),
 		validation.Field(&s.TrustedProxy),
+		validation.Field(&s.AI),
 	)
 }
 
@@ -331,6 +340,7 @@ func (s *Settings) MarshalJSON() ([]byte, error) {
 		&copy.SMTP.Password,
 		&copy.S3.Secret,
 		&copy.Backups.S3.Secret,
+		&copy.AI.Gemini.APIKey,
 	}
 
 	// mask all sensitive fields
@@ -344,6 +354,41 @@ func (s *Settings) MarshalJSON() ([]byte, error) {
 }
 
 // -------------------------------------------------------------------
+
+// AIConfig groups AI-related settings.
+type AIConfig struct {
+	Gemini GeminiConfig `form:"gemini" json:"gemini"`
+}
+
+// Validate makes AIConfig validatable by implementing [validation.Validatable] interface.
+func (c AIConfig) Validate() error {
+	return validation.ValidateStruct(&c,
+		validation.Field(&c.Gemini),
+	)
+}
+
+// GeminiConfig stores settings for Gemini Imagen proxy usage.
+type GeminiConfig struct {
+	// APIKey is the Gemini API key used by the server proxy.
+	// If empty, the server will fallback to GEMINI_API_KEY env var.
+	APIKey string `form:"apiKey" json:"apiKey,omitempty"`
+
+	// Model is the Gemini Imagen model id, eg. "imagen-3.0-generate-002".
+	// If empty, the server will fallback to GEMINI_IMAGE_MODEL env var
+	// or use a sane default.
+	Model string `form:"model" json:"model"`
+
+	// APIBase allows overriding the Gemini API base URL.
+	// If empty, defaults to https://generativelanguage.googleapis.com
+	// or to GEMINI_API_BASE env var if set.
+	APIBase string `form:"apiBase" json:"apiBase"`
+}
+
+// Validate makes GeminiConfig validatable by implementing [validation.Validatable] interface.
+func (c GeminiConfig) Validate() error {
+	// no strict validation to allow empty values and rely on env/defaults
+	return nil
+}
 
 type SMTPConfig struct {
 	Enabled  bool   `form:"enabled" json:"enabled"`

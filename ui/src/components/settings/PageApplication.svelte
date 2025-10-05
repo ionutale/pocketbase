@@ -11,6 +11,7 @@
     import BatchAccordion from "@/components/settings/BatchAccordion.svelte";
     import TrustedProxyAccordion from "@/components/settings/TrustedProxyAccordion.svelte";
     import RateLimitAccordion from "@/components/settings/RateLimitAccordion.svelte";
+    import AIGeminiAccordion from "@/components/settings/AIGeminiAccordion.svelte";
 
     $pageTitle = "Application settings";
 
@@ -84,6 +85,7 @@
             batch: settings.batch || {},
             trustedProxy: settings.trustedProxy || { headers: [] },
             rateLimits: settings.rateLimits || { rules: [] },
+            ai: settings.ai || { gemini: { model: "imagen-3.0-generate-002", apiBase: "https://generativelanguage.googleapis.com" } },
         };
 
         sortRules(formSettings.rateLimits.rules);
@@ -207,6 +209,7 @@
                             <TrustedProxyAccordion bind:formSettings {healthData} />
                             <RateLimitAccordion bind:formSettings />
                             <BatchAccordion bind:formSettings />
+                            <AIGeminiAccordion bind:formSettings />
                         </div>
                     </div>
                     <div class="col-lg-12">
