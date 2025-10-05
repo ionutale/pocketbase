@@ -55,6 +55,8 @@ func NewRouter(app core.App) (*router.Router[*core.RequestEvent], error) {
 	bindBatchApi(app, apiGroup)
 	bindRealtimeApi(app, apiGroup)
 	bindHealthApi(app, apiGroup)
+	// AI endpoints
+	bindAIGeminiApi(app, apiGroup)
 	// MCP streamable HTTP transport endpoint (conditional)
 	if enabled, _ := app.Store().GetOk("apis.mcpEnabled"); enabled != nil {
 		bindMCPApi(app, apiGroup)

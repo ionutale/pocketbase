@@ -39,6 +39,19 @@
     }
 }
 
+// Gemini generator row tweaks inside file field list
+.form-field-file .list .list-item-btn .inline-flex {
+    align-items: center;
+}
+
+.file-picker {
+        display: flex;
+        height: 420px;
+        max-height: 100%;
+        align-items: stretch;
+        gap: var(--baseSpacing);
+}
+
 .files-list {
     display: flex;
     flex-wrap: wrap;

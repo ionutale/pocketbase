@@ -304,6 +304,37 @@ Notes:
 - Extending tools/resources: implement additional tools or resources in `apis/mcp.go` using the MCP SDK helpers.
 - Compatibility: the server uses the official `github.com/modelcontextprotocol/go-sdk` and its Streamable HTTP handler.
 
+### Gemini image generation proxy
+
+PocketBase exposes a server-side proxy for Gemini Imagen image generation to avoid exposing API keys in the browser and to apply auth rules.
+
+- Endpoint: `POST /api/ai/gemini/image` (superuser only)
+- Env vars:
+  - `GEMINI_API_KEY` (required)
+  - `GEMINI_IMAGE_MODEL` (optional, default: `imagen-3.0-generate-002`)
+  - `GEMINI_API_BASE` (optional, default: `https://generativelanguage.googleapis.com`)
+
+Request body examples:
+
+```
+{ "prompt": "A futuristic teddy bear flying in space.", "parameters": {"sampleCount": 1, "aspectRatio": "1:1"} }
+```
+
+or pass the raw `instances` array for full control:
+
+```
+{
+  "instances": [{ "prompt": "A modern bedroom..." }],
+  "parameters": { "sampleCount": 2, "personGeneration": "allow_adult", "includeSafetyAttributes": true, "aspectRatio": "1:1" }
+}
+```
+
+Response shape:
+
+```
+{ "images": [{"mimeType": "image/png", "b64": "..."}], "raw": <upstream-response> }
+```
+
 Endpoint: `GET /api/realtime` (Server-Sent Events)
 
 Flow:

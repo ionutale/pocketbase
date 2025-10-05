@@ -17,6 +17,8 @@
     let fileInput;
     let filesListElem;
     let isDragOver = false;
+    let genPrompt = "";
+    let isGenerating = false;
 
     // normalize uploadedFiles type
     $: if (!Array.isArray(uploadedFiles)) {
@@ -103,6 +105,59 @@
         } catch (err) {
             console.warn("openInNewTab file token failure:", err);
         }
+    }
+
+    async function generateWithGemini() {
+        if (!genPrompt?.trim() || isGenerating) return;
+        isGenerating = true;
+        try {
+            const base = import.meta.env.PB_BACKEND_URL || "";
+            const endpoint = (base ? base.replace(/\/$/, "") : "") + "/api/ai/gemini/image";
+            const res = await fetch(endpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    // PocketBase expects the raw token; Bearer prefix is optional
+                    "Authorization": ApiClient.authStore.token || "",
+                },
+                body: JSON.stringify({
+                    prompt: genPrompt.trim(),
+                    parameters: {
+                        sampleCount: 1,
+                        personGeneration: "allow_adult",
+                        includeSafetyAttributes: true,
+                        aspectRatio: "1:1",
+                    },
+                }),
+            });
+            if (!res.ok) {
+                const errText = await res.text();
+                throw new Error(errText || `Gemini error: ${res.status}`);
+            }
+            const data = await res.json();
+            const images = Array.isArray(data?.images) ? data.images : [];
+            if (!images.length) {
+                throw new Error("No image returned by Gemini.");
+            }
+            for (let i = 0; i < images.length; i++) {
+                const it = images[i] || {};
+                const b64 = it.b64 || "";
+                if (!b64) continue;
+                const mime = it.mimeType || "image/png";
+                const bin = atob(b64);
+                const len = bin.length;
+                const bytes = new Uint8Array(len);
+                for (let j = 0; j < len; j++) bytes[j] = bin.charCodeAt(j);
+                const blob = new Blob([bytes], { type: mime });
+                const fname = `gemini_${Date.now()}_${i}.png`;
+                const file = new File([blob], fname, { type: mime });
+                uploadedFiles.push(file);
+            }
+            uploadedFiles = uploadedFiles;
+        } catch (err) {
+            ApiClient.error(err, true, "Failed to generate image.");
+        }
+        isGenerating = false;
     }
 </script>
 
@@ -236,6 +291,26 @@
                     <i class="ri-upload-cloud-line" />
                     <span class="txt">Upload new file</span>
                 </button>
+            </div>
+
+            <div class="list-item list-item-btn">
+                <div class="inline-flex flex-gap-8 w-100">
+                    <input
+                        type="text"
+                        class="input"
+                        placeholder="Prompt to generate with Gemini..."
+                        bind:value={genPrompt}
+                    />
+                    <button
+                        type="button"
+                        class="btn btn-transparent btn-sm"
+                        disabled={maxReached || isGenerating || !genPrompt?.trim()}
+                        on:click={generateWithGemini}
+                    >
+                        <i class="ri-gemini-line" />
+                        <span class="txt">Generate with Gemini</span>
+                    </button>
+                </div>
             </div>
         </div>
     </Field>
