@@ -31,7 +31,7 @@
     // active collection (single or polymorphic current selection)
     let activeCollectionId;
 
-    $: maxSelect = field?.maxSelect || null;
+    $: maxSelect = field?.maxSelect || 1;
 
     $: collectionId = field?.collectionId;
     $: isPolymorphic = Array.isArray(field?.collectionIds) && field.collectionIds.length > 0;
@@ -66,7 +66,7 @@
 
     $: canLoadMore = lastItemsCount == batchSize;
 
-    $: canSelectMore = maxSelect <= 0 || maxSelect > selected.length;
+    $: canSelectMore = maxSelect > selected.length;
 
     export function show() {
         filter = "";
@@ -121,6 +121,7 @@
                     const rId = str.slice(idx + 1);
                     byCol[cId] = byCol[cId] || [];
                     byCol[cId].push(rId);
+
                 }
             }
 
@@ -266,7 +267,7 @@
             const result = await ApiClient.collection(colId).getList(page, batchSize, {
                 filter: CommonHelper.normalizeSearchFilter(filter, fallbackSearchFields),
                 sort: sort,
-                fields: "*:excerpt(200)",
+                fields: CommonHelper.getExcerptCollectionFieldsList(collection),
                 skipTotal: 1,
                 expand: getExpand(),
                 requestKey: uniqueId + "loadList",
@@ -296,6 +297,7 @@
             const colId = activeCollectionId || collectionId;
             const reloaded = await ApiClient.collection(colId).getOne(record.id, {
                 fields: "*:excerpt(200)",
+
                 expand: getExpand(),
                 requestKey: uniqueId + "reload" + record.id,
             });

@@ -140,4 +140,5 @@
     .rel-values { gap: 4px; }
     .rel-values.inline-flex { flex-wrap: wrap; }
     .rel-values.vertical { display: flex; flex-direction: column; align-items: flex-start; }
+
 </style>

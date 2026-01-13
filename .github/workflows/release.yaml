@@ -66,9 +66,9 @@ jobs:
           node-version: 20.17.0
 
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
-          go-version: '>=1.24.7'
+          go-version: '>=1.25.5'
 
       # Update (force-move) the floating "latest" tag to the current version tag commit.
       # This runs only when the workflow is triggered by a version tag (refs/tags/v*).

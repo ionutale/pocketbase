@@ -79,6 +79,7 @@
                 expands = expands.concat(CommonHelper.getExpandPresentableRelFields(f, $collections, 2));
             }
             return expands.join(",");
+
         }
 
         // group ids by collection
@@ -116,6 +117,7 @@
                     }),
                 );
             }
+
         }
 
         try {
