@@ -142,7 +142,7 @@
         {#if original != ""}
             <button
                 type="button"
-                class="btn btn-sm btn-circle btn-hint btn-transparent m-r-auto"
+                class="btn btn-sm btn-circle btn-hint btn-transparent m-r-auto" aria-label="Delete"
                 use:tooltip={{ text: "Delete", position: "top" }}
                 on:click={() => remove()}
             >

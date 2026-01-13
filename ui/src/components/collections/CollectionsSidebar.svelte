@@ -78,7 +78,7 @@
             <div class="form-field-addon">
                 <button
                     type="button"
-                    class="btn btn-xs btn-transparent btn-circle btn-clear"
+                    class="btn btn-xs btn-transparent btn-circle btn-clear" aria-label="Clear search"
                     class:hidden={!hasSearch}
                     on:click={() => (searchTerm = "")}
                 >

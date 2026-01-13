@@ -21,7 +21,7 @@
 
     <a
         href="#/collections?collection={record.collectionId}&recordId={record.id}"
-        target="_blank"
+        target="_blank" aria-label="View record"
         class="record-link link-hint"
         rel="noopener noreferrer"
         use:tooltip={{

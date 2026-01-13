@@ -19,7 +19,7 @@
     <div class="form-field-addon">
         <button
             type="button"
-            class="btn btn-transparent btn-circle"
+            class="btn btn-transparent btn-circle" aria-label="Toggle password visibility"
             use:tooltip={{ position: "left", text: "Set new value" }}
             on:click|preventDefault={unlock}
         >

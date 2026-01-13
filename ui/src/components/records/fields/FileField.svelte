@@ -171,7 +171,7 @@
                             {:else}
                                 <button
                                     type="button"
-                                    class="btn btn-transparent btn-hint btn-sm btn-circle btn-remove"
+                                    class="btn btn-transparent btn-hint btn-sm btn-circle btn-remove" aria-label="Remove"
                                     use:tooltip={"Remove file"}
                                     on:click={() => removeExistingFile(filename)}
                                 >
@@ -202,7 +202,7 @@
                         </div>
                         <button
                             type="button"
-                            class="btn btn-transparent btn-hint btn-sm btn-circle btn-remove"
+                            class="btn btn-transparent btn-hint btn-sm btn-circle btn-remove" aria-label="Remove"
                             use:tooltip={"Remove file"}
                             on:click={() => removeNewFile(i)}
                         >

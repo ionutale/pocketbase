@@ -275,7 +275,7 @@
                             <div class="addon suffix p-r-5">
                                 <button
                                     type="button"
-                                    class="btn btn-sm btn-circle btn-transparent clear"
+                                    class="btn btn-sm btn-circle btn-transparent clear" aria-label="Clear"
                                     on:click|preventDefault|stopPropagation={resetSearch}
                                 >
                                     <i class="ri-close-line" ></i>

@@ -1,3 +1,8 @@
+@use 'base' as *;
+
+@use 'mixins' as *;
+@use 'vars' as *;
+
 .schema-field-header {
     $minHeight: 42px;
     position: relative;

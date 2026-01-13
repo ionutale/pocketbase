@@ -220,7 +220,7 @@
                         <div class="actions">
                             <button
                                 type="button"
-                                class="btn btn-transparent btn-hint btn-sm btn-circle btn-remove"
+                                class="btn btn-transparent btn-hint btn-sm btn-circle btn-remove" aria-label="Remove"
                                 use:tooltip={"Remove"}
                                 on:click={() => remove(record)}
                             >

@@ -1,3 +1,5 @@
+@use 'mixins' as *;
+
 .app-tooltip {
     position: fixed;
     z-index: 999999;

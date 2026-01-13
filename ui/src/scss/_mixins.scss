@@ -1,3 +1,5 @@
+@use 'vars' as *;
+
 @mixin hide() {
     opacity: 0;
     visibility: hidden;
@@ -19,7 +21,10 @@
 ) {
     $trackColor: transparent;
 
-    $elem: if(&, '&', '');
+    $elem: "";
+    @if & {
+        $elem: "&";
+    }
 
     @media screen and (min-width: 550px) {
         // chrome scrollbar styles

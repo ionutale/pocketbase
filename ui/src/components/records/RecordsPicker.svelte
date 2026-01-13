@@ -436,7 +436,7 @@
                     <div class="actions nonintrusive">
                         <button
                             type="button"
-                            class="btn btn-sm btn-circle btn-transparent btn-hint m-l-auto"
+                            class="btn btn-sm btn-circle btn-transparent btn-hint m-l-auto" aria-label="Remove"
                             use:tooltip={"Edit"}
                             on:keydown|stopPropagation
                             on:click|stopPropagation={() => upsertPanel?.show(record.id)}

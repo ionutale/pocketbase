@@ -1,3 +1,7 @@
+@use 'base' as *;
+
+@use 'vars' as *;
+
 table {
     --entranceAnimationSpeed: 0.3s;
 

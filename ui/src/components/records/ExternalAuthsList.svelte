@@ -89,7 +89,7 @@
                 <div class="txt-hint">ID: {auth.providerId}</div>
                 <button
                     type="button"
-                    class="btn btn-transparent link-hint btn-circle btn-sm m-l-auto"
+                    class="btn btn-transparent link-hint btn-circle btn-sm m-l-auto" aria-label="Unlink"
                     on:click={() => unlinkExternalAuth(auth)}
                 >
                     <i class="ri-close-line" ></i>

@@ -30,7 +30,7 @@
 
             <div class="content">{toast.message}</div>
 
-            <button type="button" class="close" on:click|preventDefault={() => removeToast(toast)}>
+            <button type="button" class="close" aria-label="Close" on:click|preventDefault={() => removeToast(toast)}>
                 <i class="ri-close-line" ></i>
             </button>
         </div>

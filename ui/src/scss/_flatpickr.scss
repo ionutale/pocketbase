@@ -1,3 +1,7 @@
+@use 'base' as *;
+
+@use 'mixins' as *;
+
 // slightly modified version of https://npmcdn.com/flatpickr@4.6.9/dist/flatpickr.css
 .flatpickr-calendar {
   opacity: 0;

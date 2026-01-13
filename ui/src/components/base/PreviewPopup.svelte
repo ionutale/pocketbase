@@ -54,7 +54,7 @@
 
 <OverlayPanel bind:this={panel} class="preview preview-{type}" btnClose={false} popup on:show on:hide>
     <svelte:fragment slot="header">
-        <button type="button" class="overlay-close" on:click|preventDefault={hide}>
+        <button type="button" class="overlay-close" aria-label="Close" on:click|preventDefault={hide}>
             <i class="ri-close-line" ></i>
         </button>
     </svelte:fragment>

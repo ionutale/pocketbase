@@ -38,7 +38,7 @@
 
     {#if value && !field.required}
         <div class="form-field-addon">
-            <button type="button" class="link-hint clear-btn" use:tooltip={"Clear"} on:click={() => clear()}>
+            <button type="button" class="link-hint clear-btn" aria-label="Clear" use:tooltip={"Clear"} on:click={() => clear()}>
                 <i class="ri-close-line" ></i>
             </button>
         </div>
