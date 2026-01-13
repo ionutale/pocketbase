@@ -32,7 +32,7 @@
 
 <div class="alert alert-info">
     <div class="icon">
-        <i class="ri-information-line" />
+        <i class="ri-information-line" ></i>
     </div>
     <div class="content">
         Note that the Lark user's <strong>Union ID</strong> will be used for the association with the

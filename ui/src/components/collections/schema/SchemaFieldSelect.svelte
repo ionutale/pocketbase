@@ -38,7 +38,7 @@
 
 <SchemaField bind:field {key} on:rename on:remove on:duplicate {...$$restProps}>
     <svelte:fragment let:interactive>
-        <div class="separator" />
+        <div class="separator" ></div>
 
         <Field
             class="form-field required {!interactive ? 'readonly' : ''}"
@@ -53,7 +53,7 @@
             />
         </Field>
 
-        <div class="separator" />
+        <div class="separator" ></div>
 
         <Field
             class="form-field form-field-single-multiple-select {!interactive ? 'readonly' : ''}"
@@ -68,7 +68,7 @@
             />
         </Field>
 
-        <div class="separator" />
+        <div class="separator" ></div>
     </svelte:fragment>
 
     <svelte:fragment slot="options">

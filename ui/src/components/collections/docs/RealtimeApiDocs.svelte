@@ -19,7 +19,7 @@
 </div>
 <div class="alert alert-info m-t-10 m-b-sm">
     <div class="icon">
-        <i class="ri-information-line" />
+        <i class="ri-information-line" ></i>
     </div>
     <div class="contet">
         <p>

@@ -20,7 +20,7 @@
             <span class="txt">Batch API</span>
         </div>
 
-        <div class="flex-fill" />
+        <div class="flex-fill" ></div>
 
         {#if isEnabled}
             <span class="label label-success">Enabled</span>
@@ -33,7 +33,7 @@
                 class="ri-error-warning-fill txt-danger"
                 transition:scale={{ duration: 150, start: 0.7 }}
                 use:tooltip={{ text: "Has errors", position: "left" }}
-            />
+            ></i>
         {/if}
     </svelte:fragment>
 
@@ -53,7 +53,7 @@
                             text: "Rate limiting (if enabled) also applies for the batch create/update/upsert/delete requests.",
                             position: "right",
                         }}
-                    />
+                    ></i>
                 </label>
                 <input
                     type="number"

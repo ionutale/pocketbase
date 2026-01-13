@@ -66,16 +66,16 @@
                 <div class="list-content">
                     {#if isLoading}
                         <div class="list-item list-item-loader">
-                            <span class="skeleton-loader skeleton-loader-lg" />
+                            <span class="skeleton-loader skeleton-loader-lg" ></span>
                         </div>
                         <div class="list-item list-item-loader">
-                            <span class="skeleton-loader skeleton-loader-lg" />
+                            <span class="skeleton-loader skeleton-loader-lg" ></span>
                         </div>
                         <div class="list-item list-item-loader">
-                            <span class="skeleton-loader skeleton-loader-lg" />
+                            <span class="skeleton-loader skeleton-loader-lg" ></span>
                         </div>
                         <div class="list-item list-item-loader">
-                            <span class="skeleton-loader skeleton-loader-lg" />
+                            <span class="skeleton-loader skeleton-loader-lg" ></span>
                         </div>
                     {:else}
                         {#each crons as cron (cron.id)}

@@ -287,7 +287,7 @@
                                             alt={name}
                                         />
                                     {:else}
-                                        <i class="ri-file-3-line" />
+                                        <i class="ri-file-3-line" ></i>
                                     {/if}
                                 </button>
                             {/each}
@@ -309,7 +309,7 @@
 
                     {#if isLoading}
                         <div class="block txt-center">
-                            <span class="loader loader-sm active" />
+                            <span class="loader loader-sm active" ></span>
                         </div>
                     {/if}
                 </Scroller>

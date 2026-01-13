@@ -19,7 +19,7 @@
             <span class="txt"> Multi-factor authentication (MFA) </span>
         </div>
 
-        <div class="flex-fill" />
+        <div class="flex-fill" ></div>
 
         {#if collection.mfa.enabled}
             <span class="label label-success">Enabled</span>
@@ -32,7 +32,7 @@
                 class="ri-error-warning-fill txt-danger"
                 transition:scale={{ duration: 150, start: 0.7 }}
                 use:tooltip={{ text: "Has errors", position: "left" }}
-            />
+            ></i>
         {/if}
     </svelte:fragment>
 

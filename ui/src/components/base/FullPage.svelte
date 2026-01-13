@@ -18,7 +18,7 @@
                     <span class="txt">Pocket<strong>Base</strong></span>
                 </figure>
             </div>
-            <div class="clearfix" />
+            <div class="clearfix" ></div>
         {/if}
 
         <slot />

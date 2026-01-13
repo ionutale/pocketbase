@@ -142,7 +142,7 @@
                     use:active={{ path: "/collections/?.*", className: "current-route" }}
                     use:tooltip={{ text: "Collections", position: "right" }}
                 >
-                    <i class="ri-database-2-line" />
+                    <i class="ri-database-2-line" ></i>
                 </a>
                 <a
                     href="/logs"
@@ -152,7 +152,7 @@
                     use:active={{ path: "/logs/?.*", className: "current-route" }}
                     use:tooltip={{ text: "Logs", position: "right" }}
                 >
-                    <i class="ri-line-chart-line" />
+                    <i class="ri-line-chart-line" ></i>
                 </a>
                 <a
                     href="/settings"
@@ -162,7 +162,7 @@
                     use:active={{ path: "/settings/?.*", className: "current-route" }}
                     use:tooltip={{ text: "Settings", position: "right" }}
                 >
-                    <i class="ri-tools-line" />
+                    <i class="ri-tools-line" ></i>
                 </a>
             </nav>
 
@@ -185,11 +185,11 @@
                         role="menuitem"
                         use:link
                     >
-                        <i class="ri-shield-user-line" aria-hidden="true" />
+                        <i class="ri-shield-user-line" aria-hidden="true" ></i>
                         <span class="txt">Manage superusers</span>
                     </a>
                     <button type="button" class="dropdown-item closable" role="menuitem" on:click={logout}>
-                        <i class="ri-logout-circle-line" aria-hidden="true" />
+                        <i class="ri-logout-circle-line" aria-hidden="true" ></i>
                         <span class="txt">Logout</span>
                     </button>
                 </Toggler>

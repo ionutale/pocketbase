@@ -155,7 +155,7 @@
     {#if isCollectionRenamed || deletedFields.length || renamedFields.length}
         <div class="alert alert-warning">
             <div class="icon">
-                <i class="ri-error-warning-line" />
+                <i class="ri-error-warning-line" ></i>
             </div>
             <div class="content txt-bold">
                 <p>
@@ -177,7 +177,7 @@
                     <div class="inline-flex">
                         Renamed collection
                         <strong class="txt-strikethrough txt-hint">{oldCollection?.name}</strong>
-                        <i class="ri-arrow-right-line txt-sm" />
+                        <i class="ri-arrow-right-line txt-sm" ></i>
                         <strong class="txt"> {newCollection?.name}</strong>
                     </div>
                 </li>
@@ -197,7 +197,7 @@
                         <div class="inline-flex">
                             Renamed field
                             <strong class="txt-strikethrough txt-hint">{field._originalName}</strong>
-                            <i class="ri-arrow-right-line txt-sm" />
+                            <i class="ri-arrow-right-line txt-sm" ></i>
                             <strong class="txt">{field.name}</strong>
                         </div>
                     </li>
@@ -239,7 +239,7 @@
                     Changed <code>{oidc.name}</code> host
                     <div class="inline-flex m-l-5">
                         <strong class="txt-strikethrough txt-hint">{oidc.oldHost}</strong>
-                        <i class="ri-arrow-right-line txt-sm" />
+                        <i class="ri-arrow-right-line txt-sm" ></i>
                         <strong class="txt">{oidc.newHost}</strong>
                     </div>
                     <br />

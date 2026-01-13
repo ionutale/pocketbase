@@ -191,7 +191,7 @@
             class:btn-loading={isLoading}
         >
             <span class="txt">Create superuser and login</span>
-            <i class="ri-arrow-right-line" />
+            <i class="ri-arrow-right-line" ></i>
         </button>
     </form>
 
@@ -205,7 +205,7 @@
         class:btn-disabled={isBusy}
         class:btn-loading={isUploading}
     >
-        <i class="ri-upload-cloud-line" />
+        <i class="ri-upload-cloud-line" ></i>
         <span class="txt">Or initialize from backup</span>
     </label>
     <input

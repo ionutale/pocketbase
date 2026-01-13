@@ -22,7 +22,7 @@
                                 text: 'List of domains that are NOT allowed. \n This field is disabled if "Only domains" is set.',
                                 position: "top",
                             }}
-                        />
+                        ></i>
                     </label>
                     <MultipleValueInput
                         id={uniqueId}
@@ -43,7 +43,7 @@
                                 text: 'List of domains that are ONLY allowed. \n This field is disabled if "Except domains" is set.',
                                 position: "top",
                             }}
-                        />
+                        ></i>
                     </label>
                     <MultipleValueInput
                         id="{uniqueId}.onlyDomains"

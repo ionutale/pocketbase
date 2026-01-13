@@ -202,10 +202,10 @@
     </div>
 
     {#if isLoading}
-        <div class="chart-loader loader" transition:scale={{ duration: 150 }} />
+        <div class="chart-loader loader" transition:scale={{ duration: 150 }} ></div>
     {/if}
 
-    <canvas bind:this={chartCanvas} class="chart-canvas" on:dblclick={resetZoom} />
+    <canvas bind:this={chartCanvas} class="chart-canvas" on:dblclick={resetZoom} ></canvas>
 
     {#if isZoomedOrPanned}
         <button type="button" class="btn btn-secondary btn-sm btn-chart-zoom" on:click={resetZoom}>

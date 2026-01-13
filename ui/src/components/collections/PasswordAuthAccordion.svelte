@@ -59,7 +59,7 @@
             <span class="txt">Identity/Password</span>
         </div>
 
-        <div class="flex-fill" />
+        <div class="flex-fill" ></div>
 
         {#if collection.passwordAuth.enabled}
             <span class="label label-success">Enabled</span>
@@ -72,7 +72,7 @@
                 class="ri-error-warning-fill txt-danger"
                 transition:scale={{ duration: 150, start: 0.7 }}
                 use:tooltip={{ text: "Has errors", position: "left" }}
-            />
+            ></i>
         {/if}
     </svelte:fragment>
 
@@ -91,7 +91,7 @@
                     text: "Superusers are required to have password auth enabled.",
                     position: "right",
                 }}
-            />
+            ></i>
         {/if}
     </Field>
 

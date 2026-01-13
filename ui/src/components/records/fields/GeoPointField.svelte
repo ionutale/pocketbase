@@ -4,7 +4,7 @@
     import FieldLabel from "@/components/records/fields/FieldLabel.svelte";
     import { slide } from "svelte/transition";
 
-    export let original;
+    // // // // export let original;
     export let field;
     export let value = undefined;
 

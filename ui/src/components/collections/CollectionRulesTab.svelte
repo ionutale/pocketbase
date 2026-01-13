@@ -94,7 +94,7 @@
                         text: `The main record fields hold the values that are going to be inserted in the database.`,
                         position: "top",
                     }}
-                />
+                ></i>
             {/if}
         </svelte:fragment>
     </RuleField>
@@ -108,7 +108,7 @@
                         text: `The main record fields represent the old/existing record field values.\nTo target the newly submitted ones you can use @request.body.*`,
                         position: "top",
                     }}
-                />
+                ></i>
             {/if}
         </svelte:fragment>
     </RuleField>
@@ -128,9 +128,9 @@
     >
         <strong class="txt">Additional auth collection rules</strong>
         {#if showExtraRules}
-            <i class="ri-arrow-up-s-line txt-sm" />
+            <i class="ri-arrow-up-s-line txt-sm" ></i>
         {:else}
-            <i class="ri-arrow-down-s-line txt-sm" />
+            <i class="ri-arrow-down-s-line txt-sm" ></i>
         {/if}
     </button>
 

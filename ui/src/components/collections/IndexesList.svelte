@@ -32,7 +32,7 @@
             class="ri-error-warning-fill txt-danger"
             transition:scale={{ duration: 150 }}
             use:tooltip={$errors?.indexes.message}
-        />
+        ></i>
     {/if}
 </div>
 <div class="indexes-list">

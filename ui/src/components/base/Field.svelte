@@ -58,7 +58,7 @@
                     position: "left",
                     text: fieldErrors.map(getErrorMessage).join("\n"),
                 }}
-            />
+            ></i>
         </div>
     {:else}
         {#each fieldErrors as error}

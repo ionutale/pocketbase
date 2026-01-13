@@ -379,14 +379,14 @@
         </h4>
 
         {#if !!collection.id && (!collection.system || !isView)}
-            <div class="flex-fill" />
+            <div class="flex-fill" ></div>
             <div
                 tabindex="0"
                 role="button"
                 aria-label="More collection options"
                 class="btn btn-sm btn-circle btn-transparent flex-gap-0"
             >
-                <i class="ri-more-line" aria-hidden="true" />
+                <i class="ri-more-line" aria-hidden="true" ></i>
                 <Toggler class="dropdown dropdown-right dropdown-nowrap">
                     <button
                         type="button"
@@ -394,7 +394,7 @@
                         role="menuitem"
                         on:click={() => copyJSON()}
                     >
-                        <i class="ri-braces-line" aria-hidden="true" />
+                        <i class="ri-braces-line" aria-hidden="true" ></i>
                         <span class="txt">Copy raw JSON</span>
                     </button>
                     {#if !collection.system}
@@ -404,7 +404,7 @@
                             role="menuitem"
                             on:click={() => duplicateConfirm()}
                         >
-                            <i class="ri-file-copy-line" aria-hidden="true" />
+                            <i class="ri-file-copy-line" aria-hidden="true" ></i>
                             <span class="txt">Duplicate</span>
                         </button>
                         <hr />
@@ -427,7 +427,7 @@
                             role="menuitem"
                             on:click|preventDefault|stopPropagation={() => deleteConfirm()}
                         >
-                            <i class="ri-delete-bin-7-line" aria-hidden="true" />
+                            <i class="ri-delete-bin-7-line" aria-hidden="true" ></i>
                             <span class="txt">Delete</span>
                         </button>
                     {/if}
@@ -470,10 +470,10 @@
                         class:btn-disabled={!!collection.id}
                     >
                         <!-- empty span for alignment -->
-                        <span aria-hidden="true" />
+                        <span aria-hidden="true" ></span>
                         <span class="txt">Type: {collectionTypes[collection.type] || "N/A"}</span>
                         {#if !collection.id}
-                            <i class="ri-arrow-down-s-fill" aria-hidden="true" />
+                            <i class="ri-arrow-down-s-fill" aria-hidden="true" ></i>
                             <Toggler class="dropdown dropdown-right dropdown-nowrap m-t-5">
                                 {#each Object.entries(collectionTypes) as [type, label]}
                                     <button
@@ -486,7 +486,7 @@
                                         <i
                                             class={CommonHelper.getCollectionTypeIcon(type)}
                                             aria-hidden="true"
-                                        />
+                                        ></i>
                                         <span class="txt">{label} collection</span>
                                     </button>
                                 {/each}
@@ -516,7 +516,7 @@
                         class="ri-error-warning-fill txt-danger"
                         transition:scale={{ duration: 150, start: 0.7 }}
                         use:tooltip={fieldsTabError}
-                    />
+                    ></i>
                 {/if}
             </button>
 
@@ -533,7 +533,7 @@
                             class="ri-error-warning-fill txt-danger"
                             transition:scale={{ duration: 150, start: 0.7 }}
                             use:tooltip={"Has errors"}
-                        />
+                        ></i>
                     {/if}
                 </button>
             {/if}
@@ -551,7 +551,7 @@
                             class="ri-error-warning-fill txt-danger"
                             transition:scale={{ duration: 150, start: 0.7 }}
                             use:tooltip={"Has errors"}
-                        />
+                        ></i>
                     {/if}
                 </button>
             {/if}

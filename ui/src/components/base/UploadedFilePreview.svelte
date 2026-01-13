@@ -29,5 +29,5 @@
 {#if previewUrl}
     <img draggable={false} src={previewUrl} width={size} height={size} alt={file.name} />
 {:else}
-    <i class="ri-file-line" alt={file.name} />
+    <i class="ri-file-line" alt={file.name} ></i>
 {/if}

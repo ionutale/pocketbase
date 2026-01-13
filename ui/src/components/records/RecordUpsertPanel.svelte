@@ -521,7 +521,7 @@
 >
     <svelte:fragment slot="header">
         {#if isLoading}
-            <span class="loader loader-sm" />
+            <span class="loader loader-sm" ></span>
             <h4 class="panel-title txt-hint">Loading...</h4>
         {:else}
             <h4 class="panel-title">
@@ -530,14 +530,14 @@
             </h4>
 
             {#if !isNew}
-                <div class="flex-fill" />
+                <div class="flex-fill" ></div>
                 <div
                     tabindex="0"
                     role="button"
                     aria-label="More record options"
                     class="btn btn-sm btn-circle btn-transparent flex-gap-0"
                 >
-                    <i class="ri-more-line" aria-hidden="true" />
+                    <i class="ri-more-line" aria-hidden="true" ></i>
                     <Toggler class="dropdown dropdown-right dropdown-nowrap">
                         {#if isAuthCollection && !original.verified && original.email}
                             <button
@@ -546,7 +546,7 @@
                                 role="menuitem"
                                 on:click={() => sendVerificationEmail()}
                             >
-                                <i class="ri-mail-check-line" aria-hidden="true" />
+                                <i class="ri-mail-check-line" aria-hidden="true" ></i>
                                 <span class="txt">Send verification email</span>
                             </button>
                         {/if}
@@ -557,7 +557,7 @@
                                 role="menuitem"
                                 on:click={() => sendPasswordResetEmail()}
                             >
-                                <i class="ri-mail-lock-line" aria-hidden="true" />
+                                <i class="ri-mail-lock-line" aria-hidden="true" ></i>
                                 <span class="txt">Send password reset email</span>
                             </button>
                         {/if}
@@ -568,7 +568,7 @@
                                 role="menuitem"
                                 on:click={() => impersonatePopup?.show()}
                             >
-                                <i class="ri-id-card-line" aria-hidden="true" />
+                                <i class="ri-id-card-line" aria-hidden="true" ></i>
                                 <span class="txt">Impersonate</span>
                             </button>
                         {/if}
@@ -578,7 +578,7 @@
                             role="menuitem"
                             on:click={() => copyJSON()}
                         >
-                            <i class="ri-braces-line" aria-hidden="true" />
+                            <i class="ri-braces-line" aria-hidden="true" ></i>
                             <span class="txt">Copy raw JSON</span>
                         </button>
                         <button
@@ -587,7 +587,7 @@
                             role="menuitem"
                             on:click={() => duplicateConfirm()}
                         >
-                            <i class="ri-file-copy-line" aria-hidden="true" />
+                            <i class="ri-file-copy-line" aria-hidden="true" ></i>
                             <span class="txt">Duplicate</span>
                         </button>
                         <hr />
@@ -597,7 +597,7 @@
                             role="menuitem"
                             on:click|preventDefault|stopPropagation={() => deleteConfirm()}
                         >
-                            <i class="ri-delete-bin-7-line" aria-hidden="true" />
+                            <i class="ri-delete-bin-7-line" aria-hidden="true" ></i>
                             <span class="txt">Delete</span>
                         </button>
                     </Toggler>
@@ -641,7 +641,7 @@
                 <div class="block" out:slide={{ duration: 150 }}>
                     <div class="alert alert-info m-0">
                         <div class="icon">
-                            <i class="ri-information-line" />
+                            <i class="ri-information-line" ></i>
                         </div>
                         <div class="flex flex-gap-xs">
                             The record has previous unsaved changes.
@@ -660,18 +660,18 @@
                             use:tooltip={"Discard draft"}
                             on:click|preventDefault={() => deleteDraft()}
                         >
-                            <i class="ri-close-line" />
+                            <i class="ri-close-line" ></i>
                         </button>
                     </div>
-                    <div class="clearfix p-b-base" />
+                    <div class="clearfix p-b-base" ></div>
                 </div>
             {/if}
 
             <Field class="form-field {!isNew ? 'readonly' : ''}" name="id" let:uniqueId>
                 <label for={uniqueId}>
-                    <i class={CommonHelper.getFieldTypeIcon("primary")} />
+                    <i class={CommonHelper.getFieldTypeIcon("primary")} ></i>
                     <span class="txt">id</span>
-                    <span class="flex-fill" />
+                    <span class="flex-fill" ></span>
                 </label>
                 {#if !isNew}
                     <div class="form-field-addon">

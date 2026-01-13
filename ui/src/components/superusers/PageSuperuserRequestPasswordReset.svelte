@@ -29,7 +29,7 @@
 <FullPage>
     {#if success}
         <div class="alert alert-success">
-            <div class="icon"><i class="ri-checkbox-circle-line" /></div>
+            <div class="icon"><i class="ri-checkbox-circle-line" ></i></div>
             <div class="content">
                 <p>Check <strong class="txt-nowrap">{email}</strong> for the recovery link.</p>
             </div>
@@ -53,7 +53,7 @@
                 class:btn-loading={isLoading}
                 disabled={isLoading}
             >
-                <i class="ri-mail-send-line" />
+                <i class="ri-mail-send-line" ></i>
                 <span class="txt">Send recovery link</span>
             </button>
         </form>

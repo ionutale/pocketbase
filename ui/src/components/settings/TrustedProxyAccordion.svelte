@@ -52,16 +52,16 @@
                 <i
                     class="ri-alert-line txt-sm txt-warning"
                     use:tooltip={"Detected proxy header.\nIt is recommend to list it as trusted."}
-                />
+                ></i>
             {:else if isEnabled && !hasChanges && !formSettings.trustedProxy.headers.includes(healthData.possibleProxyHeader)}
                 <i
                     class="ri-alert-line txt-sm txt-hint"
                     use:tooltip={"The configured proxy header doesn't match with the detected one."}
-                />
+                ></i>
             {/if}
         </div>
 
-        <div class="flex-fill" />
+        <div class="flex-fill" ></div>
 
         {#if isEnabled}
             <span class="label label-success">Enabled</span>
@@ -74,7 +74,7 @@
                 class="ri-error-warning-fill txt-danger"
                 transition:scale={{ duration: 150, start: 0.7 }}
                 use:tooltip={{ text: "Has errors", position: "left" }}
-            />
+            ></i>
         {/if}
     </svelte:fragment>
 
@@ -86,7 +86,7 @@
                 <i
                     class="ri-information-line txt-sm link-hint"
                     use:tooltip={"Must show your actual IP.\nIf not, set the correct proxy header."}
-                />
+                ></i>
             </div>
             <br />
             <div class="inline-flex flex-gap-5">
@@ -160,7 +160,7 @@
                             text: "This is in case the proxy returns more than 1 IP as header value. The rightmost IP is usually considered to be the more trustworthy but this could vary depending on the proxy.",
                             position: "right",
                         }}
-                    />
+                    ></i>
                 </label>
                 <ObjectSelect
                     items={ipOptions}

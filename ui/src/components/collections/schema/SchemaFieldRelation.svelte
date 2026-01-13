@@ -57,7 +57,7 @@
 
 <SchemaField bind:field {key} on:rename on:remove on:duplicate {...$$restProps}>
     <svelte:fragment let:interactive>
-        <div class="separator" />
+        <div class="separator" ></div>
     {#if isSingle}
         
         <Field
@@ -83,14 +83,14 @@
                         class="btn btn-transparent btn-block btn-sm"
                         on:click={() => upsertPanel?.show()}
                     >
-                        <i class="ri-add-line" />
+                        <i class="ri-add-line" ></i>
                         <span class="txt">New collection</span>
                     </button>
                 </svelte:fragment>
             </ObjectSelect>
         </Field>
 
-        <div class="separator" />
+        <div class="separator" ></div>
         {:else}
         <!-- Polymorphic collections selector -->
         <Field class="form-field" name="fields.{key}.collectionIds" let:uniqueId>
@@ -103,7 +103,7 @@
                         text: "If set, the relation can point to records from multiple collections. Values are stored as '<collectionId>:<id>'.",
                         position: "top",
                     }}
-                />
+                ></i>
             </label>
             <ObjectSelect
                 id={uniqueId}
@@ -117,7 +117,7 @@
                 bind:keyOfSelected={field.collectionIds}
             />
         </Field>
-        <div class="separator" />
+        <div class="separator" ></div>
         {/if}
         <Field
             class="form-field form-field-single-multiple-select {!interactive ? 'readonly' : ''}"
@@ -132,7 +132,7 @@
             />
         </Field>
 
-        <div class="separator" />
+        <div class="separator" ></div>
     </svelte:fragment>
 
     <svelte:fragment slot="options">
@@ -181,7 +181,7 @@
                                 ].filter(Boolean).join("\n\n"),
                                 position: "top",
                             }}
-                        />
+                        ></i>
                     </label>
                     <ObjectSelect
                         id={uniqueId}

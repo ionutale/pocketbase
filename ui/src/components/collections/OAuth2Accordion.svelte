@@ -68,7 +68,7 @@
             <span class="txt">OAuth2</span>
         </div>
 
-        <div class="flex-fill" />
+        <div class="flex-fill" ></div>
 
         {#if collection.oauth2.enabled}
             <span class="label" class:label-warning={!totalProviders} class:label-info={totalProviders > 0}>
@@ -86,7 +86,7 @@
                 class="ri-error-warning-fill txt-danger"
                 transition:scale={{ duration: 150, start: 0.7 }}
                 use:tooltip={{ text: "Has errors", position: "left" }}
-            />
+            ></i>
         {/if}
     </svelte:fragment>
 
@@ -128,7 +128,7 @@
                                 providerPanel?.show(uiOptions, providerConfig, i);
                             }}
                         >
-                            <i class="ri-settings-4-line" />
+                            <i class="ri-settings-4-line" ></i>
                         </button>
                     {/if}
                 </div>
@@ -152,9 +152,9 @@
     >
         <strong class="txt">Optional {collection.name} create fields map</strong>
         {#if showMappedFields}
-            <i class="ri-arrow-up-s-line txt-sm" />
+            <i class="ri-arrow-up-s-line txt-sm" ></i>
         {:else}
-            <i class="ri-arrow-down-s-line txt-sm" />
+            <i class="ri-arrow-down-s-line txt-sm" ></i>
         {/if}
     </button>
     {#if showMappedFields}

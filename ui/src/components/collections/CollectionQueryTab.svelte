@@ -65,7 +65,7 @@
     </label>
 
     {#if isCodeEditorComponentLoading}
-        <textarea disabled rows="7" placeholder="Loading..." />
+        <textarea disabled rows="7" placeholder="Loading..." ></textarea>
     {:else}
         <svelte:component
             this={codeEditorComponent}

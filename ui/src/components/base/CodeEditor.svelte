@@ -281,4 +281,4 @@
     class="code-editor"
     style:min-height={minHeight ? minHeight + "px" : null}
     style:max-height={maxHeight ? maxHeight + "px" : "auto"}
-/>
+></div>

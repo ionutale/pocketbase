@@ -222,7 +222,7 @@
                 class="overlay"
                 on:click|preventDefault={() => (overlayClose ? hide() : true)}
                 transition:fade={{ duration: transitionSpeed, opacity: 0 }}
-            />
+            ></div>
 
             <div
                 class="overlay-panel {classes} {contentScrollClass}"
@@ -239,7 +239,7 @@
                             transition:fade={{ duration: transitionSpeed }}
                             on:click|preventDefault={hide}
                         >
-                            <i class="ri-close-line" aria-hidden="true" />
+                            <i class="ri-close-line" aria-hidden="true" ></i>
                         </button>
                     {/if}
 
@@ -252,7 +252,7 @@
                             class="btn btn-sm btn-circle btn-transparent btn-close m-l-auto"
                             on:click|preventDefault={hide}
                         >
-                            <i class="ri-close-line txt-lg" aria-hidden="true" />
+                            <i class="ri-close-line txt-lg" aria-hidden="true" ></i>
                         </button>
                     {/if}
                 </div>

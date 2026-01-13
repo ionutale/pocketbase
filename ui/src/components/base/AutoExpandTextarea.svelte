@@ -42,7 +42,7 @@
     });
 </script>
 
-<textarea bind:this={inputElem} bind:value on:keydown={handleKeydown} {...$$restProps} />
+<textarea bind:this={inputElem} bind:value on:keydown={handleKeydown} {...$$restProps} ></textarea>
 
 <style>
     textarea {

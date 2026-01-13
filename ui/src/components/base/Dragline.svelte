@@ -81,7 +81,7 @@
         }
     }}
     on:touchstart={dragInit}
-/>
+></span>
 
 <style lang="scss">
     .dragline {

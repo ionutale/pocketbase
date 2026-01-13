@@ -56,7 +56,7 @@
 
     <Field class="searchbar m-b-sm" let:uniqueId>
         <label for={uniqueId} class="m-l-10 txt-xl">
-            <i class="ri-search-line" />
+            <i class="ri-search-line" ></i>
         </label>
         <input id={uniqueId} type="text" placeholder="Search provider" bind:value={searchTerm} />
         {#if searchTerm != ""}

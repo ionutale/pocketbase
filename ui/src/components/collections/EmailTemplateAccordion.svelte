@@ -64,18 +64,18 @@
 <Accordion bind:this={accordion} on:expand on:collapse on:toggle {...$$restProps}>
     <svelte:fragment slot="header">
         <div class="inline-flex">
-            <i class="ri-draft-line" />
+            <i class="ri-draft-line" ></i>
             <span class="txt">{title}</span>
         </div>
 
-        <div class="flex-fill" />
+        <div class="flex-fill" ></div>
 
         {#if hasErrors}
             <i
                 class="ri-error-warning-fill txt-danger"
                 transition:scale={{ duration: 150, start: 0.7 }}
                 use:tooltip={{ text: "Has errors", position: "left" }}
-            />
+            ></i>
         {/if}
     </svelte:fragment>
 
@@ -111,7 +111,7 @@
                 rows="14"
                 required
                 bind:value={config.body}
-            />
+            ></textarea>
         {/if}
 
         {#if placeholders?.length > 0}

@@ -57,7 +57,7 @@
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <form class="searchbar" on:click|stopPropagation on:submit|preventDefault={submit}>
     <label for={uniqueId} class="m-l-10 txt-xl">
-        <i class="ri-search-line" />
+        <i class="ri-search-line" ></i>
     </label>
 
     {#if filterComponent && !isFilterComponentLoading}

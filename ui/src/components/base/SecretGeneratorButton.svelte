@@ -39,7 +39,7 @@
     class="btn btn-circle {classes}"
     use:tooltip={togglerActive ? "" : "Generate"}
 >
-    <i class="ri-sparkling-line" aria-hidden="true" />
+    <i class="ri-sparkling-line" aria-hidden="true" ></i>
     <Toggler
         class="dropdown dropdown-upside dropdown-center dropdown-nowrap"
         bind:active={togglerActive}
@@ -55,7 +55,7 @@
                 use:tooltip={"Refresh"}
                 aria-label="Refresh"
                 on:click={generate}
-            />
+            ></i>
         </div>
     </Toggler>
 </button>

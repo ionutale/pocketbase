@@ -339,7 +339,7 @@
                 {#if !isView}
                     <th class="bulk-select-col min-width">
                         {#if isLoading}
-                            <span class="loader loader-sm" />
+                            <span class="loader loader-sm" ></span>
                         {:else}
                             <div class="form-field">
                                 <input
@@ -349,7 +349,7 @@
                                     checked={areAllRecordsSelected}
                                     on:change={() => toggleSelectAllRecords()}
                                 />
-                                <label for="checkbox_0" />
+                                <label for="checkbox_0" ></label>
                             </div>
                         {/if}
                     </th>
@@ -363,9 +363,9 @@
                     >
                         <div class="col-header-content">
                             {#if field.primaryKey}
-                                <i class={CommonHelper.getFieldTypeIcon("primary")} />
+                                <i class={CommonHelper.getFieldTypeIcon("primary")} ></i>
                             {:else}
-                                <i class={CommonHelper.getFieldTypeIcon(field.type)} />
+                                <i class={CommonHelper.getFieldTypeIcon(field.type)} ></i>
                             {/if}
                             <span class="txt">{field.name}</span>
                         </div>
@@ -380,7 +380,7 @@
                             aria-label="Toggle columns"
                             class="btn btn-sm btn-transparent p-0"
                         >
-                            <i class="ri-more-line" />
+                            <i class="ri-more-line" ></i>
                         </button>
                     {/if}
                 </th>
@@ -410,7 +410,7 @@
                                     checked={bulkSelected[record.id]}
                                     on:change={() => toggleSelectRecord(record)}
                                 />
-                                <label for="checkbox_{record.id}" />
+                                <label for="checkbox_{record.id}" ></label>
                             </div>
                         </td>
                     {/if}
@@ -428,14 +428,14 @@
                     {/each}
 
                     <td class="col-type-action min-width">
-                        <i class="ri-arrow-right-line" />
+                        <i class="ri-arrow-right-line" ></i>
                     </td>
                 </tr>
             {:else}
                 {#if isLoading}
                     <tr>
                         <td colspan="99" class="p-xs">
-                            <span class="skeleton-loader m-0" />
+                            <span class="skeleton-loader m-0" ></span>
                         </td>
                     </tr>
                 {:else}
@@ -456,7 +456,7 @@
                                     class="btn btn-secondary btn-expanded m-t-sm"
                                     on:click={() => dispatch("new")}
                                 >
-                                    <i class="ri-add-line" />
+                                    <i class="ri-add-line" ></i>
                                     <span class="txt">New record</span>
                                 </button>
                             {/if}
@@ -497,7 +497,7 @@
         >
             <span class="txt">Reset</span>
         </button>
-        <div class="flex-fill" />
+        <div class="flex-fill" ></div>
         <button
             type="button"
             class="btn btn-sm btn-transparent btn-danger"

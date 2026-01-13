@@ -70,7 +70,7 @@
         </div>
     {:else if successConfirm}
         <div class="alert alert-success">
-            <div class="icon"><i class="ri-checkbox-circle-line" /></div>
+            <div class="icon"><i class="ri-checkbox-circle-line" ></i></div>
             <div class="content txt-bold">
                 <p>Successfully verified email address.</p>
             </div>
@@ -81,7 +81,7 @@
         </button>
     {:else if successResend}
         <div class="alert alert-success">
-            <div class="icon"><i class="ri-checkbox-circle-line" /></div>
+            <div class="icon"><i class="ri-checkbox-circle-line" ></i></div>
             <div class="content txt-bold">
                 <p>Please check your email for the new verification link.</p>
             </div>
@@ -92,7 +92,7 @@
         </button>
     {:else}
         <div class="alert alert-danger">
-            <div class="icon"><i class="ri-error-warning-line" /></div>
+            <div class="icon"><i class="ri-error-warning-line" ></i></div>
             <div class="content txt-bold">
                 <p>Invalid or expired verification token.</p>
             </div>

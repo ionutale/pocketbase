@@ -38,7 +38,7 @@
 <FullPage nobranding>
     {#if success}
         <div class="alert alert-success">
-            <div class="icon"><i class="ri-checkbox-circle-line" /></div>
+            <div class="icon"><i class="ri-checkbox-circle-line" ></i></div>
             <div class="content txt-bold">
                 <p>Successfully changed the user email address.</p>
                 <p>You can now sign in with your new email address.</p>

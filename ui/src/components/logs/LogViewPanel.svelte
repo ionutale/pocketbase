@@ -127,7 +127,7 @@
 
     {#if isLoading}
         <div class="block txt-center">
-            <span class="loader" />
+            <span class="loader" ></span>
         </div>
     {:else if log?.id}
         <table class="table-border">
@@ -218,7 +218,7 @@
         </button>
 
         <button type="button" class="btn btn-primary" disabled={isLoading} on:click={() => downloadJson()}>
-            <i class="ri-download-line" />
+            <i class="ri-download-line" ></i>
             <span class="txt">Download as JSON</span>
         </button>
     </svelte:fragment>

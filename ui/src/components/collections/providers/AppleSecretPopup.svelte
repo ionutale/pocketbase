@@ -112,7 +112,7 @@
                                 } months).`,
                                 position: "top",
                             }}
-                        />
+                        ></i>
                     </label>
                     <input type="number" id={uniqueId} max={maxDuration} bind:value={duration} required />
                 </Field>
@@ -126,7 +126,7 @@
                     rows="8"
                     placeholder={"-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"}
                     bind:value={privateKey}
-                />
+                ></textarea>
                 <div class="help-block">
                     The key is not stored on the server and it is used only for generating the signed JWT.
                 </div>
@@ -145,7 +145,7 @@
             class:btn-loading={isSubmitting}
             disabled={!canSubmit || isSubmitting}
         >
-            <i class="ri-key-line" />
+            <i class="ri-key-line" ></i>
             <span class="txt">Generate and set secret</span>
         </button>
     </svelte:fragment>

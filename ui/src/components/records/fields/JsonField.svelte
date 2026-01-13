@@ -51,9 +51,9 @@
             use:tooltip={{ position: "left", text: isValid ? "Valid JSON" : "Invalid JSON" }}
         >
             {#if isValid}
-                <i class="ri-checkbox-circle-fill txt-success" />
+                <i class="ri-checkbox-circle-fill txt-success" ></i>
             {:else}
-                <i class="ri-error-warning-fill txt-danger" />
+                <i class="ri-error-warning-fill txt-danger" ></i>
             {/if}
         </span>
     </FieldLabel>

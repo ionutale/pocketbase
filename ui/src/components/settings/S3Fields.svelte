@@ -144,11 +144,11 @@
                             text: 'Forces the request to use path-style addressing, eg. "https://s3.amazonaws.com/BUCKET/KEY" instead of the default "https://BUCKET.s3.amazonaws.com/KEY".',
                             position: "top",
                         }}
-                    />
+                    ></i>
                 </label>
             </Field>
         </div>
         <!-- margin helper -->
-        <div class="col-lg-12" />
+        <div class="col-lg-12" ></div>
     </div>
 {/if}

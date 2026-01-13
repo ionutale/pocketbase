@@ -56,7 +56,7 @@
 
 {#if isRuleComponentLoading}
     <div class="txt-center">
-        <span class="loader" />
+        <span class="loader" ></span>
     </div>
 {:else}
     <Field
@@ -88,7 +88,7 @@
                         disabled={isDisabled}
                         on:click={lock}
                     >
-                        <i class="ri-lock-line" aria-hidden="true" />
+                        <i class="ri-lock-line" aria-hidden="true" ></i>
                         <span class="txt">Set Superusers only</span>
                     </button>
                 {/if}
@@ -117,7 +117,7 @@
                         <small class="txt">Unlock and set custom rule</small>
                     {/if}
                     <div class="icon" aria-hidden="true">
-                        <i class="ri-lock-unlock-line" />
+                        <i class="ri-lock-unlock-line" ></i>
                     </div>
                 </button>
             {/if}

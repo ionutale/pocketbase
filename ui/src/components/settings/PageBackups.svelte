@@ -127,9 +127,9 @@
             >
                 <span class="txt">Backups options</span>
                 {#if showBackupsSettings}
-                    <i class="ri-arrow-up-s-line" />
+                    <i class="ri-arrow-up-s-line" ></i>
                 {:else}
-                    <i class="ri-arrow-down-s-line" />
+                    <i class="ri-arrow-down-s-line" ></i>
                 {/if}
             </button>
 
@@ -164,7 +164,7 @@
                                         <div class="form-field-addon">
                                             <button type="button" class="btn btn-sm btn-outline p-r-0">
                                                 <span class="txt">Presets</span>
-                                                <i class="ri-arrow-drop-down-fill" />
+                                                <i class="ri-arrow-drop-down-fill" ></i>
                                                 <Toggler class="dropdown dropdown-nowrap dropdown-right">
                                                     <button
                                                         type="button"
@@ -240,7 +240,7 @@
                         </div>
                     {/if}
 
-                    <div class="clearfix m-b-base" />
+                    <div class="clearfix m-b-base" ></div>
 
                     <S3Fields
                         toggleLabel="Store backups in S3 storage"
@@ -253,22 +253,22 @@
                     />
 
                     <div class="flex">
-                        <div class="flex-fill" />
+                        <div class="flex-fill" ></div>
 
                         {#if formSettings.backups?.s3?.enabled && !hasChanges && !isSaving}
                             {#if isTesting}
-                                <span class="loader loader-sm" />
+                                <span class="loader loader-sm" ></span>
                             {:else if testError}
                                 <div
                                     class="label label-sm label-warning entrance-right"
                                     use:tooltip={testError.data?.message}
                                 >
-                                    <i class="ri-error-warning-line txt-warning" />
+                                    <i class="ri-error-warning-line txt-warning" ></i>
                                     <span class="txt">Failed to establish S3 connection</span>
                                 </div>
                             {:else}
                                 <div class="label label-sm label-success entrance-right">
-                                    <i class="ri-checkbox-circle-line txt-success" />
+                                    <i class="ri-checkbox-circle-line txt-success" ></i>
                                     <span class="txt">S3 connected successfully</span>
                                 </div>
                             {/if}

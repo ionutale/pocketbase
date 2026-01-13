@@ -87,12 +87,12 @@
 </script>
 
 <div tabindex="0" role="button" class="field-types-btn {classes}">
-    <i class="ri-add-line" aria-hidden="true" />
+    <i class="ri-add-line" aria-hidden="true" ></i>
     <div class="txt">New field</div>
     <Toggler class="dropdown field-types-dropdown">
         {#each types as item}
             <button type="button" role="menuitem" class="dropdown-item" on:click={() => select(item.value)}>
-                <i class="icon {item.icon}" aria-hidden="true" />
+                <i class="icon {item.icon}" aria-hidden="true" ></i>
                 <span class="txt">{item.label}</span>
             </button>
         {/each}

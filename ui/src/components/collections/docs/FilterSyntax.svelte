@@ -9,10 +9,10 @@
 <button class="btn btn-sm btn-secondary m-t-10" on:click={toggle}>
     {#if expanded}
         <span class="txt">Hide details</span>
-        <i class="ri-arrow-up-s-line" />
+        <i class="ri-arrow-up-s-line" ></i>
     {:else}
         <span class="txt">Show details</span>
-        <i class="ri-arrow-down-s-line" />
+        <i class="ri-arrow-down-s-line" ></i>
     {/if}
 </button>
 

@@ -179,7 +179,7 @@
             class:btn-loading={isSubmitting}
             disabled={!canSubmit || isSubmitting}
         >
-            <i class="ri-mail-send-line" />
+            <i class="ri-mail-send-line" ></i>
             <span class="txt">Send</span>
         </button>
     </svelte:fragment>

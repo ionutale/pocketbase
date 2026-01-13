@@ -31,7 +31,7 @@
     <div class="col-lg-12">
         <Field class="form-field {emailField?.required ? 'required' : ''}" name="email" let:uniqueId>
             <label for={uniqueId}>
-                <i class={CommonHelper.getFieldTypeIcon("email")} />
+                <i class={CommonHelper.getFieldTypeIcon("email")} ></i>
                 <span class="txt">email</span>
             </label>
 
@@ -79,7 +79,7 @@
                     <div class="col-sm-6">
                         <Field class="form-field required" name="password" let:uniqueId>
                             <label for={uniqueId}>
-                                <i class="ri-lock-line" />
+                                <i class="ri-lock-line" ></i>
                                 <span class="txt">Password</span>
                             </label>
                             <input
@@ -97,7 +97,7 @@
                     <div class="col-sm-6">
                         <Field class="form-field required" name="passwordConfirm" let:uniqueId>
                             <label for={uniqueId}>
-                                <i class="ri-lock-line" />
+                                <i class="ri-lock-line" ></i>
                                 <span class="txt">Password confirm</span>
                             </label>
                             <input

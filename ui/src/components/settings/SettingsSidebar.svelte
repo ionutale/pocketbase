@@ -9,7 +9,7 @@
     <div class="sidebar-content">
         <div class="sidebar-title">System</div>
         <a href="/settings" class="sidebar-list-item" use:active={{ path: "/settings" }} use:link>
-            <i class="ri-home-gear-line" aria-hidden="true" />
+            <i class="ri-home-gear-line" aria-hidden="true" ></i>
             <span class="txt">Application</span>
         </a>
         <a
@@ -18,7 +18,7 @@
             use:active={{ path: "/settings/mail/?.*" }}
             use:link
         >
-            <i class="ri-send-plane-2-line" aria-hidden="true" />
+            <i class="ri-send-plane-2-line" aria-hidden="true" ></i>
             <span class="txt">Mail settings</span>
         </a>
         <a
@@ -27,7 +27,7 @@
             use:active={{ path: "/settings/storage/?.*" }}
             use:link
         >
-            <i class="ri-archive-drawer-line" aria-hidden="true" />
+            <i class="ri-archive-drawer-line" aria-hidden="true" ></i>
             <span class="txt">Files storage</span>
         </a>
         <a
@@ -36,7 +36,7 @@
             use:active={{ path: "/settings/backups/?.*" }}
             use:link
         >
-            <i class="ri-archive-line" aria-hidden="true" />
+            <i class="ri-archive-line" aria-hidden="true" ></i>
             <span class="txt">Backups</span>
         </a>
         <a
@@ -59,7 +59,7 @@
                 use:active={{ path: "/settings/export-collections/?.*" }}
                 use:link
             >
-                <i class="ri-uninstall-line" aria-hidden="true" />
+                <i class="ri-uninstall-line" aria-hidden="true" ></i>
                 <span class="txt">Export collections</span>
             </a>
             <a
@@ -68,7 +68,7 @@
                 use:active={{ path: "/settings/import-collections/?.*" }}
                 use:link
             >
-                <i class="ri-install-line" aria-hidden="true" />
+                <i class="ri-install-line" aria-hidden="true" ></i>
                 <span class="txt">Import collections</span>
             </a>
         {/if}

@@ -237,8 +237,8 @@
 
 <div bind:this={container} class={cssClass}>
     {#if inline}
-        <div {id} bind:this={element} />
+        <div {id} bind:this={element} ></div>
     {:else}
-        <textarea {id} bind:this={element} style="visibility: hidden" />
+        <textarea {id} bind:this={element} style="visibility: hidden" ></textarea>
     {/if}
 </div>

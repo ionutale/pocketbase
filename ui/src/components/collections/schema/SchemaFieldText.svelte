@@ -17,7 +17,7 @@
                         <i
                             class="ri-information-line link-hint"
                             use:tooltip={"Clear the field or set it to 0 for no limit."}
-                        />
+                        ></i>
                     </label>
                     <input
                         type="number"
@@ -39,7 +39,7 @@
                         <i
                             class="ri-information-line link-hint"
                             use:tooltip={"Clear the field or set it to 0 to fallback to the default limit."}
-                        />
+                        ></i>
                     </label>
                     <input
                         type="number"
@@ -62,7 +62,7 @@
                             <i
                                 class="ri-information-line link-hint"
                                 use:tooltip={"All record ids have forbidden characters and unique case-insensitive (ASCII) validations in addition to the user defined regex pattern."}
-                            />
+                            ></i>
                         {/if}
                     </label>
                     <input type="text" id={uniqueId} bind:value={field.pattern} />
@@ -79,7 +79,7 @@
                         <i
                             class="ri-information-line link-hint"
                             use:tooltip={"Set and autogenerate text matching the pattern on missing record create value."}
-                        />
+                        ></i>
                     </label>
                     <input type="text" id={uniqueId} bind:value={field.autogeneratePattern} />
                     <div class="help-block">

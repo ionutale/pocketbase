@@ -9,9 +9,9 @@
 <label for={uniqueId}>
     {#if icon}
         {#if field.primaryKey}
-            <i class={CommonHelper.getFieldTypeIcon("primary")} />
+            <i class={CommonHelper.getFieldTypeIcon("primary")} ></i>
         {:else}
-            <i class={CommonHelper.getFieldTypeIcon(field.type)} />
+            <i class={CommonHelper.getFieldTypeIcon(field.type)} ></i>
         {/if}
     {/if}
 

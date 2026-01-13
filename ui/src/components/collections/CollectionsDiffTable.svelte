@@ -100,7 +100,7 @@
             {/if}
             {#if collectionA.name !== collectionB.name}
                 <strong class="txt-strikethrough txt-hint">{collectionA.name}</strong>
-                <i class="ri-arrow-right-line txt-sm" />
+                <i class="ri-arrow-right-line txt-sm" ></i>
             {/if}
             <strong class="txt">{collectionB.name}</strong>
         </div>
@@ -158,7 +158,7 @@
                         <td class="changed-old-col">
                             <pre class="txt">{displayValue(value)}</pre>
                         </td>
-                        <td class="changed-none-col" />
+                        <td class="changed-none-col" ></td>
                     </tr>
                 {/each}
             {/each}
@@ -208,7 +208,7 @@
             {#each Object.entries(field) as [key, value]}
                 <tr class="txt-primary">
                     <td class="min-width field-key-col">{key}</td>
-                    <td class="changed-none-col" />
+                    <td class="changed-none-col" ></td>
                     <td class="changed-new-col">
                         <pre class="txt">{displayValue(value)}</pre>
                     </td>
