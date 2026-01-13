@@ -7,7 +7,9 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 
 	"github.com/pocketbase/pocketbase/core"
@@ -178,13 +180,34 @@ func (api *fileApi) download(e *core.RequestEvent) error {
 
 		// check if it is an image
 		if list.ExistInSlice(oAttrs.ContentType, imageContentTypes) {
+			// construct the thumb config string
+			// (we use the thumbSize as base and append the optional crop options)
+			thumbConfig := thumbSize
+			if crop := e.Request.URL.Query().Get("crop"); crop != "" {
+				thumbConfig += "_" + crop
+			}
+
+			if position := e.Request.URL.Query().Get("position"); position != "" {
+				// quick check for the format (WxH)
+				if filesystem.ThumbSizeRegex.MatchString(position) {
+					thumbConfig += "_p" + position
+				}
+			}
+
+			// determine the output filename
+			targetFilename := filename
+			if format := e.Request.URL.Query().Get("format"); format != "" {
+				ext := filepath.Ext(filename)
+				targetFilename = strings.TrimSuffix(filename, ext) + "." + format
+			}
+
 			// add thumb size as file suffix
-			event.ServedName = thumbSize + "_" + filename
+			event.ServedName = thumbConfig + "_" + targetFilename
 			event.ServedPath = baseFilesPath + "/thumbs_" + filename + "/" + event.ServedName
 
 			// create a new thumb if it doesn't exist
 			if exists, _ := fsys.Exists(event.ServedPath); !exists {
-				if err := api.createThumb(e, fsys, originalPath, event.ServedPath, thumbSize); err != nil {
+				if err := api.createThumb(e, fsys, originalPath, event.ServedPath, thumbConfig); err != nil {
 					e.App.Logger().Warn(
 						"Fallback to original - failed to create thumb "+event.ServedName,
 						slog.Any("error", err),

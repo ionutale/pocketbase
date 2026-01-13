@@ -474,7 +474,7 @@ func setHeaderIfMissing(res http.ResponseWriter, key string, value string) {
 	}
 }
 
-var ThumbSizeRegex = regexp.MustCompile(`^(\d+)x(\d+)(t|b|f)?$`)
+var ThumbSizeRegex = regexp.MustCompile(`^(\d+)x(\d+)(.*)$`)
 
 // CreateThumb creates a new thumb image for the file at originalKey location.
 // The new thumb file is stored at thumbKey location.
@@ -486,15 +486,18 @@ var ThumbSizeRegex = regexp.MustCompile(`^(\d+)x(\d+)(t|b|f)?$`)
 // - WxHt (eg. 300x100t) - resize and crop to WxH viewbox (from top)
 // - WxHb (eg. 300x100b) - resize and crop to WxH viewbox (from bottom)
 // - WxHf (eg. 300x100f) - fit inside a WxH viewbox (without cropping)
+//
+// Extended crop positions are supported via suffix (e.g. 100x100_top-left):
+// top-left (tl), top (t), top-right (tr), left (l), center (c), right (r), bottom-left (bl), bottom (b), bottom-right (br)
 func (s *System) CreateThumb(originalKey string, thumbKey, thumbSize string) error {
 	sizeParts := ThumbSizeRegex.FindStringSubmatch(thumbSize)
 	if len(sizeParts) != 4 {
-		return errors.New("thumb size must be in WxH, WxHt, WxHb or WxHf format")
+		return errors.New("thumb size must be in WxH format (optional suffix supported)")
 	}
 
 	width, _ := strconv.Atoi(sizeParts[1])
 	height, _ := strconv.Atoi(sizeParts[2])
-	resizeType := sizeParts[3]
+	suffix := strings.ToLower(sizeParts[3])
 
 	if width == 0 && height == 0 {
 		return errors.New("thumb width and height cannot be zero at the same time")
@@ -520,19 +523,62 @@ func (s *System) CreateThumb(originalKey string, thumbKey, thumbSize string) err
 		// force resize preserving aspect ratio
 		thumbImg = imaging.Resize(img, width, height, imaging.Linear)
 	} else {
-		switch resizeType {
-		case "f":
-			// fit
+		// defaults
+		var resizeMethod = "crop"
+		var anchor = imaging.Center
+		var positionX, positionY int
+		var hasPosition bool
+
+		// parse suffix options (split by underscore or use as is)
+		// valid formats: "t", "top", "_top", "p10x15", "_p10x15", "top_p10x15", etc.
+		parts := strings.Split(suffix, "_")
+		for _, part := range parts {
+			if part == "" {
+				continue
+			}
+
+			// check for position (pWxH)
+			if strings.HasPrefix(part, "p") {
+				posParts := ThumbSizeRegex.FindStringSubmatch(strings.TrimPrefix(part, "p"))
+				if len(posParts) >= 3 {
+					positionX, _ = strconv.Atoi(posParts[1])
+					positionY, _ = strconv.Atoi(posParts[2])
+					hasPosition = true
+					continue
+				}
+			}
+
+			switch part {
+			case "f", "fit":
+				resizeMethod = "fit"
+			case "tl", "top-left":
+				anchor = imaging.TopLeft
+			case "t", "top":
+				anchor = imaging.Top
+			case "tr", "top-right":
+				anchor = imaging.TopRight
+			case "l", "left":
+				anchor = imaging.Left
+			case "c", "center":
+				anchor = imaging.Center
+			case "r", "right":
+				anchor = imaging.Right
+			case "bl", "bottom-left":
+				anchor = imaging.BottomLeft
+			case "b", "bottom":
+				anchor = imaging.Bottom
+			case "br", "bottom-right":
+				anchor = imaging.BottomRight
+			}
+		}
+
+		if hasPosition {
+			// crop at specific position
+			thumbImg = imaging.Crop(img, image.Rect(positionX, positionY, positionX+width, positionY+height))
+		} else if resizeMethod == "fit" {
 			thumbImg = imaging.Fit(img, width, height, imaging.Linear)
-		case "t":
-			// fill and crop from top
-			thumbImg = imaging.Fill(img, width, height, imaging.Top, imaging.Linear)
-		case "b":
-			// fill and crop from bottom
-			thumbImg = imaging.Fill(img, width, height, imaging.Bottom, imaging.Linear)
-		default:
-			// fill and crop from center
-			thumbImg = imaging.Fill(img, width, height, imaging.Center, imaging.Linear)
+		} else {
+			thumbImg = imaging.Fill(img, width, height, anchor, imaging.Linear)
 		}
 	}
 
@@ -544,19 +590,40 @@ func (s *System) CreateThumb(originalKey string, thumbKey, thumbSize string) err
 
 	var format imaging.Format
 
-	switch originalContentType {
-	case "image/jpeg":
+	// determine format based on the destination specific extension
+	thumbExt := strings.ToLower(filepath.Ext(thumbKey))
+	switch thumbExt {
+	case ".jpg", ".jpeg":
 		format = imaging.JPEG
-	case "image/gif":
-		format = imaging.GIF
-	case "image/tiff":
-		format = imaging.TIFF
-	case "image/bmp":
-		format = imaging.BMP
-	default:
-		// fallback to PNG (this includes webp!)
-		opts.ContentType = "image/png"
+		opts.ContentType = "image/jpeg"
+	case ".png":
 		format = imaging.PNG
+		opts.ContentType = "image/png"
+	case ".gif":
+		format = imaging.GIF
+		opts.ContentType = "image/gif"
+	case ".bmp":
+		format = imaging.BMP
+		opts.ContentType = "image/bmp"
+	case ".tiff":
+		format = imaging.TIFF
+		opts.ContentType = "image/tiff"
+	default:
+		// fallback to original format
+		switch originalContentType {
+		case "image/jpeg":
+			format = imaging.JPEG
+		case "image/gif":
+			format = imaging.GIF
+		case "image/tiff":
+			format = imaging.TIFF
+		case "image/bmp":
+			format = imaging.BMP
+		default:
+			// fallback to PNG (this includes webp!)
+			opts.ContentType = "image/png"
+			format = imaging.PNG
+		}
 	}
 
 	// open a thumb storage writer (aka. prepare for upload)
