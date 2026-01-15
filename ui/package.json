@@ -32,7 +32,7 @@
     "luxon": "^3.7.2",
     "pocketbase": "^0.26.5",
     "sass": "^1.97.2",
-    "svelte": "^5.46.3",
+    "svelte": "^5.46.4",
     "svelte-flatpickr": "^3.3.5",
     "svelte-spa-router": "^4.0.1",
     "vite": "^7.3.1"
