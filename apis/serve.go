@@ -277,7 +277,6 @@ func Serve(app core.App, config ServeConfig) error {
 	}
 
 	if listener == nil {
-		//nolint:staticcheck
 		return errors.New("onServe listener not initialized; did you forget to call ServeEvent.Next")
 	}
 

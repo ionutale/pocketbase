@@ -604,9 +604,10 @@ func extractSnippetFromStack(stack string, filename string, migrationsDir string
 		}
 		matches = any
 		// ensure basename equals filename
-		if filepath.Base(matches[1]) != filename {
+		if filepath.Base(matches[1]) != filename { //nolint:staticcheck // empty branch intentional
 			// attempt to locate filename in migrationsDir instead
 			// continue below which will attempt to open by filename
+			// (empty branch intentional)
 		}
 	}
 
@@ -655,7 +656,7 @@ func extractSnippetFromStack(stack string, filename string, migrationsDir string
 		if num == line {
 			prefix = " >>"
 		}
-		b.WriteString(fmt.Sprintf("%s %4d: %s\n", prefix, num, lines[i]))
+		fmt.Fprintf(&b, "%s %4d: %s\n", prefix, num, lines[i])
 	}
 
 	return b.String(), nil

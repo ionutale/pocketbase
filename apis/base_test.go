@@ -79,80 +79,6 @@ func TestStatic(t *testing.T) {
 
 	fsys := os.DirFS(filepath.Join(dir, "sub"))
 
-	type staticScenario struct {
-		path           string
-		indexFallback  bool
-		expectedStatus int
-		expectBody     string
-		expectError    bool
-	}
-
-	scenarios := []staticScenario{
-		{
-			path:           "",
-			indexFallback:  false,
-			expectedStatus: 200,
-			expectBody:     "sub index.html",
-			expectError:    false,
-		},
-		{
-			path:           "missing/a/b/c",
-			indexFallback:  false,
-			expectedStatus: 404,
-			expectBody:     "",
-			expectError:    true,
-		},
-		{
-			path:           "missing/a/b/c",
-			indexFallback:  true,
-			expectedStatus: 200,
-			expectBody:     "sub index.html",
-			expectError:    false,
-		},
-		{
-			path:           "testroot", // parent directory file
-			indexFallback:  false,
-			expectedStatus: 404,
-			expectBody:     "",
-			expectError:    true,
-		},
-		{
-			path:           "test",
-			indexFallback:  false,
-			expectedStatus: 200,
-			expectBody:     "sub test",
-			expectError:    false,
-		},
-		{
-			path:           "sub2",
-			indexFallback:  false,
-			expectedStatus: 301,
-			expectBody:     "",
-			expectError:    false,
-		},
-		{
-			path:           "sub2/",
-			indexFallback:  false,
-			expectedStatus: 200,
-			expectBody:     "sub2 index.html",
-			expectError:    false,
-		},
-		{
-			path:           "sub2/test",
-			indexFallback:  false,
-			expectedStatus: 200,
-			expectBody:     "sub2 test",
-			expectError:    false,
-		},
-		{
-			path:           "sub2/test/",
-			indexFallback:  false,
-			expectedStatus: 301,
-			expectBody:     "",
-			expectError:    false,
-		},
-	}
-
 	// extra directory traversal checks
 	dtp := []string{
 		"/../",
@@ -180,6 +106,80 @@ func TestStatic(t *testing.T) {
 		`..%255c`,
 		`..%255c..%255c`,
 	}
+
+	type staticScenario struct {
+		path           string
+		indexFallback  bool
+		expectedStatus int
+		expectBody     string
+		expectError    bool
+	}
+
+	scenarios := make([]staticScenario, 0, 9+2*len(dtp))
+	scenarios = append(scenarios, staticScenario{
+		path:           "",
+		indexFallback:  false,
+		expectedStatus: 200,
+		expectBody:     "sub index.html",
+		expectError:    false,
+	})
+	scenarios = append(scenarios, staticScenario{
+		path:           "missing/a/b/c",
+		indexFallback:  false,
+		expectedStatus: 404,
+		expectBody:     "",
+		expectError:    true,
+	})
+	scenarios = append(scenarios, staticScenario{
+		path:           "missing/a/b/c",
+		indexFallback:  true,
+		expectedStatus: 200,
+		expectBody:     "sub index.html",
+		expectError:    false,
+	})
+	scenarios = append(scenarios, staticScenario{
+		path:           "testroot", // parent directory file
+		indexFallback:  false,
+		expectedStatus: 404,
+		expectBody:     "",
+		expectError:    true,
+	})
+	scenarios = append(scenarios, staticScenario{
+		path:           "test",
+		indexFallback:  false,
+		expectedStatus: 200,
+		expectBody:     "sub test",
+		expectError:    false,
+	})
+	scenarios = append(scenarios, staticScenario{
+		path:           "sub2",
+		indexFallback:  false,
+		expectedStatus: 301,
+		expectBody:     "",
+		expectError:    false,
+	})
+	scenarios = append(scenarios, staticScenario{
+		path:           "sub2/",
+		indexFallback:  false,
+		expectedStatus: 200,
+		expectBody:     "sub2 index.html",
+		expectError:    false,
+	})
+	scenarios = append(scenarios, staticScenario{
+		path:           "sub2/test",
+		indexFallback:  false,
+		expectedStatus: 200,
+		expectBody:     "sub2 test",
+		expectError:    false,
+	})
+	scenarios = append(scenarios, staticScenario{
+		path:           "sub2/test/",
+		indexFallback:  false,
+		expectedStatus: 301,
+		expectBody:     "",
+		expectError:    false,
+	})
+
 	for _, p := range dtp {
 		scenarios = append(scenarios,
 			staticScenario{

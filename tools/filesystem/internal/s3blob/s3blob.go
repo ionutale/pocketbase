@@ -253,7 +253,7 @@ func (drv *driver) NewTypedWriter(ctx context.Context, key string, contentType s
 	}
 	u.Metadata = md
 
-	var reqOptions []func(*http.Request)
+	var reqOptions = make([]func(*http.Request), 0, 1)
 	reqOptions = append(reqOptions, func(r *http.Request) {
 		r.Header.Set("Content-Type", contentType)
 
