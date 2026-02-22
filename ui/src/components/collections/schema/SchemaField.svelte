@@ -70,6 +70,18 @@
         }
     }
 
+    function onFieldRename(input) {
+        if (!input) {
+            return
+        }
+
+        const oldName = field.name;
+        field.name = CommonHelper.slugify(input.value);
+        input.value = field.name;
+
+        dispatch("rename", { oldName: oldName, newName: field.name });
+    }
+
     function restore() {
         field._toDelete = false;
 
@@ -82,10 +94,6 @@
             collapse();
             dispatch("duplicate");
         }
-    }
-
-    function normalizeFieldName(name) {
-        return CommonHelper.slugify(name);
     }
 
     function expand() {
@@ -177,13 +185,19 @@
                 spellcheck="false"
                 placeholder="Field name"
                 value={field.name}
-                title="System field"
-                on:input={(e) => {
-                    const oldName = field.name;
-                    field.name = normalizeFieldName(e.target.value);
-                    e.target.value = field.name;
+                on:compositionend={(e) => {
+                    if (!e.data) {
+                        return
+                    }
 
-                    dispatch("rename", { oldName: oldName, newName: field.name });
+                    onFieldRename(e.target)
+                }}
+                on:input={(e) => {
+                    if (e.isComposing) {
+                        return
+                    }
+
+                    onFieldRename(e.target)
                 }}
             />
         </Field>

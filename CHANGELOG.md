@@ -1,6 +1,79 @@
+## v0.36.5
+
+- Disabled collection and fields name normalization while in IME mode ([#7532](https://github.com/pocketbase/pocketbase/pull/7532); thanks @miaopan607).
+
+- Updated `modernc.org/sqlite` to v1.46.1 _(resets connection state on Tx.Commit failure)_.
+
+
+## v0.36.4
+
+- Made the optional `Bearer` token prefix case-insensitive ([#7525](https://github.com/pocketbase/pocketbase/pull/7525); thanks @benjamesfleming).
+
+- Enabled `$filesystem.s3(...)` and `$filesystem.local(...)` JSVM bindings ([#7526](https://github.com/pocketbase/pocketbase/issues/7526)).
+
+
+## v0.36.3
+
+- Added `Accept-Encoding: identity` to the S3 requests per the suggestion in [#7523](https://github.com/pocketbase/pocketbase/issues/7523).
+    _This should help fixing the 0-bytes file response when S3 API compression is enabled._
+
+- Bumped min Go GitHub action version to 1.26.0 _(it comes with minor [GC performance improvements](https://go.dev/doc/go1.26#runtime))_.
+
+- Other minor fixes _(updated `modernc.org/sqlite` to v1.45.0, updated `goja_nodejs` adding `Buffer.concat`, updated the arguments of `app.DeleteTable(...)`, `app.DeleteView(...)` and other similar methods to make it more clear that they are dangerous and shouldn't be used with untrusted input, etc.)_.
+
+
+## v0.36.2
+
+- Updated `modernc.org/sqlite` to v1.44.3 _(race check fix)_, `goja` _(circular references fix)_ and other go deps.
+
+- Other minor fixes _(updated tests to silence some of the race detector errors, updated `FindFirstRecordByData` with more clear error message when missing or invalid key is used, etc.)_.
+
+
+## v0.36.1
+
+- Reverted the `DISTINCT` with `GROUP BY` replacement optimization from v0.36.0 as it was reported to negatively impact the indexes utilization for some queries
+and the minor performance boost that you may get when used on large records is not enough to justify the more common use ([#7461](https://github.com/pocketbase/pocketbase/discussions/7461)).
+    _A better generic deduplication optimization for large records (aka. records with large `text`/`json` fields or many small ones) will be researched but there are no ETAs._
+
+- Updated `modernc.org/sqlite` to v1.44.2 _(SQLite 3.51.2)_.
+
+- Fixed code comment typos.
+
+
+## v0.36.0
+
+- List query and API rules optimizations:
+    - Removed unnecessary correlated subquery expression when using back-relations via single `relation` field.
+    - Replaced `DISTINCT` with `GROUP BY id` when rows deduplication is needed and when deemed safe.
+        _This should help with having a more stable and predictable performance even if the collection records are on the larger side._
+
+    For some queries and data sets the above 2 optimizations have shown significant improvements but if you notice a performance degradation after upgrading,
+    please open a Q&A discussion with export of your collections structure and the problematic request so that it can be analyzed.
+
+- Added [`strftime(format, timevalue, modifiers...)`](https://pocketbase.io/docs/api-rules-and-filters/#strftimeformat-time-value-modifiers-) date formatting filter and API rules function.
+    It works similarly to the [SQLite `strftime` builtin function](https://sqlite.org/lang_datefunc.html)
+    with the main difference that NULL results will be normalized for consistency with the non-nullable PocketBase `text` and `date` fields.
+    Multi-match expressions are also supported and works the same as if the collection field is referenced, for example:
+    ```js
+    // requires ANY/AT-LEAST-ONE-OF multiRel records to have "created" date matching the formatted string "2026-01"
+    strftime('%Y-%m', multiRel.created) ?= '2026-01'
+
+    // requires ALL multiRel records to have "created" date matching the formatted string "2026-01"
+    strftime('%Y-%m', multiRel.created) = '2026-01'
+    ```
+
+- ⚠️ Minor changes to the `search.ResolverResult` struct _(mostly used internally)_:
+    - Replaced `NoCoalesce` field with the more explicit `NullFallback` _(`NullFallbackDisabled` is the same as `NoCoalesce:true`)_.
+    - Replaced the expression interface of the `MultiMatchSubQuery` field with the concrete struct type `search.MultiMatchSubquery` to avoid excessive type assertions and allow direct mutations of the field.
+
+- Updated `modernc.org/sqlite` to v1.44.1 _(SQLite 3.51.1)_.
+
+- Bumped min Go GitHub action version to 1.25.6 because it comes with some [minor security fixes](https://github.com/golang/go/issues?q=milestone%3AGo1.25.6).
+
+
 ## v0.35.1
 
-- Updated `modernc.org/sqlite` to v1.43.0 _(SQLite 3.51.1 and query cancellation race fix)_.
+- Updated `modernc.org/sqlite` to v1.43.0 _(query cancellation race fix)_.
 
 - Other minor UI fixes (normalized relations picker selection and confirmation message when `maxSelect=0/1`, updated node deps).
 

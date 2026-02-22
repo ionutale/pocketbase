@@ -127,14 +127,14 @@ func TestRecordFieldResolverUpdateQuery(t *testing.T) {
 		expectQuery        string
 	}{
 		{
-			"non relation field (with all default operators)",
+			"none relation field (with all default operators)",
 			"demo4",
 			"title = true || title != 'test' || title ~ 'test1' || title !~ '%test2' || title > 1 || title >= 2 || title < 3 || title <= 4",
 			false,
 			"SELECT `demo4`.* FROM `demo4` WHERE ([[demo4.title]] = 1 OR [[demo4.title]] IS NOT {:TEST} OR [[demo4.title]] LIKE {:TEST} ESCAPE '\\' OR [[demo4.title]] NOT LIKE {:TEST} ESCAPE '\\' OR [[demo4.title]] > {:TEST} OR [[demo4.title]] >= {:TEST} OR [[demo4.title]] < {:TEST} OR [[demo4.title]] <= {:TEST})",
 		},
 		{
-			"non relation field (with all opt/any operators)",
+			"none relation field (with all opt/any operators)",
 			"demo4",
 			"title ?= true || title ?!= 'test' || title ?~ 'test1' || title ?!~ '%test2' || title ?> 1 || title ?>= 2 || title ?< 3 || title ?<= 4",
 			false,
@@ -292,7 +292,7 @@ func TestRecordFieldResolverUpdateQuery(t *testing.T) {
 			"demo3",
 			"demo4_via_rel_one_cascade.id = true",
 			false,
-			"SELECT DISTINCT `demo3`.* FROM `demo3` LEFT JOIN `demo4` `demo3_demo4_via_rel_one_cascade` ON [[demo3.id]] IN (SELECT [[__je_demo3_demo4_via_rel_one_cascade.value]] FROM json_each(CASE WHEN iif(json_valid([[demo3_demo4_via_rel_one_cascade.rel_one_cascade]]), json_type([[demo3_demo4_via_rel_one_cascade.rel_one_cascade]])='array', FALSE) THEN [[demo3_demo4_via_rel_one_cascade.rel_one_cascade]] ELSE json_array([[demo3_demo4_via_rel_one_cascade.rel_one_cascade]]) END) {{__je_demo3_demo4_via_rel_one_cascade}}) WHERE ((([[demo3_demo4_via_rel_one_cascade.id]] = 1) AND (NOT EXISTS (SELECT 1 FROM (SELECT [[__mm_demo3_demo4_via_rel_one_cascade.id]] as [[multiMatchValue]] FROM `demo3` `__mm_demo3` LEFT JOIN `demo4` `__mm_demo3_demo4_via_rel_one_cascade` ON [[__mm_demo3.id]] IN (SELECT [[__je___mm_demo3_demo4_via_rel_one_cascade.value]] FROM json_each(CASE WHEN iif(json_valid([[__mm_demo3_demo4_via_rel_one_cascade.rel_one_cascade]]), json_type([[__mm_demo3_demo4_via_rel_one_cascade.rel_one_cascade]])='array', FALSE) THEN [[__mm_demo3_demo4_via_rel_one_cascade.rel_one_cascade]] ELSE json_array([[__mm_demo3_demo4_via_rel_one_cascade.rel_one_cascade]]) END) {{__je___mm_demo3_demo4_via_rel_one_cascade}}) WHERE `__mm_demo3`.`id` = `demo3`.`id`) {{__smTEST}} WHERE NOT ([[__smTEST.multiMatchValue]] = 1)))))",
+			"SELECT DISTINCT `demo3`.* FROM `demo3` LEFT JOIN `demo4` `demo3_demo4_via_rel_one_cascade` ON [[demo3_demo4_via_rel_one_cascade.rel_one_cascade]] = [[demo3.id]] WHERE ((([[demo3_demo4_via_rel_one_cascade.id]] = 1) AND (NOT EXISTS (SELECT 1 FROM (SELECT [[__mm_demo3_demo4_via_rel_one_cascade.id]] as [[multiMatchValue]] FROM `demo3` `__mm_demo3` LEFT JOIN `demo4` `__mm_demo3_demo4_via_rel_one_cascade` ON [[__mm_demo3_demo4_via_rel_one_cascade.rel_one_cascade]] = [[__mm_demo3.id]] WHERE `__mm_demo3`.`id` = `demo3`.`id`) {{__smTEST}} WHERE NOT ([[__smTEST.multiMatchValue]] = 1)))))",
 		},
 		{
 			"back relations via single relation field (with unique index)",
@@ -334,7 +334,7 @@ func TestRecordFieldResolverUpdateQuery(t *testing.T) {
 			"demo1",
 			"view1_via_rel_one.rel_many.created ?> true",
 			true,
-			"SELECT DISTINCT `demo1`.* FROM `demo1` LEFT JOIN `view1` `demo1_view1_via_rel_one` ON [[demo1.id]] IN (SELECT [[__je_demo1_view1_via_rel_one.value]] FROM json_each(CASE WHEN iif(json_valid([[demo1_view1_via_rel_one.rel_one]]), json_type([[demo1_view1_via_rel_one.rel_one]])='array', FALSE) THEN [[demo1_view1_via_rel_one.rel_one]] ELSE json_array([[demo1_view1_via_rel_one.rel_one]]) END) {{__je_demo1_view1_via_rel_one}}) LEFT JOIN json_each(CASE WHEN iif(json_valid([[demo1_view1_via_rel_one.rel_many]]), json_type([[demo1_view1_via_rel_one.rel_many]])='array', FALSE) THEN [[demo1_view1_via_rel_one.rel_many]] ELSE json_array([[demo1_view1_via_rel_one.rel_many]]) END) `__je_demo1_view1_via_rel_one_rel_many` LEFT JOIN `users` `demo1_view1_via_rel_one_rel_many` ON [[demo1_view1_via_rel_one_rel_many.id]] = [[__je_demo1_view1_via_rel_one_rel_many.value]] WHERE [[demo1_view1_via_rel_one_rel_many.created]] > 1",
+			"SELECT DISTINCT `demo1`.* FROM `demo1` LEFT JOIN `view1` `demo1_view1_via_rel_one` ON [[demo1_view1_via_rel_one.rel_one]] = [[demo1.id]] LEFT JOIN json_each(CASE WHEN iif(json_valid([[demo1_view1_via_rel_one.rel_many]]), json_type([[demo1_view1_via_rel_one.rel_many]])='array', FALSE) THEN [[demo1_view1_via_rel_one.rel_many]] ELSE json_array([[demo1_view1_via_rel_one.rel_many]]) END) `__je_demo1_view1_via_rel_one_rel_many` LEFT JOIN `users` `demo1_view1_via_rel_one_rel_many` ON [[demo1_view1_via_rel_one_rel_many.id]] = [[__je_demo1_view1_via_rel_one_rel_many.value]] WHERE [[demo1_view1_via_rel_one_rel_many.created]] > 1",
 		},
 		{
 			"recursive back relations with non-empty list rule",
@@ -643,6 +643,27 @@ func TestRecordFieldResolverUpdateQuery(t *testing.T) {
 			"point = '' || point.lat > 1 || point.lon < 2 || point.something > 3",
 			false,
 			"SELECT `view1`.* FROM `view1` WHERE (([[view1.point]] = '' OR [[view1.point]] IS NULL) OR (CASE WHEN json_valid([[view1.point]]) THEN JSON_EXTRACT([[view1.point]], '$.lat') ELSE JSON_EXTRACT(json_object('pb', [[view1.point]]), '$.pb.lat') END) > {:TEST} OR (CASE WHEN json_valid([[view1.point]]) THEN JSON_EXTRACT([[view1.point]], '$.lon') ELSE JSON_EXTRACT(json_object('pb', [[view1.point]]), '$.pb.lon') END) < {:TEST} OR (CASE WHEN json_valid([[view1.point]]) THEN JSON_EXTRACT([[view1.point]], '$.something') ELSE JSON_EXTRACT(json_object('pb', [[view1.point]]), '$.pb.something') END) > {:TEST})",
+		},
+		{
+			"strftime with fixed string as time-value against known empty value (null normalizations)",
+			"demo5",
+			"strftime('%Y-%m', '2026-01-01') = ''",
+			false,
+			"SELECT `demo5`.* FROM `demo5` WHERE ((strftime({:TEST},{:TEST}) = '' OR strftime({:TEST},{:TEST}) IS NULL))",
+		},
+		{
+			"strftime without multi-match",
+			"demo5",
+			"strftime('%Y-%m', rel_one.created) = true",
+			false,
+			"SELECT DISTINCT `demo5`.* FROM `demo5` LEFT JOIN `demo4` `demo5_rel_one` ON [[demo5_rel_one.id]] = [[demo5.rel_one]] WHERE strftime({:TEST},[[demo5_rel_one.created]]) = 1",
+		},
+		{
+			"strftime with multi-match",
+			"demo5",
+			"strftime('%Y-%m', rel_many.created) = true",
+			false,
+			"SELECT DISTINCT `demo5`.* FROM `demo5` LEFT JOIN json_each(CASE WHEN iif(json_valid([[demo5.rel_many]]), json_type([[demo5.rel_many]])='array', FALSE) THEN [[demo5.rel_many]] ELSE json_array([[demo5.rel_many]]) END) `__je_demo5_rel_many` LEFT JOIN `demo4` `demo5_rel_many` ON [[demo5_rel_many.id]] = [[__je_demo5_rel_many.value]] WHERE (((strftime({:TEST},[[demo5_rel_many.created]]) = 1) AND (NOT EXISTS (SELECT 1 FROM (SELECT strftime({:TEST},[[__mm_demo5_rel_many.created]]) as [[multiMatchValue]] FROM `demo5` `__mm_demo5` LEFT JOIN json_each(CASE WHEN iif(json_valid([[__mm_demo5.rel_many]]), json_type([[__mm_demo5.rel_many]])='array', FALSE) THEN [[__mm_demo5.rel_many]] ELSE json_array([[__mm_demo5.rel_many]]) END) `__mm_demo5_rel_many_je` LEFT JOIN `demo4` `__mm_demo5_rel_many` ON [[__mm_demo5_rel_many.id]] = [[__mm_demo5_rel_many_je.value]] WHERE `__mm_demo5`.`id` = `demo5`.`id`) {{__smTEST}} WHERE NOT ([[__smTEST.multiMatchValue]] = 1)))))",
 		},
 	}
 

@@ -1053,14 +1053,47 @@ func TestFilesystemBinds(t *testing.T) {
 	}))
 	defer srv.Close()
 
+	tmpDir, err := os.MkdirTemp("", "jsvm")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(tmpDir)
+
 	vm := goja.New()
 	vm.Set("mh", &multipart.FileHeader{Filename: "test"})
+	vm.Set("tmpDir", tmpDir)
 	vm.Set("testFile", filepath.Join(app.DataDir(), "data.db"))
 	vm.Set("baseURL", srv.URL)
 	baseBinds(vm)
 	filesystemBinds(vm)
 
-	testBindsCount(vm, "$filesystem", 4, t)
+	testBindsCount(vm, "$filesystem", 6, t)
+
+	// s3
+	{
+		v, err := vm.RunString(`$filesystem.s3("bucketName", "region", "endpoint", "accessKey", "secretKey", true)`)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		fsys, ok := v.Export().(*filesystem.System)
+		if !ok {
+			t.Fatalf("[s3] Expected System instance got %v", fsys)
+		}
+	}
+
+	// local
+	{
+		v, err := vm.RunString(`$filesystem.local(tmpDir)`)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		fsys, ok := v.Export().(*filesystem.System)
+		if !ok {
+			t.Fatalf("[s3] Expected System instance got %v", fsys)
+		}
+	}
 
 	// fileFromPath
 	{
