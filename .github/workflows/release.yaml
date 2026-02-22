@@ -48,9 +48,6 @@ jobs:
         with:
           go-version: '>=1.26.0'
 
-      - name: Build Admin dashboard UI
-        run: npm --prefix=./ui ci && npm --prefix=./ui run build
-
       - name: Lint
         run: make lint
 
@@ -159,9 +156,6 @@ jobs:
           git tag -f latest "$VERSION_TAG"
           git push origin :refs/tags/latest || true
           git push origin refs/tags/latest
-
-      - name: Build Admin dashboard UI
-        run: npm --prefix=./ui ci && npm --prefix=./ui run build
 
       - name: Run tests
         run: go test -ldflags "${LDFLAGS}" ./...
