@@ -3,20 +3,18 @@ name: basebuild
 on:
   pull_request:
   push:
+    branches: [main]
+    tags: [v*]
 
 jobs:
-  goreleaser:
+  ci:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     permissions:
-      contents: write # needed to push/move the lightweight "latest" tag
+      contents: write
     env:
-      flags: ""
+      flags: "--snapshot"
     steps:
-      # re-enable auto-snapshot from goreleaser-action@v3
-      # (https://github.com/goreleaser/goreleaser-action-v4-auto-snapshot-example)
-      - if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
-        run: echo "flags=--snapshot" >> $GITHUB_ENV
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -27,12 +25,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
-            VERSION="${GITHUB_REF#refs/tags/v}"
-          else
-            # fall back to latest tag if present, otherwise 0.0.0-next
-            VERSION="$(git describe --tags --abbrev=0 2>/dev/null || echo '0.0.0')-next"
-          fi
+          # fall back to latest tag if present, otherwise 0.0.0-next
+          VERSION="$(git describe --tags --abbrev=0 2>/dev/null || echo '0.0.0')-next"
           SHORT_SHA="$(git rev-parse --short HEAD)"
           BUILD_TIME="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
@@ -44,10 +38,94 @@ jobs:
         run: |
           echo "LDFLAGS=-s -w -X github.com/pocketbase/pocketbase.Version=${{ steps.meta.outputs.version }} -X github.com/pocketbase/pocketbase.BuildCommit=${{ steps.meta.outputs.short_sha }} -X github.com/pocketbase/pocketbase.BuildTime=${{ steps.meta.outputs.build_time }}" >> "$GITHUB_ENV"
 
-      # Create a GitHub Release whenever a version tag (v*) is pushed.
-      # GoReleaser will then attach assets to this release (or create one if missing).
-      - name: Create GitHub Release (tagged builds)
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.17.0
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '>=1.26.0'
+
+      - name: Build Admin dashboard UI
+        run: npm --prefix=./ui ci && npm --prefix=./ui run build
+
+      - name: Lint
+        run: make lint
+
+      - name: Check formatting
+        run: |
+          if [ -n "$(gofmt -d .)" ]; then
+            echo "Code is not formatted. Run 'gofmt -w .' to fix."
+            exit 1
+          fi
+
+      - name: Run tests
+        run: go test -ldflags "${LDFLAGS}" ./...
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser
+          version: '~> v2'
+          args: release --clean ${{ env.flags }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute next version
+        id: next_meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          LATEST_TAG="$(git describe --tags --abbrev=0 2>/dev/null || echo 'v0.0.0')"
+          VERSION="${LATEST_TAG#v}"
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+          NEXT_PATCH=$((PATCH + 1))
+          NEXT_VERSION="${MAJOR}.${MINOR}.${NEXT_PATCH}"
+          echo "next_version=${NEXT_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Create and push tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag "v${{ steps.next_meta.outputs.next_version }}"
+          git push origin "v${{ steps.next_meta.outputs.next_version }}"
+
+  release:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write # needed to push/move the lightweight "latest" tag
+    env:
+      flags: ""
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Compute version metadata
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          SHORT_SHA="$(git rev-parse --short HEAD)"
+          BUILD_TIME="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+          echo "build_time=${BUILD_TIME}" >> "$GITHUB_OUTPUT"
+
+      - name: Set LDFLAGS env
+        shell: bash
+        run: |
+          echo "LDFLAGS=-s -w -X github.com/pocketbase/pocketbase.Version=${{ steps.meta.outputs.version }} -X github.com/pocketbase/pocketbase.BuildCommit=${{ steps.meta.outputs.short_sha }} -X github.com/pocketbase/pocketbase.BuildTime=${{ steps.meta.outputs.build_time }}" >> "$GITHUB_ENV"
+
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
@@ -70,10 +148,7 @@ jobs:
         with:
           go-version: '>=1.26.0'
 
-      # Update (force-move) the floating "latest" tag to the current version tag commit.
-      # This runs only when the workflow is triggered by a version tag (refs/tags/v*).
       - name: Update latest tag
-        if: startsWith(github.ref, 'refs/tags/v')
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
@@ -85,18 +160,8 @@ jobs:
           git push origin :refs/tags/latest || true
           git push origin refs/tags/latest
 
-      # This step usually is not needed because the /ui/dist is pregenerated locally
-      # but its here to ensure that each release embeds the latest admin ui artifacts.
-      # If the artificats differs, a "dirty error" is thrown - https://goreleaser.com/errors/dirty/
       - name: Build Admin dashboard UI
         run: npm --prefix=./ui ci && npm --prefix=./ui run build
-
-      # Temporary disable as the types can have random generated identifiers making it non-deterministic.
-      #
-      # # Similar to the above, the jsvm types are pregenerated locally
-      # # but its here to ensure that it wasn't forgotten to be executed.
-      # - name: Generate jsvm types
-      #   run: go run ./plugins/jsvm/internal/types/types.go
 
       - name: Run tests
         run: go test -ldflags "${LDFLAGS}" ./...
