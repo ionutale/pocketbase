@@ -200,10 +200,10 @@ func TestFileDownload(t *testing.T) {
 			},
 		},
 		{
-			Name:            "existing image - new size (should generate thumb)",
-			Method:          http.MethodGet,
-			URL:             "/api/files/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png?size=10x10",
-			ExpectedStatus:  200,
+			Name:               "existing image - new size (should generate thumb)",
+			Method:             http.MethodGet,
+			URL:                "/api/files/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png?size=10x10",
+			ExpectedStatus:     200,
 			NotExpectedContent: []string{"error"},
 			ExpectedEvents: map[string]int{
 				"*":                     0,
@@ -211,10 +211,10 @@ func TestFileDownload(t *testing.T) {
 			},
 		},
 		{
-			Name:            "existing image - size + crop + format (should generate thumb)",
-			Method:          http.MethodGet,
-			URL:             "/api/files/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png?size=50x50&crop=top&format=jpg",
-			ExpectedStatus:  200,
+			Name:               "existing image - size + crop + format (should generate thumb)",
+			Method:             http.MethodGet,
+			URL:                "/api/files/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png?size=50x50&crop=top&format=jpg",
+			ExpectedStatus:     200,
 			NotExpectedContent: []string{"error"},
 			ExpectedEvents: map[string]int{
 				"*":                     0,
@@ -222,10 +222,10 @@ func TestFileDownload(t *testing.T) {
 			},
 		},
 		{
-			Name:            "existing image - size + position + format (should generate thumb)",
-			Method:          http.MethodGet,
-			URL:             "/api/files/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png?size=50x50&position=10x15&format=jpg",
-			ExpectedStatus:  200,
+			Name:               "existing image - size + position + format (should generate thumb)",
+			Method:             http.MethodGet,
+			URL:                "/api/files/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png?size=50x50&position=10x15&format=jpg",
+			ExpectedStatus:     200,
 			NotExpectedContent: []string{"error"},
 			ExpectedEvents: map[string]int{
 				"*":                     0,
@@ -233,9 +233,9 @@ func TestFileDownload(t *testing.T) {
 			},
 		},
 		{
-			Name:            "existing image - 0x0 size (should be regular thumb error)",
-			Method:          http.MethodGet,
-			URL:             "/api/files/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png?size=0x0",
+			Name:   "existing image - 0x0 size (should be regular thumb error)",
+			Method: http.MethodGet,
+			URL:    "/api/files/_pb_users_auth_/4q1xlclmfloku33/300_1SEi6Q6U72.png?size=0x0",
 			BeforeTestFunc: func(t testing.TB, app *tests.TestApp, e *core.ServeEvent) {
 				app.OnFileDownloadRequest().BindFunc(func(e *core.FileDownloadRequestEvent) error {
 					if e.ThumbError == nil {
@@ -244,7 +244,7 @@ func TestFileDownload(t *testing.T) {
 					return e.Next()
 				})
 			},
-			ExpectedStatus: 200,
+			ExpectedStatus:  200,
 			ExpectedContent: []string{string(testImg)},
 			ExpectedEvents: map[string]int{
 				"*":                     0,
