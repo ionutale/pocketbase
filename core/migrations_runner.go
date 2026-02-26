@@ -59,10 +59,6 @@ func (r *MigrationsRunner) Run(args ...string) error {
 
 		if len(applied) == 0 {
 			color.Green("No new migrations to apply.")
-		} else {
-			for _, file := range applied {
-				color.Green("Applied %s", file)
-			}
 		}
 
 		return nil
@@ -151,9 +147,11 @@ func (r *MigrationsRunner) Up() ([]string, error) {
 
 				// ignore empty Up action
 				if m.Up != nil {
+					color.Green("Migrating %s...", m.File)
 					if err := m.Up(txApp); err != nil {
 						return formatMigrationError("apply", m.File, err)
 					}
+					color.Green("Migrated %s", m.File)
 				}
 
 				if err := r.saveAppliedMigration(txApp, m.File); err != nil {
@@ -290,12 +288,22 @@ func (r *MigrationsRunner) saveRevertedMigration(txApp App, file string) error {
 	return err
 }
 
-// formatMigrationError wraps migration errors with contextual info and stack trace
+// formatMigrationError wraps migration errors with contextual info and stack trace.
+// If the error implements fmt.Stringer (like goja.Exception for JS migrations),
+// it will include the JS stack trace in the output.
 func formatMigrationError(op string, file string, err error) error {
-	// include a short operation message and the underlying error
-	msg := fmt.Sprintf("failed to %s migration %s: %v", op, file, err)
-	// append the current goroutine stack for debugging
-	return fmt.Errorf("%s\nstack:\n%s", msg, debug.Stack())
+	msg := fmt.Sprintf("failed to %s migration %s", op, file)
+
+	// Check if the error has a String() method that provides more detail
+	// (e.g., JS exceptions from goja include the JS stack trace in String())
+	if stringer, ok := err.(fmt.Stringer); ok {
+		detailed := stringer.String()
+		if detailed != err.Error() {
+			return fmt.Errorf("%s:\n%s\ngo stack:\n%s", msg, detailed, debug.Stack())
+		}
+	}
+
+	return fmt.Errorf("%s: %v\ngo stack:\n%s", msg, err, debug.Stack())
 }
 
 func (r *MigrationsRunner) lastAppliedMigrations(limit int) ([]string, error) {
